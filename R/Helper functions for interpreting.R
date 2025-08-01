@@ -15,12 +15,13 @@ thetas2params <- function(theta){
 #'the user needs to calculate these 
 #'@param fit A fitted inlabru model of class "bru". 
 #'@param smesh Spatial mesh used to fit model
+#'@importFrom stringr str_sub
+#' @importFrom Matrix Diagonal
 #'@returns named list of prior mean and variance
 #'@export
 
 get.initial.mean.var <- function(fit, smesh){
-  use_package(stringr)
-  use_package(Matrix)
+  
   index <- min(which(str_sub(rownames(fit$summary.fitted.values),8,8)!= "A"))
   initial.mean <- fit$summary.fixed$mean +fit$summary.fitted.values$mean[index-1 +1:smesh$n]
   initial.variance <- Diagonal(mesh_obs$n, (fit$summary.fixed$sd**2)+(fit$summary.fitted.values$sd[index-1 +1:smesh$n]**2))

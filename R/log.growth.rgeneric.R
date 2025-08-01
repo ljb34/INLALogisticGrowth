@@ -4,6 +4,8 @@
 #'The rgeneric function implementing the 2D spatial logistic growth function. 
 #'For use within INLA only. See inla.doc('rgeneric') for more
 #'
+#'@import Matrix
+#'@importFrom fmesher fm_fem
 #'@export
 
 log.growth.rgeneric =  function(
@@ -11,9 +13,6 @@ log.growth.rgeneric =  function(
             "log.prior", "quit"),
     theta = NULL){ 
   envir = parent.env(environment()) #gets extra parameters (linpoint etc.) from definition data
-  use_package(dplyr)
-  use_package(fmesher)
-  use_package(Matrix)
   a.func <- function(growth,inv.carry.cap,move.const, linpoint){
     #print("Calcualting a")
     return(-growth*exp(linpoint)*inv.carry.cap)

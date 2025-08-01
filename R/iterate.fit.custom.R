@@ -34,7 +34,6 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
                         initial.inv.carry.cap=0.05, initial.move.const = 1, initial.log.sigma = log(1.5),
                         verbose = F){
   #browser()
-  use_package(stringr)
   step.size = (tmesh$interval[2]-tmesh$interval[1])/(tmesh$n-1) #calculate step size. -1 in denom due to fence post problem 
   if(is.null(initial.linpoint)){
     initial.linpoint <- log(logit.nest(exp(prior.mean), initial.growth, 1/exp(initial.inv.carry.cap), tmesh$n - 1)$x)
