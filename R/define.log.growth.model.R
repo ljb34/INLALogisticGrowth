@@ -9,15 +9,14 @@
 #'@param prior.mean estimated mean for first year of data. Helper function for calculating coming soon
 #'@param prior.variance uncertainty for estimated mean of first year of data. Helper function for calculating coming soon
 #'@param priors named list of prior parameters, named \code{cc} (carrying capacity), \code{growth}, \code{move}, \code{sigma}. 
-#' cc is a two element vector containing the shape and rate parameter for gamma prior of the inverse carrying capacity. 
-#' The others are two element vectors containing the mean and variance for the other parameters. 
-#' @param initial.growth,initial.inv.carry.cap,initial.move.const,initial.log.sigma Starting values for the growth, 
-#' inverse carrying capacity, movement constant and \emph{log} standard deviation
+#' Each is a two element vector containing the mean and variance for each parameter. 
+#' @param initial.growth,initial.carry.cap,initial.move.const,initial.log.sigma Starting values for the growth, 
+#' \emph{log} carrying capacity, movement constant and \emph{log} standard deviation
 #'@returns INLA rgeneric model
 #'@export
 define.loggrow.model <- function(linpoint, smesh, tmesh, step.size,
                                  prior.mean, prior.variance, priors = NULL,
-                                 initial.growth = NULL, initial.inv.carry.cap = NULL, 
+                                 initial.growth = NULL, initial.carry.cap = NULL, 
                                  initial.move.const = NULL, initial.log.sigma = NULL){
   
   the_model <- inla.rgeneric.define(log.growth.rgeneric, 
@@ -26,7 +25,7 @@ define.loggrow.model <- function(linpoint, smesh, tmesh, step.size,
                                     prior.mean = prior.mean, priors = priors,
                                     prior.variance = prior.variance, 
                                     initial.growth = initial.growth, 
-                                    initial.inv.carry.cap = initial.inv.carry.cap, 
+                                    initial.carry.cap = initial.carry.cap, 
                                     initial.move.const = initial.move.const, 
                                     initial.log.sigma = initial.log.sigma)
   class(the_model) <- c("log_growth_model", class(the_model))

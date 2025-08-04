@@ -80,7 +80,7 @@ simulate.loggrowth<- function(growth, k, movement, sigma,
     points.to.sample <- sample(unique(st_filter(animal,bnd_inner)$geometry),
                                npoints)
     animal_obs <- filter(animal, geometry %in% points.to.sample) %>% 
-      mutate(obs = rnorm(npoints*(timesteps+1), field, obs.sd))
+      mutate(obs = rnorm(npoints*(timesteps), field, obs.sd))
   }
   if(sample.type == "LGCP"){
     animal_field$field[animal_field$field <0] <- 0.00001

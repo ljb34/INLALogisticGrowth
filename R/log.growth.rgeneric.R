@@ -13,19 +13,19 @@ log.growth.rgeneric =  function(
             "log.prior", "quit"),
     theta = NULL){ 
   envir = parent.env(environment()) #gets extra parameters (linpoint etc.) from definition data
-  a.func <- function(growth,inv.carry.cap,move.const, linpoint){
+  a.func <- function(growth,carry.cap, linpoint){
     #print("Calcualting a")
-    return(-growth*exp(linpoint)*inv.carry.cap)
+    return(growth*exp(linpoint)/carry.cap)
   }
   #growth, inv.carry.cap, move.const = theta params to be est
   #step.size = difference in time between lin points, known
   #linpoint = list of linearisation point vectors 
   #smesh = space mesh built with fmesher, tmesh = time mesh
-  L.matrix <- function(growth,inv.carry.cap,move.const,step.size, linpoint, smesh, tmesh){
+  L.matrix <- function(growth,carry.cap,move.const,step.size, linpoint, smesh, tmesh){
     #print("Calcualting Lmat")
     ns <- smesh$n
     nt <- tmesh$n
-    a<- a.func(growth,inv.carry.cap,move.const, linpoint)
+    a<- a.func(growth,carry.cap, linpoint)
     a[1:ns] <- 1
     a.mat <- Diagonal(ns*nt,a)
     
@@ -38,7 +38,7 @@ log.growth.rgeneric =  function(
     #print(diag(main.diag + subdiag + a.mat))
     return(main.diag + subdiag + a.mat)
   }
-  r.vector <- function(growth,inv.carry.cap,move.const,linpoint,smesh, tmesh){
+  r.vector <- function(growth,carry.cap,move.const,linpoint,smesh, tmesh){
     #find 2 nearest neighbours to approximate gradient
     #browser()
     #print("Calcualting rvector")
@@ -74,11 +74,11 @@ log.growth.rgeneric =  function(
       }
     }
     mag.grad.sq <- rowSums(grad*grad) #magnitude squared
-    return(growth*exp(linpoint)*(linpoint-1)*inv.carry.cap+ growth - move.const*mag.grad.sq )
+    return(growth*exp(linpoint)*(linpoint-1)/carry.cap+ growth - move.const*mag.grad.sq )
   }
   interpret.theta = function() {
     return(list(growth = theta[1L],
-                inv.carry.cap = exp(theta[2L]),
+                carry.cap = exp(theta[2L]),
                 move.const = theta[3L], 
                 sigma = exp(theta[4L])))
   }
@@ -90,7 +90,7 @@ log.growth.rgeneric =  function(
     #print("Calcualting Q")
     par = interpret.theta()
     #print(par)
-    Lmat = L.matrix(par$growth, par$inv.carry.cap, par$move.const,step.size, linpoint, smesh, tmesh)
+    Lmat = L.matrix(par$growth, par$carry.cap, par$move.const,step.size, linpoint, smesh, tmesh)
     noiseonly = Diagonal(smesh$n*(tmesh$n-1), (par$sigma*step.size)**2)
     noise.variance = bdiag(list(prior.variance, noiseonly))
     output = crossprod(Lmat, solve(noise.variance, Lmat))
@@ -105,8 +105,8 @@ log.growth.rgeneric =  function(
     #}
     par = interpret.theta()
     #print(par)
-    Lmat = L.matrix(par$growth, par$inv.carry.cap, par$move.const, step.size, linpoint, smesh, tmesh)
-    r = c(prior.mean, r.vector(par$growth, par$inv.carry.cap, par$move.const, linpoint, smesh, tmesh)[-(1:smesh$n)])
+    Lmat = L.matrix(par$growth, par$carry.cap, par$move.const, step.size, linpoint, smesh, tmesh)
+    r = c(prior.mean, r.vector(par$growth, par$carry.cap, par$move.const, linpoint, smesh, tmesh)[-(1:smesh$n)])
     #print(det(Lmat))
     if(!is.nan(det(Lmat))) {
       if(abs(det(Lmat)) <= .Machine$double.eps|(is.infinite(det(Lmat)) & !is.infinite(det(crossprod(Lmat,Lmat))))){ #if close to singular use
@@ -131,7 +131,7 @@ log.growth.rgeneric =  function(
     #print("Calcualting logprior")
     par = interpret.theta()
     if(!is.null(priors)) warning("Parameters missing for priors")
-    val = dgamma(par$inv.carry.cap, shape = priors$cc[1], rate = priors$cc[2], log = T)+
+    val = dnorm(par$carry.cap, mean = priors$carry.cap[1], sd = priors$carry.cap[2], log = T)+
       dnorm(par$growth, mean = priors$growth[1], sd = priors$growth[2], log = T)+
       dnorm(par$move.const,mean = priors$move[1], sd = priors$move[2], log = T)+ 
       dnorm(par$sigma, mean = priors$sigma[1], sd = priors$sigma[2], log = T)
