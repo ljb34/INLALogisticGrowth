@@ -5,10 +5,10 @@ simulate.loggrowth2<- function(growth, k, movement, sigma,
                                boundaries = c(0,1)){
   browser()
   corners <- c(boundaries[1] - movement, boundaries[2]+movement)
-  bnd_extended <- spoly(data.frame(easting = c(corners[1], corners[2],corners[2],corners[1]), 
+  bnd_extended <- inlabru::spoly(data.frame(easting = c(corners[1], corners[2],corners[2],corners[1]), 
                                    northing = c(corners[1], corners[1],corners[2],corners[2])))
-  mesh_space <- fm_mesh_2d_inla(boundary = bnd_extended, max.edge = 0.3)
-  mesh_time <- fm_mesh_1d(loc = 1:timesteps)
+  mesh_space <- fmesher::fm_mesh_2d_inla(boundary = bnd_extended, max.edge = 0.3)
+  mesh_time <- fmesher::fm_mesh_1d(loc = 1:timesteps)
   
   matrices <- inla.logrowth.mean.precision(mesh_space, mesh_time, c(growth, log(k), movement, log(sigma)),
                                        initial)
@@ -19,9 +19,9 @@ simulate.loggrowth2<- function(growth, k, movement, sigma,
     animal_tempsf <- expand.grid(
       easting = seq(corners[1],corners[2], by = 0.01),
       northing = seq(corners[1],corners[2], by = 0.01))
-    animal_tempsf <- mutate(sf::st_as_sf(animal_tempsf, coords = c("easting", "northing")),
+    animal_tempsf <- dplyr::mutate(sf::st_as_sf(animal_tempsf, coords = c("easting", "northing")),
                             time = i)
-    animal_tempsf$field <- fm_evaluate(
+    animal_tempsf$field <- fmesher::fm_evaluate(
       mesh_extended,
       loc = animal_tempsf,
       field = field$field[field$time == i])
@@ -52,16 +52,4 @@ inla.logrowth.mean.precision <- function(smesh, tmesh, theta, initial){
   mu <- inla.rgeneric.q(cmd = "mu", rmodel = logit_model, theta = theta)
   return(list(Q = precision, mean = mu))
 }
-
-
-
-
-
-bnd_extended <- spoly(data.frame(easting = c(0,2,2,0), 
-                                               northing = c(0,0,2,2)))
-mesh_extended <- fm_mesh_2d_inla(boundary = bnd_extended, max.edge = 0.25)
-mesh_time <- fm_mesh_1d(loc = 1:4)
-test.p<- inla.logrowth.precision(mesh_extended, mesh_time, c(1,log(1/20),1,1), 10)
-
-test.out <- simulate.loggrowth2(0.75,500,1,1,200,4)
 

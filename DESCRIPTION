@@ -4,4 +4,12 @@ Title: Spatial Logistic Growth in INLA
 Version: 0.0.1.0
 RoxygenNote: 7.3.2
 Imports: 
-    parallel
+    dplyr,
+    fmesher,
+    Matrix,
+    parallel,
+    sf,
+    stringr
+Depends: 
+    INLA,
+    inlabru

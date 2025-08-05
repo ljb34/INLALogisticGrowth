@@ -4,8 +4,6 @@
 #'The rgeneric function implementing the 2D spatial logistic growth function. 
 #'For use within INLA only. See inla.doc('rgeneric') for more
 #'
-#'@import Matrix
-#'@importFrom fmesher fm_fem
 #'@export
 
 log.growth.rgeneric =  function(
@@ -27,14 +25,14 @@ log.growth.rgeneric =  function(
     nt <- tmesh$n
     a<- a.func(growth,carry.cap, linpoint)
     a[1:ns] <- 1
-    a.mat <- Diagonal(ns*nt,a)
+    a.mat <- Matrix::Diagonal(ns*nt,a)
     
-    subdiag <- kronecker(bandSparse(nt, k = -1, diagonals = list(rep(1, nt - 1))),
-                         Diagonal(ns, -1/(step.size)))
-    fem.matrices <- fm_fem(smesh)
+    subdiag <- Matrix::kronecker(Matrix::bandSparse(nt, k = -1, diagonals = list(rep(1, nt - 1))),
+                         Matrix::Diagonal(ns, -1/(step.size)))
+    fem.matrices <- fmesher::fm_fem(smesh)
     CinvG <- solve(fem.matrices$c1, fem.matrices$g1)
-    main.diag <- kronecker(Diagonal(nt, c(0,rep(1, nt-1))), 
-                           Diagonal(ns, 1/(step.size))+ move.const*CinvG)
+    main.diag <- Matrix::kronecker(Matrix::Diagonal(nt, c(0,rep(1, nt-1))), 
+                           Matrix::Diagonal(ns, 1/(step.size))+ move.const*CinvG)
     #print(diag(main.diag + subdiag + a.mat))
     return(main.diag + subdiag + a.mat)
   }
@@ -91,9 +89,9 @@ log.growth.rgeneric =  function(
     par = interpret.theta()
     #print(par)
     Lmat = L.matrix(par$growth, par$carry.cap, par$move.const,step.size, linpoint, smesh, tmesh)
-    noiseonly = Diagonal(smesh$n*(tmesh$n-1), (par$sigma*step.size)**2)
-    noise.variance = bdiag(list(prior.variance, noiseonly))
-    output = crossprod(Lmat, solve(noise.variance, Lmat))
+    noiseonly = Matrix::Diagonal(smesh$n*(tmesh$n-1), (par$sigma*step.size)**2)
+    noise.variance = Matrix::bdiag(list(prior.variance, noiseonly))
+    output = Matrix::crossprod(Lmat, solve(noise.variance, Lmat))
     #print(output[smesh$n:(smesh$n +10),smesh$n:(smesh$n +10)])
     return(output)
   }

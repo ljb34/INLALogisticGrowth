@@ -56,8 +56,8 @@ iterate.fit.lgcp <- function(data, smesh, tmesh, samplers,prior.mean,
     #mat_list[[i]] <- fit$misc$configs$config[[i]]$Q[1:(smesh$n*tmesh$n), 1:(smesh$n*tmesh$n)]
     mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean[1:(smesh$n*tmesh$n)]
   }
-  nodes <- mutate(nodes, weight = exp(log.prob)) %>%
-    mutate(weight.prob = weight/sum(weight))
+  nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
+    dplyr::mutate(weight.prob = weight/sum(weight))
   #Old rule- in theory faster but gives some extreme changes
   #P <- Reduce("+", Map(function(m, w) m * w, mat_list, nodes$weight.prob))
   #weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
@@ -114,8 +114,8 @@ iterate.fit.lgcp <- function(data, smesh, tmesh, samplers,prior.mean,
       #mat_list[[i]] <- fit$misc$configs$config[[i]]$Q[1:(smesh$n*tmesh$n),1:(smesh$n*tmesh$n)]
       mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean[1:(smesh$n*tmesh$n)]
     }
-    nodes <- mutate(nodes, weight = exp(log.prob)) %>%
-      mutate(weight.prob = weight/sum(weight))
+    nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
+      dplyr::mutate(weight.prob = weight/sum(weight))
     #P <- Reduce("+", Map(function(m, w) m * w, mat_list, nodes$weight.prob))
     #weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
     #b <- Reduce("+", Map(function(m,w) m%*%w, mat_list,weighted.means))
