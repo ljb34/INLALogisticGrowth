@@ -11,11 +11,6 @@
 #'@param obs.sd For \code{sample.type="Gaussian"} only. Standard deviation of observation process
 #'@param ncores Optional. Number of cores to use if running in parallel. 
 #'
-#'@importFrom parallel mclapply
-#'@import dplyr
-#'@import INLA
-#'@import sp
-#'@import sf
 #'
 #'@returns List containing underlying field (animal), observations (animal_obs), and 
 #'field defined on mesh nodes for debugging purposes (animal_field). 
@@ -39,10 +34,10 @@ simulate.loggrowth<- function(growth, k, movement, sigma,
   #browser()
   #Set up boundary and mesh
   corners <- c(boundaries[1] - movement, boundaries[2]+movement)
-  bnd_extended <- spoly(data.frame(easting = c(corners[1], corners[2],corners[2],corners[1]), 
+  bnd_extended <- inlabru::spoly(data.frame(easting = c(corners[1], corners[2],corners[2],corners[1]), 
                                    northing = c(corners[1], corners[1],corners[2],corners[2])))
-  mesh_extended <- fm_mesh_2d_inla(boundary = bnd_extended, max.edge = 0.05)
-  mesh_time <- fm_mesh_1d(loc = 1:timesteps)
+  mesh_extended <- fmesher::fm_mesh_2d_inla(boundary = bnd_extended, max.edge = 0.05)
+  mesh_time <- fmesher::fm_mesh_1d(loc = 1:timesteps)
   #animal initial field
   matern_extended <-
     inla.spde2.pcmatern(mesh_extended,
@@ -66,7 +61,7 @@ simulate.loggrowth<- function(growth, k, movement, sigma,
       northing = seq(corners[1],corners[2], by = 0.01))
     animal_tempsf <- mutate(sf::st_as_sf(animal_tempsf, coords = c("easting", "northing")),
                             time = i)
-    animal_tempsf$field <- fm_evaluate(
+    animal_tempsf$field <- fmesher::fm_evaluate(
       mesh_extended,
       loc = animal_tempsf,
       field = animal_field$field[animal_field$time == i])
@@ -74,13 +69,13 @@ simulate.loggrowth<- function(growth, k, movement, sigma,
   }
   expanded <- parallel::mclapply(1:timesteps, expand_for_plot,  mc.cores = ncores)
   animal <- do.call(rbind, expanded)
-  bnd_inner <- st_as_sf(spoly(data.frame(easting = c(boundaries[1],boundaries[2],boundaries[2],boundaries[1]), 
+  bnd_inner <- sf::st_as_sf(inlabru::spoly(data.frame(easting = c(boundaries[1],boundaries[2],boundaries[2],boundaries[1]), 
                                          northing = c(boundaries[1], boundaries[1], boundaries[2], boundaries[2]))))
   if(sample.type == "Normal"){
-    points.to.sample <- sample(unique(st_filter(animal,bnd_inner)$geometry),
+    points.to.sample <- sample(unique(sf::st_filter(animal,bnd_inner)$geometry),
                                npoints)
     animal_obs <- filter(animal, geometry %in% points.to.sample) %>% 
-      mutate(obs = rnorm(npoints*(timesteps+1), field, obs.sd))
+      mutate(obs = rnorm(npoints*(timesteps), field, obs.sd))
   }
   if(sample.type == "LGCP"){
     animal_field$field[animal_field$field <0] <- 0.00001
@@ -88,7 +83,7 @@ simulate.loggrowth<- function(growth, k, movement, sigma,
       samp_animal <- sample.lgcp(mesh_extended, 
                                  loglambda = log(animal_field$field[animal_field$time == i]),
                                  samplers = bnd_inner)
-      samp_animal <- st_as_sf(samp_animal, coords = c("x","y"))
+      samp_animal <- sf::st_as_sf(samp_animal, coords = c("x","y"))
       samp_animal_df <- mutate(samp_animal, time = i)
       return(samp_animal_df)
     }

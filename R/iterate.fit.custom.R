@@ -63,8 +63,8 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
   for(i in 1:n.nodes){
     nodes[i,]<-fit$misc$configs$config[[i]]$log.posterior
   }
-  nodes <- mutate(nodes, weight = exp(log.prob)) %>%
-    mutate(weight.prob = weight/sum(weight))
+  nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
+    dplyr::mutate(weight.prob = weight/sum(weight))
   
   #New update rule
   weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
@@ -116,8 +116,8 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
     for(i in 1:n.nodes){
       nodes[i,]<- fit$misc$configs$config[[i]]$log.posterior
     }
-    nodes <- mutate(nodes, weight = exp(log.prob)) %>%
-      mutate(weight.prob = weight/sum(weight))
+    nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
+      dplyr::mutate(weight.prob = weight/sum(weight))
     #P <- Reduce("+", Map(function(m, w) m * w, mat_list, nodes$weight.prob))
     #weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
     #b <- Reduce("+", Map(function(m,w) m%*%w, mat_list,weighted.means))

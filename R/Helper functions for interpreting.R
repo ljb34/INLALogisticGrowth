@@ -22,8 +22,8 @@ thetas2params <- function(theta){
 
 get.initial.mean.var <- function(fit, smesh){
   
-  index <- min(which(str_sub(rownames(fit$summary.fitted.values),8,8)!= "A"))
+  index <- min(which(stringr::str_sub(rownames(fit$summary.fitted.values),8,8)!= "A"))
   initial.mean <- fit$summary.fixed$mean +fit$summary.fitted.values$mean[index-1 +1:smesh$n]
-  initial.variance <- Diagonal(mesh_obs$n, (fit$summary.fixed$sd**2)+(fit$summary.fitted.values$sd[index-1 +1:smesh$n]**2))
+  initial.variance <- Matrix::Diagonal(mesh_obs$n, (fit$summary.fixed$sd**2)+(fit$summary.fitted.values$sd[index-1 +1:smesh$n]**2))
   return(list(prior.mean = initial.mean, prior.variance = initial.variance))
 }
