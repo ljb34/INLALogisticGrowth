@@ -2,10 +2,10 @@
 % Please edit documentation in R/get precision matrix.R
 \name{L.matrix}
 \alias{L.matrix}
-\title{Other functions for testing}
+\title{L matrix}
 \usage{
 L.matrix(growth, carry.cap, move.const, step.size, linpoint, smesh, tmesh)
 }
 \description{
-Other functions for testing
+L matrix
 }

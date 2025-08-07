@@ -1,4 +1,5 @@
 #'Functions for simulating growth
+#'@export
 simulate.loggrowth2<- function(growth, k, movement, sigma, 
                                initial, timesteps, npoints = NULL, obs.sd=NULL, 
                                sample.type = "LGCP", ncores = 1,
@@ -57,7 +58,7 @@ simulate.loggrowth2<- function(growth, k, movement, sigma,
               animal_obs = animal_obs))
 }
 #'Get precision matrix
-
+#'@export
 inla.logrowth.mean.precision <- function(smesh, tmesh, theta, initial){
   #browser()
   growth <- theta[1]
@@ -81,8 +82,8 @@ inla.logrowth.mean.precision <- function(smesh, tmesh, theta, initial){
   return(list(Q = precision, mean = mu))
 }
 
-#'Other functions for testing
-
+#'L matrix
+#'@export
 L.matrix <- function(growth,carry.cap,move.const,step.size, linpoint, smesh, tmesh){
   print("Calcualting Lmat")
   #browser()
@@ -101,6 +102,8 @@ L.matrix <- function(growth,carry.cap,move.const,step.size, linpoint, smesh, tme
   #print(diag(main.diag + subdiag + a.mat))
   return(main.diag + subdiag + a.mat)
 }
+#'r vector
+#'@export
 r.vector <- function(growth,carry.cap,move.const,linpoint,smesh, tmesh){
   #find 2 nearest neighbours to approximate gradient
   #browser()
@@ -148,7 +151,8 @@ r.vector <- function(growth,carry.cap,move.const,linpoint,smesh, tmesh){
   mag.grad.sq <- rowSums(grad*grad) #magnitude squared
   return(growth*exp(linpoint)*(linpoint-1)/carry.cap+ growth - move.const*mag.grad.sq )
 }
-
+#'mean
+#'@export
 mu = function(growth, carry.cap, move.const, step.size, linpoint, smesh, tmesh, prior.mean){
   #browser()
   print("Calculating mean")
@@ -171,6 +175,8 @@ mu = function(growth, carry.cap, move.const, step.size, linpoint, smesh, tmesh, 
   #print(mean(mu))
   return(mu)
 }
+#' a helper function
+#'@export
 a.func <- function(growth,carry.cap, linpoint){
   #print("Calcualting a")
   return(growth*exp(linpoint)/carry.cap)
