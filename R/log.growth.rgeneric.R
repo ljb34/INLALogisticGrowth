@@ -13,11 +13,17 @@ log.growth.rgeneric =  function(
             "log.prior", "quit"),
     theta = NULL){ 
   envir = parent.env(environment()) #gets extra parameters (linpoint etc.) from definition data
+<<<<<<< Updated upstream
   a.func <- function(growth,inv.carry.cap,move.const, linpoint){
+=======
+  library(Matrix)
+  library(fmesher)
+  a.func <- function(growth,carry.cap, linpoint){
+>>>>>>> Stashed changes
     #print("Calcualting a")
     return(-growth*exp(linpoint)*inv.carry.cap)
   }
-  #growth, inv.carry.cap, move.const = theta params to be est
+  #growth, carry.cap, move.const = theta params to be est
   #step.size = difference in time between lin points, known
   #linpoint = list of linearisation point vectors 
   #smesh = space mesh built with fmesher, tmesh = time mesh
@@ -45,7 +51,7 @@ log.growth.rgeneric =  function(
     ns = smesh$n; nt = tmesh$n
     coords <- smesh$loc[,c(1,2)]
     distances <- as.matrix(dist(coords, upper = T))
-    near.neighbours <- apply(distances, 2, order)[2:4,]
+    near.neighbours <- apply(distances, 2, order)[2:10,]
     grad <- matrix(nrow = ns*nt, ncol = 2)
     for(i in 1:ns){
       diffmat <- matrix(c(coords[near.neighbours[1,i],1]- coords[i,1], 
@@ -55,17 +61,27 @@ log.growth.rgeneric =  function(
                         byrow = T, nrow = 2)
       diffmat[which(abs(diffmat) < .Machine$double.eps, arr.ind = T)] <- 0
       for(t in 0:(nt-1)){
-        if(abs(det(diffmat))<=.Machine$double.eps){ # if both nearest neighbours are exactly horizontal or both vertical from point, then go to 
+        if(abs(Matrix::det(diffmat))<=.Machine$double.eps){ # if both nearest neighbours are exactly horizontal or both vertical from point, then go to 
           #1st and 3rd near neighbours
+          j <-3
+          while(min(abs(c(coords[near.neighbours[1,i],1]-coords[near.neighbours[j,i],1],
+                          coords[near.neighbours[1,i],2]-coords[near.neighbours[j,i],2]))) < .Machine$double.eps |
+                coords[near.neighbours[1,i],1]%%coords[near.neighbours[j,i],1] == coords[near.neighbours[1,i],2]%%coords[near.neighbours[j,i],2]){
+            j <- j+1
+            if(j == 9){
+              warning(paste("Mesh behaving strangely. All nearest points to point", i, "lie on a straight line."))
+              break
+            }
+          }
           diffmat2 <- matrix(c(coords[near.neighbours[1,i],1]- coords[i,1], 
                                coords[near.neighbours[1,i],2]- coords[i,2],
-                               coords[near.neighbours[3,i],1]- coords[i,1], 
-                               coords[near.neighbours[3,i],2]- coords[i,2]),
+                               coords[near.neighbours[j,i],1]- coords[i,1], 
+                               coords[near.neighbours[j,i],2]- coords[i,2]),
                              byrow = T, nrow = 2)
-          diffmat[which(abs(diffmat) < .Machine$double.eps, arr.ind = T)] <- 0
+          diffmat2[which(abs(diffmat2) < .Machine$double.eps, arr.ind = T)] <- 0
           grad[t*ns+i,] <- solve(diffmat2,
                                  c(linpoint[near.neighbours[1,i]+t*ns] - linpoint[i + t*ns],
-                                   linpoint[near.neighbours[2,i]+t*ns]- linpoint[i + t*ns]))
+                                   linpoint[near.neighbours[j,i]+t*ns]- linpoint[i + t*ns]))
         }else{                  
           grad[t*ns+i,] <- solve(diffmat,
                                  c(linpoint[near.neighbours[1,i]+t*ns] - linpoint[i + t*ns],
@@ -90,7 +106,11 @@ log.growth.rgeneric =  function(
     #print("Calcualting Q")
     par = interpret.theta()
     #print(par)
+<<<<<<< Updated upstream
     Lmat = L.matrix(par$growth, par$inv.carry.cap, par$move.const,step.size, linpoint, smesh, tmesh)
+=======
+    Lmat = L.matrix(par$growth, par$carry.cap, par$move.const,step.size, linpoint, smesh, tmesh)
+>>>>>>> Stashed changes
     noiseonly = Diagonal(smesh$n*(tmesh$n-1), (par$sigma*step.size)**2)
     noise.variance = bdiag(list(prior.variance, noiseonly))
     output = crossprod(Lmat, solve(noise.variance, Lmat))
@@ -130,8 +150,13 @@ log.growth.rgeneric =  function(
   log.prior = function(){#can change params to make user specified
     #print("Calcualting logprior")
     par = interpret.theta()
+    #print(par)
     if(!is.null(priors)) warning("Parameters missing for priors")
+<<<<<<< Updated upstream
     val = dgamma(par$inv.carry.cap, shape = priors$cc[1], rate = priors$cc[2], log = T)+
+=======
+    val = dnorm(par$carry.cap, mean = priors$cc[1], sd = priors$cc[2], log = T)+
+>>>>>>> Stashed changes
       dnorm(par$growth, mean = priors$growth[1], sd = priors$growth[2], log = T)+
       dnorm(par$move.const,mean = priors$move[1], sd = priors$move[2], log = T)+ 
       dnorm(par$sigma, mean = priors$sigma[1], sd = priors$sigma[2], log = T)
@@ -152,4 +177,3 @@ log.growth.rgeneric =  function(
   val = do.call(match.arg(cmd), args = list())
   return(val)
 }
-
