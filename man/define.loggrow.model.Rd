@@ -13,7 +13,7 @@ define.loggrow.model(
   prior.variance,
   priors = NULL,
   initial.growth = NULL,
-  initial.inv.carry.cap = NULL,
+  initial.carry.cap = NULL,
   initial.move.const = NULL,
   initial.log.sigma = NULL
 )
@@ -32,11 +32,10 @@ define.loggrow.model(
 \item{prior.variance}{uncertainty for estimated mean of first year of data. Helper function for calculating coming soon}
 
 \item{priors}{named list of prior parameters, named \code{cc} (carrying capacity), \code{growth}, \code{move}, \code{sigma}. 
-cc is a two element vector containing the shape and rate parameter for gamma prior of the inverse carrying capacity. 
-The others are two element vectors containing the mean and variance for the other parameters.}
+Each is a two element vector containing the mean and variance for each parameter.}
 
-\item{initial.growth, initial.inv.carry.cap, initial.move.const, initial.log.sigma}{Starting values for the growth, 
-inverse carrying capacity, movement constant and \emph{log} standard deviation}
+\item{initial.growth, initial.carry.cap, initial.move.const, initial.log.sigma}{Starting values for the growth, 
+\emph{log} carrying capacity, movement constant and \emph{log} standard deviation}
 }
 \value{
 INLA rgeneric model

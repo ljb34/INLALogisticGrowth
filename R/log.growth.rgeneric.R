@@ -137,10 +137,10 @@ log.growth.rgeneric =  function(
   }
   initial = function(){#can change params to make user specified
     if(is.null(initial.growth)) initial.growth = 1
-    if(is.null(initial.inv.carry.cap)) initial.inv.carry.cap = 0.05
+    if(is.null(initial.carry.cap)) initial.carry.cap = 100
     if(is.null(initial.move.const)) initial.move.const = 1
     if(is.null(initial.log.sigma)) initial.log.sigma = log(5)
-    return(c(initial.growth, initial.inv.carry.cap, initial.move.const, initial.log.sigma))
+    return(c(initial.growth, initial.carry.cap, initial.move.const, initial.log.sigma))
   }
   quit = function() {
     return(invisible())

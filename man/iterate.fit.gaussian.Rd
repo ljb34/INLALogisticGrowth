@@ -17,7 +17,7 @@ iterate.fit.gaussian(
   priors = NULL,
   initial.linpoint = NULL,
   initial.growth = 1,
-  initial.inv.carry.cap = 0.05,
+  initial.carry.cap = 0.05,
   initial.move.const = 1,
   initial.log.sigma = log(1.5),
   verbose = F
@@ -43,13 +43,12 @@ iterate.fit.gaussian(
 \item{stop.crit}{stopping criteria for linearisation point update rule. Stop updating if mean(abs(new_linearisation_point-old_linearisation_point))<=stop.crit}
 
 \item{priors}{named list of prior parameters, named \code{cc} (carrying capacity), \code{growth}, \code{move}, \code{sigma}. 
-cc is a two element vector containing the shape and rate parameter for gamma prior of the inverse carrying capacity. 
-The others are two element vectors containing the mean and variance for the other parameters.}
+Each is a two element vector containing the mean and variance for parameter.}
 
 \item{initial.linpoint}{Optional. Starting guess for the linearisation point. If NULL, will be estimated within function}
 
-\item{initial.growth, initial.inv.carry.cap, initial.move.const, initial.log.sigma}{Starting values for the growth, 
-inverse carrying capacity, movement constant and \emph{log} standard deviation}
+\item{initial.growth, initial.carry.cap, initial.move.const, initial.log.sigma}{Starting values for the growth, 
+\emph{log} carrying capacity, movement constant and \emph{log} standard deviation}
 
 \item{verbose}{logical supplied to INLA}
 }
