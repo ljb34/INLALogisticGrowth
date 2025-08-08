@@ -15,15 +15,19 @@
 #'@returns INLA rgeneric model
 #'@export
 define.loggrow.model <- function(linpoint, smesh, tmesh, step.size,
-                                 prior.mean, prior.variance, priors = NULL,
+                                 prior.mean, prior.variance,
+                                priors = NULL, grad = NULL,
                                  initial.growth = NULL, initial.carry.cap = NULL, 
                                  initial.move.const = NULL, initial.log.sigma = NULL){
-  
+  if(is.null(grad)){
+    grad <- gradient_of_linpoint(linpoint, smesh, tmesh)
+  }
   the_model <- inla.rgeneric.define(log.growth.rgeneric, 
                                     linpoint = linpoint, 
                                     smesh = smesh,tmesh = tmesh, step.size = step.size, 
                                     prior.mean = prior.mean, priors = priors,
                                     prior.variance = prior.variance, 
+                                    grad = grad,
                                     initial.growth = initial.growth, 
                                     initial.carry.cap = initial.carry.cap, 
                                     initial.move.const = initial.move.const, 
