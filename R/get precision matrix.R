@@ -37,7 +37,7 @@ simulate.loggrowth2<- function(growth, k, movement, sigma,
     points.to.sample <- sample(unique(sf::st_filter(animal,bnd_inner)$geometry),
                                npoints)
     animal_obs <- filter(animal, geometry %in% points.to.sample) %>% 
-      mutate(obs = rnorm(npoints*(timesteps), field, obs.sd))
+      dplyr::mutate(obs = rnorm(npoints*(timesteps), field, obs.sd))
   }
   if(sample.type == "LGCP"){
     field$field[field$field <0] <- 0.00001
@@ -46,7 +46,7 @@ simulate.loggrowth2<- function(growth, k, movement, sigma,
                                  loglambda = field$field[field$time == i],
                                  samplers = bnd_inner)
       samp_animal <- sf::st_as_sf(samp_animal, coords = c("x","y"))
-      samp_animal_df <- mutate(samp_animal, time = i)
+      samp_animal_df <- dplyr::mutate(samp_animal, time = i)
       return(samp_animal_df)
     }
     observations <- parallel::mclapply(1:timesteps, simulate_obs,  mc.cores =  ncores)
