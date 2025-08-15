@@ -5,7 +5,7 @@ gradient_of_linpoint <- function(linpoint,smesh, tmesh){
   ns = smesh$n; nt = tmesh$n
   coords <- smesh$loc[,c(1,2)]
   distances <- as.matrix(dist(coords, upper = T))
-  near.neighbours <- apply(distances, 2, order)[2:10,]
+  near.neighbours <- apply(distances, 2, order)[2:(min(10,ns)),]
   grad <- matrix(nrow = ns*nt, ncol = 2)
   for(i in 1:ns){
     diffmat <- matrix(c(coords[near.neighbours[1,i],1]- coords[i,1], 
