@@ -12,9 +12,10 @@ mu(
   linpoint,
   smesh,
   tmesh,
-  prior.mean
+  prior.mean,
+  grad
 )
 }
 \description{
-mean
+For internal use only
 }

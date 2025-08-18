@@ -4,8 +4,8 @@
 \alias{r.vector}
 \title{r vector}
 \usage{
-r.vector(growth, carry.cap, move.const, linpoint, smesh, tmesh)
+r.vector(growth, carry.cap, move.const, linpoint, grad)
 }
 \description{
-r vector
+For internal use only
 }

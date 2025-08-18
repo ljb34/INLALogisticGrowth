@@ -7,5 +7,5 @@
 L.matrix(growth, carry.cap, move.const, step.size, linpoint, smesh, tmesh)
 }
 \description{
-L matrix
+For internal use only
 }

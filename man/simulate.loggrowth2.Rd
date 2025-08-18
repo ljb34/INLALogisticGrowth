@@ -2,7 +2,7 @@
 % Please edit documentation in R/get precision matrix.R
 \name{simulate.loggrowth2}
 \alias{simulate.loggrowth2}
-\title{Functions for simulating growth}
+\title{Function for simulating logistic growth data}
 \usage{
 \method{simulate}{loggrowth2}(
   growth,
@@ -18,6 +18,27 @@
   boundaries = c(0, 1)
 )
 }
+\arguments{
+\item{growth, k, movement, sigma}{parameters for spatial logistic growth model}
+
+\item{initial}{starting population size}
+
+\item{timesteps}{Number of years to simulate}
+
+\item{npoints}{For \code{sample.type="Gaussian"} only. Number of points to sample.}
+
+\item{obs.sd}{For \code{sample.type="Gaussian"} only. Standard deviation of observation process}
+
+\item{sample.type}{One of "LGCP" or "Gaussian". Default LGCP}
+
+\item{ncores}{Optional. Number of cores to use if running in parallel.}
+
+\item{boundaries}{Lower and upper limit of each side of the square. Defaults to sides of length 1}
+}
+\value{
+List containing underlying field (animal), observations (animal_obs), and 
+field defined on mesh nodes for debugging purposes (animal_field).
+}
 \description{
-Functions for simulating growth
+Simulates observations and underlying field for spatial logistic growth in a square area.
 }

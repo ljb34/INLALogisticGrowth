@@ -17,12 +17,13 @@ gradient_of_linpoint <- function(linpoint,smesh, tmesh){
       if(abs(Matrix::det(diffmat))<=.Machine$double.eps){ # if both nearest neighbours are exactly horizontal or both vertical from point, then go to 
         #1st and 3rd near neighbours
         j <-3
-        while(min(abs(c(coords[near.neighbours[1,i],1]-coords[near.neighbours[j,i],1],
-                        coords[near.neighbours[1,i],2]-coords[near.neighbours[j,i],2]))) < .Machine$double.eps |
-              coords[near.neighbours[1,i],1]%%coords[near.neighbours[j,i],1] == coords[near.neighbours[1,i],2]%%coords[near.neighbours[j,i],2]){
+        while(abs(det(matrix(c(1,1,1,
+                               coords[near.neighbours[1,i],1], coords[near.neighbours[j,i],1], coords[i,1],
+                               coords[near.neighbours[1,i],2], coords[near.neighbours[j,i],2], coords[i,2]), nrow = 3, byrow = T))) < .Machine$double.eps){
           j <- j+1
           if(j == 9){
             warning(paste("Mesh behaving strangely. All nearest points to point", i, "lie on a straight line."))
+            browser()
             break
           }
         }

@@ -7,5 +7,5 @@
 a.func(growth, carry.cap, linpoint)
 }
 \description{
-a helper function
+For internal use only
 }

@@ -1,9 +1,18 @@
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <strings.h>
 #include "cgeneric.h"
 #define Calloc(n_, type_) (type_ *)calloc((n_), sizeof(type_))
+#if !defined(iszero)
+#ifdef __SUPPORT_SNAN__
+#define iszero(x) (fpclassify(x) == FP_ZERO)
+#else
+#define iszero(x) (((__typeof(x))(x)) == 0)
+#endif
+#endif
+
 extern void dgesv_(int* n, int* nrhs, double* A, int* lda,
 	int* ipiv, double* B, int* ldb, int* info);
 
@@ -59,7 +68,7 @@ void r_vector(double growth, double carry_cap, double move_const,
         for (int t = 0; t < nt; t++) {
             int idx = t * ns + i;
             //mag_grad_sq = grad[2 * idx] * grad[2 * idx] + grad[2 * idx + 1] * grad[2 * idx + 1];
-            lp = linpoint[idx];
+            double lp = linpoint[idx];
             result[idx] = growth * exp(lp) * (lp - 1) / carry_cap + growth - move_const * mag_grad_sq[idx];
         }
     }
@@ -94,54 +103,68 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 
     //Pre calculated information
     assert(!strcasecmp(data->doubles[0]->name, "step_size"));
-    double step_size = data->doubles[0];
+    double step_size = data->doubles[0]->doubles[0];
     assert(step_size > 0);
 
     assert(!strcasecmp(data->doubles[1]->name, "linpoint"));
     inla_cgeneric_vec_tp* linpoint = data->doubles[1];
     assert(linpoint->len == ns * nt);
 
-    assert(!strcasecmp(data->doubles[2]->name, "CinvG"));
+    /*assert(!strcasecmp(data->doubles[2]->name, "CinvG"));
     inla_cgeneric_mat_tp* CinvG = data->doubles[2];
     assert(CinvG->nrow == ns);
 
     assert(!strcasecmp(data->doubles[3]->name, "prior_variance"));
     inla_cgeneric_mat_tp* prior_variance = data->doubles[3];
-    assert(prior_variance->nrow == ns);
+    assert(prior_variance->nrow == ns);*/ //matrices not doubles
 
-    assert(!strcasecmp(data->doubles[4]->name, "mag_grad_sq"));
-    inla_cgeneric_vec_tp* mag_grad_sq = data->doubles[4];
+    assert(!strcasecmp(data->doubles[2]->name, "mag_grad_sq"));
+    inla_cgeneric_vec_tp* mag_grad_sq = data->doubles[2];
     assert(mag_grad_sq->len == ns * nt);
 
-    assert(!strcasecmp(data->doubles[5]->name, "prior_mean"));
-    inla_cgeneric_vec_tp* prior_mean = data->doubles[5];
+    assert(!strcasecmp(data->doubles[3]->name, "prior_mean"));
+    inla_cgeneric_vec_tp* prior_mean = data->doubles[3];
     assert(prior_mean->len == ns);
 
     //initial values
-    assert(!strcasecmp(data->doubles[6]->name, "initial_growth"));
-    double initial_growth = data->doubles[6];
+    assert(!strcasecmp(data->doubles[4]->name, "initial_growth"));
+    double initial_growth = data->doubles[4]->doubles[0];
 
-    assert(!strcasecmp(data->doubles[7]->name, "initial_carry_cap"));
-    double initial_carry_cap = data->doubles[7];
+    assert(!strcasecmp(data->doubles[5]->name, "initial_carry_cap"));
+    double initial_carry_cap = data->doubles[5]->doubles[0];
 
-    assert(!strcasecmp(data->doubles[8]->name, "initial_move_const"));
-    double initial_move_const = data->doubles[8];
+    assert(!strcasecmp(data->doubles[6]->name, "initial_move_const"));
+    double initial_move_const = data->doubles[6]->doubles[0];
 
-    assert(!strcasecmp(data->doubles[9]->name, "initial_sigma"));
-    double initial_sigma = data->doubles[9];
+    assert(!strcasecmp(data->doubles[7]->name, "initial_sigma"));
+    double initial_sigma = data->doubles[7]->doubles[0];
+
+
 
     //prior paramters
-    assert(!strcasecmp(data->doubles[10]->name, "pgrowth"));
-    double pgrowth = data->doubles[10];
+    assert(!strcasecmp(data->doubles[8]->name, "pgrowth"));
+    inla_cgeneric_vec_tp* pgrowth = data->doubles[8];
+    assert(pgrowth->len == 2);
 
-    assert(!strcasecmp(data->doubles[11]->name, "pcc"));
-    double pcc = data->doubles[11];
+    assert(!strcasecmp(data->doubles[9]->name, "pcc"));
+    inla_cgeneric_vec_tp* pcc = data->doubles[9];
+    assert(pcc->len == 2);
 
-    assert(!strcasecmp(data->doubles[12]->name, "pmove"));
-    double pmove = data->doubles[12];
+    assert(!strcasecmp(data->doubles[10]->name, "pmove"));
+    inla_cgeneric_vec_tp* pmove = data->doubles[10];
+    assert(pmove->len == 2);
 
-    assert(!strcasecmp(data->doubles[13]->name, "psigma"));
-    double psigma = data->doubles[13];
+    assert(!strcasecmp(data->doubles[11]->name, "psigma"));
+    inla_cgeneric_vec_tp* psigma = data->doubles[11];
+    assert(psigma->len == 2);
+
+    assert(!strcasecmp(data->mats[0]->name, "CinvG"));
+    inla_cgeneric_mat_tp* CinvG = data->mats[0];
+    assert(CinvG->nrow == ns);
+
+    assert(!strcasecmp(data->mats[1]->name, "prior_variance"));
+    inla_cgeneric_mat_tp* prior_variance = data->mats[1];
+    assert(prior_variance->nrow == ns); 
 
     //different outputs for the commands supplied
     switch (cmd) { 
@@ -184,7 +207,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         L_mat->x = calloc(N * N, sizeof(double));
         L_mat->nrow = N;
         L_mat->ncol = N;
-        Lmat(growth, carry_cap, move_const, step_size, linpoint, ns, nt, CinvG, L_mat->x);
+        Lmat(growth, carry_cap, move_const, step_size, linpoint->doubles, ns, nt, CinvG, L_mat->x);
 
         //print L_mat
         /*for (int ii = 0; ii < N; ii++) {
@@ -202,7 +225,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         //initial year variance
         for (int i = 0; i < ns; i++) {
             for (int j = 0; j < ns; j++) {
-                noise->x[i * N + j] = prior_variance[i * N + j];
+                noise->x[i * N + j] = prior_variance->x[i * N + j];
             }
         }
 
@@ -287,14 +310,14 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         L_mat->x = calloc(N * N, sizeof(double));
         L_mat->nrow = N;
         L_mat->ncol = N;
-        Lmat(growth, carry_cap, move_const, step_size, linpoint, ns, nt, CinvG, L_mat->x);
+        Lmat(growth, carry_cap, move_const, step_size, linpoint->doubles, ns, nt, CinvG, L_mat->x);
 
         inla_cgeneric_vec_tp* rvector = malloc(sizeof(inla_cgeneric_vec_tp));
         rvector->doubles = calloc(N, sizeof(double));
         rvector->len = N;
-        r_vector(growth, carry_cap, move_const, linpoint, mag_grad_sq, ns, nt, rvector->doubles);
+        r_vector(growth, carry_cap, move_const, linpoint->doubles, mag_grad_sq->doubles, ns, nt, rvector->doubles);
         for (int i = 0; i < ns; i++) {
-            rvector->doubles[i] = prior_mean[i];
+            rvector->doubles[i] = prior_mean->doubles[i];
         }
 
         //calculate L_mat^-1 * rvector
@@ -335,13 +358,13 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         free(rvector->doubles);
         free(rvector);
     }
-    break:
+    break;
 
     case INLA_CGENERIC_INITIAL:
     {
         // return c(P, initials)
         // where P is the number of hyperparameters
-        ret = calloc(5, double);
+        ret = Calloc(5, double);
         ret[0] = 4;
 
         if (iszero(initial_growth)) {
@@ -378,7 +401,10 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         // return c(LOG_PRIOR)
         double* ret = Calloc(1, double);
 
-        ret[0] = normal_pdf_log(growth, pgrowth[0], pgrowth[1]) + normal_pdf_log(theta[1], pcc[0], pcc[1]) + normal_pdf_log(move_const, pmove[0], pmove[1]) + normal_pdf_log(theta[3], psigma[0],psigma[1]);
+        ret[0] = normal_pdf_log(growth, pgrowth->doubles[0], pgrowth->doubles[1]) +
+            normal_pdf_log(theta[1], pcc->doubles[0], pcc->doubles[1]) + 
+            normal_pdf_log(move_const, pmove->doubles[0], pmove->doubles[1]) + 
+            normal_pdf_log(theta[3], psigma->doubles[0],psigma->doubles[1]);
     }
     break;
 
@@ -387,5 +413,5 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     default:
         break;
     }
-    return(ret)
+    return(ret);
 }

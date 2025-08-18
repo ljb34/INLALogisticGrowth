@@ -13,3 +13,6 @@ Imports:
 Depends: 
     INLA,
     inlabru
+Encoding: UTF-8
+LazyData: true
+NeedsCompilation: yes

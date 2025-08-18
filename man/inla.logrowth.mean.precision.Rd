@@ -2,10 +2,18 @@
 % Please edit documentation in R/get precision matrix.R
 \name{inla.logrowth.mean.precision}
 \alias{inla.logrowth.mean.precision}
-\title{Get precision matrix}
+\title{Get mean and precision matrices}
 \usage{
 inla.logrowth.mean.precision(smesh, tmesh, theta, initial)
 }
+\arguments{
+\item{smesh, tmesh}{meshes over space and time respectively}
+
+\item{theta}{vector containing growth paramaeter, log carrying capacity, movement constant and log sigma}
+
+\item{initial}{mean initial population size}
+}
 \description{
-Get precision matrix
+Calculates the mean and precision for the logistic growth model for a given
+initial population and parameters
 }
