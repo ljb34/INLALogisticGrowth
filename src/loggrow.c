@@ -201,7 +201,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     {
         // return c(-1, M, Qij) in the same order as defined in INLA_CGENERIC_GRAPH
         int M = N;
-        ret = Calloc(2 + N * N, double);
+        ret = Calloc(2 + N * (N+1)/2, double);
 
         inla_cgeneric_mat_tp* L_mat = malloc(sizeof(inla_cgeneric_mat_tp));
         L_mat->x = calloc(N * N, sizeof(double));
