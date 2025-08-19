@@ -323,7 +323,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     case INLA_CGENERIC_MU:
     {
         // return (N, mu)
-
+		printf("INLA_CGENERIC_MU\n");
         double* ret = Calloc(1 + N, double);
         assert(ret);
         ret[0] = N; /* dimension */
@@ -386,6 +386,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     {
         // return c(P, initials)
         // where P is the number of hyperparameters
+		printf("INLA_CGENERIC_INITIAL\n");
         ret = Calloc(5, double);
         ret[0] = 4;
 
@@ -421,6 +422,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     case INLA_CGENERIC_LOG_PRIOR:
     {
         // return c(LOG_PRIOR)
+		printf("INLA_CGENERIC_LOG_PRIOR\n");
         double* ret = Calloc(1, double);
 
         ret[0] = normal_pdf_log(growth, pgrowth->doubles[0], pgrowth->doubles[1]) +
