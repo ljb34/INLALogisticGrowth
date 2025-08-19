@@ -71,8 +71,8 @@ MAX_THREADS...[10]
 Report issues/bugs to <help@r-inla.org>
 
 cwd[C:\Users\2966362B\OneDrive - University of Glasgow\Documents\GitHub\INLAlogrowth-package\inst\Tests]
-Process file/directory[C:\Users\2966362B\AppData\Local\Temp\RtmpWoRZw7\file63a81c1f203a/Model.ini] model[0/1/] threads[10] max.threads[12] blas_threads_force[0] nested[10:1]
-Run with model[C:\Users\2966362B\AppData\Local\Temp\RtmpWoRZw7\file63a81c1f203a/Model.ini]
+Process file/directory[C:\Users\2966362B\AppData\Local\Temp\Rtmpkvq5lz\file7fe8605c6ff5/Model.ini] model[0/1/] threads[10] max.threads[12] blas_threads_force[0] nested[10:1]
+Run with model[C:\Users\2966362B\AppData\Local\Temp\Rtmpkvq5lz\file7fe8605c6ff5/Model.ini]
 inla_build...
 	number of sections=[12]
 	parse section=[11] name=[INLA.numa] type=[NUMA]
@@ -131,7 +131,7 @@ inla_build...
 		pardiso-library installed and working? = [no]
 		smtp = [taucs]
 		strategy = [default]
-		store results in directory=[C:\Users\2966362B\AppData\Local\Temp\RtmpWoRZw7\file63a81c1f203a/results.files-0000000000]
+		store results in directory=[C:\Users\2966362B\AppData\Local\Temp\Rtmpkvq5lz\file7fe8605c6ff5/results.files-0000000000]
 		output:
 			gcpo=[0]
 				num.level.sets=[-1]
@@ -177,32 +177,32 @@ inla_build...
 		m=[568]
 		ndata=[568]
 		compute=[1]
-		read offsets from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a865f97965]
-		read n=[2008] entries from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a865f97965]
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a865f97965] 0/1004  (idx,y) = (0, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a865f97965] 1/1004  (idx,y) = (1, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a865f97965] 2/1004  (idx,y) = (2, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a865f97965] 3/1004  (idx,y) = (3, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a865f97965] 4/1004  (idx,y) = (4, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a865f97965] 5/1004  (idx,y) = (5, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a865f97965] 6/1004  (idx,y) = (6, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a865f97965] 7/1004  (idx,y) = (7, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a865f97965] 8/1004  (idx,y) = (8, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a865f97965] 9/1004  (idx,y) = (9, 0)
-		read link.fitted.values from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a82f2a2eec]
-		read n=[2008] entries from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a82f2a2eec]
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a82f2a2eec] 0/1004  (idx,y) = (0, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a82f2a2eec] 1/1004  (idx,y) = (1, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a82f2a2eec] 2/1004  (idx,y) = (2, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a82f2a2eec] 3/1004  (idx,y) = (3, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a82f2a2eec] 4/1004  (idx,y) = (4, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a82f2a2eec] 5/1004  (idx,y) = (5, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a82f2a2eec] 6/1004  (idx,y) = (6, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a82f2a2eec] 7/1004  (idx,y) = (7, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a82f2a2eec] 8/1004  (idx,y) = (8, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a82f2a2eec] 9/1004  (idx,y) = (9, 0)
-		A=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a838e679ea]
-		Aext=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a869f450c5]
+		read offsets from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8623be6]
+		read n=[2008] entries from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8623be6]
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8623be6] 0/1004  (idx,y) = (0, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8623be6] 1/1004  (idx,y) = (1, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8623be6] 2/1004  (idx,y) = (2, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8623be6] 3/1004  (idx,y) = (3, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8623be6] 4/1004  (idx,y) = (4, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8623be6] 5/1004  (idx,y) = (5, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8623be6] 6/1004  (idx,y) = (6, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8623be6] 7/1004  (idx,y) = (7, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8623be6] 8/1004  (idx,y) = (8, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8623be6] 9/1004  (idx,y) = (9, 0)
+		read link.fitted.values from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8c65fbf]
+		read n=[2008] entries from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8c65fbf]
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8c65fbf] 0/1004  (idx,y) = (0, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8c65fbf] 1/1004  (idx,y) = (1, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8c65fbf] 2/1004  (idx,y) = (2, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8c65fbf] 3/1004  (idx,y) = (3, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8c65fbf] 4/1004  (idx,y) = (4, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8c65fbf] 5/1004  (idx,y) = (5, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8c65fbf] 6/1004  (idx,y) = (6, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8c65fbf] 7/1004  (idx,y) = (7, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8c65fbf] 8/1004  (idx,y) = (8, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8c65fbf] 9/1004  (idx,y) = (9, 0)
+		A=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe88a120dd]
+		Aext=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe86c70360e]
 		AextPrecision=[3.269e+06]
 		output:
 			summary=[1]
@@ -215,12 +215,12 @@ inla_build...
 		tag=[INLA.Data1]
 		family=[POISSON]
 		likelihood=[POISSON]
-		file->name=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a835b3259a]
-		file->name=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a843de625b]
-		file->name=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a824f56303]
-		file->name=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a81174412a]
-		read n=[1704] entries from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a835b3259a]
-			0/568  (idx,a,y,d) = (0, 0, 31, 1)
+		file->name=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe848e85d87]
+		file->name=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe85d3811ab]
+		file->name=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe869439d2]
+		file->name=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe8552a35d8]
+		read n=[1704] entries from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe848e85d87]
+			0/568  (idx,a,y,d) = (0, 0, 32, 1)
 			1/568  (idx,a,y,d) = (1, 0.000434028, 0, 1)
 			2/568  (idx,a,y,d) = (2, 0.000434028, 0, 1)
 			3/568  (idx,a,y,d) = (3, 0.000434028, 0, 1)
@@ -251,19 +251,19 @@ inla_build...
 		nrep=[1]
 		ngroup=[1]
 		Alocal=[no]
-		read covariates from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a83f4c4722]
-		read n=[872] entries from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a83f4c4722]
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a83f4c4722] 0/436  (idx,y) = (0, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a83f4c4722] 1/436  (idx,y) = (1, 1)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a83f4c4722] 2/436  (idx,y) = (2, 2)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a83f4c4722] 3/436  (idx,y) = (3, 3)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a83f4c4722] 4/436  (idx,y) = (4, 4)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a83f4c4722] 5/436  (idx,y) = (5, 5)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a83f4c4722] 6/436  (idx,y) = (6, 6)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a83f4c4722] 7/436  (idx,y) = (7, 7)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a83f4c4722] 8/436  (idx,y) = (8, 8)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a83f4c4722] 9/436  (idx,y) = (9, 9)
-		file for locations=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a81c1f203a/data.files/file63a846fa3612]
+		read covariates from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe845603d1e]
+		read n=[872] entries from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe845603d1e]
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe845603d1e] 0/436  (idx,y) = (0, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe845603d1e] 1/436  (idx,y) = (1, 1)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe845603d1e] 2/436  (idx,y) = (2, 2)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe845603d1e] 3/436  (idx,y) = (3, 3)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe845603d1e] 4/436  (idx,y) = (4, 4)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe845603d1e] 5/436  (idx,y) = (5, 5)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe845603d1e] 6/436  (idx,y) = (6, 6)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe845603d1e] 7/436  (idx,y) = (7, 7)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe845603d1e] 8/436  (idx,y) = (8, 8)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe845603d1e] 9/436  (idx,y) = (9, 9)
+		file for locations=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe8605c6ff5/data.files/file7fe858a3254c]
 			nlocations=[436]
 			locations[0]=[1]
 			locations[1]=[2]
@@ -289,993 +289,993 @@ inla_build...
 		name[step_size] length[1] type[DOUBLE]
 			idx=0 1
 		name[linpoint] length[436] type[DOUBLE]
-			idx=0 1.50697
-			idx=1 1.50828
-			idx=2 1.50822
-			idx=3 1.50692
-			idx=4 1.50786
-			idx=5 1.50914
-			idx=6 1.50736
-			idx=7 1.50664
-			idx=8 1.50668
-			idx=9 1.50937
-			idx=10 1.50889
-			idx=11 1.50692
-			idx=12 1.50834
-			idx=13 1.50792
-			idx=14 1.50669
-			idx=15 1.50704
-			idx=16 1.50737
-			idx=17 1.50875
-			idx=18 1.50767
-			idx=19 1.50669
-			idx=20 1.50847
-			idx=21 1.50841
-			idx=22 1.50687
-			idx=23 1.50681
-			idx=24 1.50894
-			idx=25 1.50929
-			idx=26 1.50715
-			idx=27 1.50669
-			idx=28 1.50693
-			idx=29 1.5082
-			idx=30 1.50809
-			idx=31 1.50677
-			idx=32 1.50943
-			idx=33 1.50821
-			idx=34 1.51057
-			idx=35 1.50677
-			idx=36 1.50665
-			idx=37 1.50746
-			idx=38 1.51061
-			idx=39 1.50769
-			idx=40 1.50684
-			idx=41 1.50884
-			idx=42 1.51138
-			idx=43 1.50696
-			idx=44 1.50651
-			idx=45 1.50664
-			idx=46 1.50814
-			idx=47 1.5085
-			idx=48 1.50662
-			idx=49 1.50941
-			idx=50 1.50898
-			idx=51 1.5078
-			idx=52 1.50816
-			idx=53 1.50658
-			idx=54 1.50721
-			idx=55 1.50703
-			idx=56 1.50822
-			idx=57 1.50807
-			idx=58 1.51137
-			idx=59 1.50733
-			idx=60 1.50674
-			idx=61 1.50652
-			idx=62 1.50851
-			idx=63 1.51
-			idx=64 1.50673
-			idx=65 1.5084
-			idx=66 1.50912
-			idx=67 1.50851
-			idx=68 1.50841
-			idx=69 1.5066
-			idx=70 1.50779
-			idx=71 1.50678
-			idx=72 1.50796
-			idx=73 1.50656
-			idx=74 1.5077
-			idx=75 1.51053
-			idx=76 1.50735
-			idx=77 1.50894
-			idx=78 1.50858
-			idx=79 1.50701
-			idx=80 1.50702
-			idx=81 1.50705
-			idx=82 1.50701
-			idx=83 1.50703
-			idx=84 1.50704
-			idx=85 1.50705
-			idx=86 1.50821
-			idx=87 1.50825
-			idx=88 1.50828
-			idx=89 1.50832
-			idx=90 1.50832
-			idx=91 1.50832
-			idx=92 1.50833
-			idx=93 1.50833
-			idx=94 1.50711
-			idx=95 1.50709
-			idx=96 1.50707
-			idx=97 1.50793
-			idx=98 1.50687
-			idx=99 1.50753
-			idx=100 1.50879
-			idx=101 1.50841
-			idx=102 1.50692
-			idx=103 1.50854
-			idx=104 1.50729
-			idx=105 1.50716
-			idx=106 1.50691
-			idx=107 1.50796
-			idx=108 1.50864
-			idx=109 1.90581
-			idx=110 1.90659
-			idx=111 1.90656
-			idx=112 1.90578
-			idx=113 1.90635
-			idx=114 1.90711
-			idx=115 1.90604
-			idx=116 1.90561
-			idx=117 1.90564
-			idx=118 1.90725
-			idx=119 1.90696
-			idx=120 1.90578
-			idx=121 1.90663
-			idx=122 1.90638
-			idx=123 1.90564
-			idx=124 1.90585
-			idx=125 1.90605
-			idx=126 1.90688
-			idx=127 1.90623
-			idx=128 1.90564
-			idx=129 1.90671
-			idx=130 1.90667
-			idx=131 1.90575
-			idx=132 1.90572
-			idx=133 1.90699
-			idx=134 1.9072
-			idx=135 1.90592
-			idx=136 1.90565
-			idx=137 1.90579
-			idx=138 1.90655
-			idx=139 1.90648
-			idx=140 1.90569
-			idx=141 1.90728
-			idx=142 1.90656
-			idx=143 1.90796
-			idx=144 1.90569
-			idx=145 1.90562
-			idx=146 1.9061
-			idx=147 1.90799
-			idx=148 1.90624
-			idx=149 1.90573
-			idx=150 1.90693
-			idx=151 1.90845
-			idx=152 1.90581
-			idx=153 1.90553
-			idx=154 1.90561
-			idx=155 1.90651
-			idx=156 1.90673
-			idx=157 1.9056
-			idx=158 1.90727
-			idx=159 1.90702
-			idx=160 1.90631
-			idx=161 1.90653
-			idx=162 1.90558
-			idx=163 1.90596
-			idx=164 1.90585
-			idx=165 1.90656
-			idx=166 1.90647
-			idx=167 1.90844
-			idx=168 1.90603
-			idx=169 1.90567
-			idx=170 1.90554
-			idx=171 1.90673
-			idx=172 1.90762
-			idx=173 1.90567
-			idx=174 1.90667
-			idx=175 1.9071
-			idx=176 1.90673
-			idx=177 1.90668
-			idx=178 1.90559
-			idx=179 1.9063
-			idx=180 1.9057
-			idx=181 1.9064
-			idx=182 1.90556
-			idx=183 1.90625
-			idx=184 1.90794
-			idx=185 1.90604
-			idx=186 1.90699
-			idx=187 1.90677
-			idx=188 1.90583
-			idx=189 1.90584
-			idx=190 1.90586
-			idx=191 1.90584
-			idx=192 1.90584
-			idx=193 1.90585
-			idx=194 1.90586
-			idx=195 1.90655
-			idx=196 1.90658
-			idx=197 1.9066
-			idx=198 1.90662
-			idx=199 1.90662
-			idx=200 1.90662
-			idx=201 1.90662
-			idx=202 1.90663
-			idx=203 1.9059
-			idx=204 1.90588
-			idx=205 1.90587
-			idx=206 1.90638
-			idx=207 1.90575
-			idx=208 1.90615
-			idx=209 1.9069
-			idx=210 1.90668
-			idx=211 1.90578
-			idx=212 1.90675
-			idx=213 1.906
-			idx=214 1.90592
-			idx=215 1.90578
-			idx=216 1.9064
-			idx=217 1.90681
-			idx=218 2.10804
-			idx=219 2.10836
-			idx=220 2.10835
-			idx=221 2.10803
-			idx=222 2.10826
-			idx=223 2.10857
-			idx=224 2.10814
-			idx=225 2.10797
-			idx=226 2.10798
-			idx=227 2.10862
-			idx=228 2.10851
-			idx=229 2.10803
-			idx=230 2.10838
-			idx=231 2.10827
-			idx=232 2.10798
-			idx=233 2.10806
-			idx=234 2.10814
-			idx=235 2.10847
-			idx=236 2.10822
-			idx=237 2.10798
-			idx=238 2.10841
-			idx=239 2.10839
-			idx=240 2.10802
-			idx=241 2.10801
-			idx=242 2.10852
-			idx=243 2.1086
-			idx=244 2.10809
-			idx=245 2.10798
-			idx=246 2.10804
-			idx=247 2.10834
-			idx=248 2.10831
-			idx=249 2.108
-			idx=250 2.10864
-			idx=251 2.10834
-			idx=252 2.10891
-			idx=253 2.108
-			idx=254 2.10797
-			idx=255 2.10816
-			idx=256 2.10892
-			idx=257 2.10822
-			idx=258 2.10801
-			idx=259 2.1085
-			idx=260 2.1091
-			idx=261 2.10804
-			idx=262 2.10793
-			idx=263 2.10797
-			idx=264 2.10833
-			idx=265 2.10841
-			idx=266 2.10796
-			idx=267 2.10863
-			idx=268 2.10853
-			idx=269 2.10825
-			idx=270 2.10833
-			idx=271 2.10795
-			idx=272 2.1081
-			idx=273 2.10806
-			idx=274 2.10835
-			idx=275 2.10831
-			idx=276 2.1091
-			idx=277 2.10813
-			idx=278 2.10799
-			idx=279 2.10794
-			idx=280 2.10842
-			idx=281 2.10877
-			idx=282 2.10799
-			idx=283 2.10839
-			idx=284 2.10856
-			idx=285 2.10842
-			idx=286 2.10839
-			idx=287 2.10796
-			idx=288 2.10824
-			idx=289 2.108
-			idx=290 2.10828
-			idx=291 2.10795
-			idx=292 2.10822
-			idx=293 2.1089
-			idx=294 2.10814
-			idx=295 2.10852
-			idx=296 2.10843
-			idx=297 2.10806
-			idx=298 2.10806
-			idx=299 2.10807
-			idx=300 2.10806
-			idx=301 2.10806
-			idx=302 2.10806
-			idx=303 2.10807
-			idx=304 2.10834
-			idx=305 2.10835
-			idx=306 2.10836
-			idx=307 2.10837
-			idx=308 2.10837
-			idx=309 2.10837
-			idx=310 2.10837
-			idx=311 2.10837
-			idx=312 2.10808
-			idx=313 2.10807
-			idx=314 2.10807
-			idx=315 2.10828
-			idx=316 2.10802
-			idx=317 2.10818
-			idx=318 2.10848
-			idx=319 2.10839
-			idx=320 2.10803
-			idx=321 2.10842
-			idx=322 2.10812
-			idx=323 2.10809
-			idx=324 2.10803
-			idx=325 2.10828
-			idx=326 2.10845
-			idx=327 2.1763
-			idx=328 2.17638
-			idx=329 2.17638
-			idx=330 2.1763
-			idx=331 2.17636
-			idx=332 2.17644
-			idx=333 2.17633
-			idx=334 2.17628
-			idx=335 2.17628
-			idx=336 2.17646
-			idx=337 2.17642
-			idx=338 2.1763
-			idx=339 2.17639
-			idx=340 2.17636
-			idx=341 2.17628
-			idx=342 2.1763
-			idx=343 2.17633
-			idx=344 2.17642
-			idx=345 2.17635
-			idx=346 2.17628
-			idx=347 2.1764
-			idx=348 2.17639
-			idx=349 2.17629
-			idx=350 2.17629
-			idx=351 2.17643
-			idx=352 2.17645
-			idx=353 2.17631
-			idx=354 2.17628
-			idx=355 2.1763
-			idx=356 2.17638
-			idx=357 2.17637
-			idx=358 2.17629
-			idx=359 2.17646
-			idx=360 2.17638
-			idx=361 2.17653
-			idx=362 2.17629
-			idx=363 2.17628
-			idx=364 2.17633
-			idx=365 2.17653
-			idx=366 2.17635
-			idx=367 2.17629
-			idx=368 2.17642
-			idx=369 2.17658
-			idx=370 2.1763
-			idx=371 2.17627
-			idx=372 2.17628
-			idx=373 2.17638
-			idx=374 2.1764
-			idx=375 2.17628
-			idx=376 2.17646
-			idx=377 2.17643
-			idx=378 2.17635
-			idx=379 2.17638
-			idx=380 2.17627
-			idx=381 2.17632
-			idx=382 2.1763
-			idx=383 2.17638
-			idx=384 2.17637
-			idx=385 2.17658
-			idx=386 2.17632
-			idx=387 2.17629
-			idx=388 2.17627
-			idx=389 2.1764
-			idx=390 2.1765
-			idx=391 2.17628
-			idx=392 2.17639
-			idx=393 2.17644
-			idx=394 2.1764
-			idx=395 2.17639
-			idx=396 2.17628
-			idx=397 2.17635
-			idx=398 2.17629
-			idx=399 2.17636
-			idx=400 2.17627
-			idx=401 2.17635
-			idx=402 2.17653
-			idx=403 2.17632
-			idx=404 2.17643
-			idx=405 2.1764
-			idx=406 2.1763
-			idx=407 2.1763
-			idx=408 2.17631
-			idx=409 2.1763
-			idx=410 2.1763
-			idx=411 2.1763
-			idx=412 2.17631
-			idx=413 2.17638
-			idx=414 2.17638
-			idx=415 2.17638
-			idx=416 2.17639
-			idx=417 2.17639
-			idx=418 2.17639
-			idx=419 2.17639
-			idx=420 2.17639
-			idx=421 2.17631
-			idx=422 2.17631
-			idx=423 2.17631
-			idx=424 2.17636
-			idx=425 2.17629
-			idx=426 2.17634
-			idx=427 2.17642
-			idx=428 2.17639
-			idx=429 2.1763
-			idx=430 2.1764
-			idx=431 2.17632
-			idx=432 2.17631
-			idx=433 2.1763
-			idx=434 2.17636
-			idx=435 2.17641
+			idx=0 0.930178
+			idx=1 0.930112
+			idx=2 0.93011
+			idx=3 0.930489
+			idx=4 0.930037
+			idx=5 0.930185
+			idx=6 0.930247
+			idx=7 0.930743
+			idx=8 0.930251
+			idx=9 0.930068
+			idx=10 0.930019
+			idx=11 0.930395
+			idx=12 0.930116
+			idx=13 0.93004
+			idx=14 0.930773
+			idx=15 0.930035
+			idx=16 0.930041
+			idx=17 0.930193
+			idx=18 0.930157
+			idx=19 0.931022
+			idx=20 0.930063
+			idx=21 0.930047
+			idx=22 0.930422
+			idx=23 0.930174
+			idx=24 0.930096
+			idx=25 0.930105
+			idx=26 0.930357
+			idx=27 0.930472
+			idx=28 0.930073
+			idx=29 0.93008
+			idx=30 0.930056
+			idx=31 0.930542
+			idx=32 0.931849
+			idx=33 0.930492
+			idx=34 0.930091
+			idx=35 0.931418
+			idx=36 0.930203
+			idx=37 0.93044
+			idx=38 0.93136
+			idx=39 0.930888
+			idx=40 0.931896
+			idx=41 0.930179
+			idx=42 0.930151
+			idx=43 0.930509
+			idx=44 0.930514
+			idx=45 0.930021
+			idx=46 0.929974
+			idx=47 0.929941
+			idx=48 0.930562
+			idx=49 0.930364
+			idx=50 0.930949
+			idx=51 0.930126
+			idx=52 0.933564
+			idx=53 0.932428
+			idx=54 0.930866
+			idx=55 0.929982
+			idx=56 0.932672
+			idx=57 0.930867
+			idx=58 0.930524
+			idx=59 0.931502
+			idx=60 0.930782
+			idx=61 0.930154
+			idx=62 0.930119
+			idx=63 0.929999
+			idx=64 0.93061
+			idx=65 0.930172
+			idx=66 0.931636
+			idx=67 0.929973
+			idx=68 0.93209
+			idx=69 0.931205
+			idx=70 0.931914
+			idx=71 0.930012
+			idx=72 0.931374
+			idx=73 0.931279
+			idx=74 0.930102
+			idx=75 0.930449
+			idx=76 0.930346
+			idx=77 0.931426
+			idx=78 0.930444
+			idx=79 0.933274
+			idx=80 0.93031
+			idx=81 0.930284
+			idx=82 0.930553
+			idx=83 0.930542
+			idx=84 0.93053
+			idx=85 0.930517
+			idx=86 0.9302
+			idx=87 0.930194
+			idx=88 0.930191
+			idx=89 0.930193
+			idx=90 0.930199
+			idx=91 0.930194
+			idx=92 0.930193
+			idx=93 0.930194
+			idx=94 0.930251
+			idx=95 0.930261
+			idx=96 0.930271
+			idx=97 0.930171
+			idx=98 0.930651
+			idx=99 0.930334
+			idx=100 0.930232
+			idx=101 0.930208
+			idx=102 0.930371
+			idx=103 0.930176
+			idx=104 0.93018
+			idx=105 0.930447
+			idx=106 0.930673
+			idx=107 0.930203
+			idx=108 0.93017
+			idx=109 1.39218
+			idx=110 1.39214
+			idx=111 1.39214
+			idx=112 1.39239
+			idx=113 1.39209
+			idx=114 1.39219
+			idx=115 1.39223
+			idx=116 1.39256
+			idx=117 1.39223
+			idx=118 1.39211
+			idx=119 1.39208
+			idx=120 1.39233
+			idx=121 1.39214
+			idx=122 1.39209
+			idx=123 1.39258
+			idx=124 1.39209
+			idx=125 1.39209
+			idx=126 1.39219
+			idx=127 1.39217
+			idx=128 1.39274
+			idx=129 1.39211
+			idx=130 1.3921
+			idx=131 1.39234
+			idx=132 1.39218
+			idx=133 1.39213
+			idx=134 1.39213
+			idx=135 1.3923
+			idx=136 1.39238
+			idx=137 1.39211
+			idx=138 1.39212
+			idx=139 1.3921
+			idx=140 1.39242
+			idx=141 1.39329
+			idx=142 1.39239
+			idx=143 1.39213
+			idx=144 1.393
+			idx=145 1.3922
+			idx=146 1.39236
+			idx=147 1.39297
+			idx=148 1.39265
+			idx=149 1.39332
+			idx=150 1.39218
+			idx=151 1.39217
+			idx=152 1.3924
+			idx=153 1.39241
+			idx=154 1.39208
+			idx=155 1.39205
+			idx=156 1.39203
+			idx=157 1.39244
+			idx=158 1.39231
+			idx=159 1.39269
+			idx=160 1.39215
+			idx=161 1.39442
+			idx=162 1.39367
+			idx=163 1.39264
+			idx=164 1.39205
+			idx=165 1.39383
+			idx=166 1.39264
+			idx=167 1.39241
+			idx=168 1.39306
+			idx=169 1.39258
+			idx=170 1.39217
+			idx=171 1.39214
+			idx=172 1.39206
+			idx=173 1.39247
+			idx=174 1.39218
+			idx=175 1.39315
+			idx=176 1.39205
+			idx=177 1.39345
+			idx=178 1.39286
+			idx=179 1.39333
+			idx=180 1.39207
+			idx=181 1.39297
+			idx=182 1.39291
+			idx=183 1.39213
+			idx=184 1.39236
+			idx=185 1.39229
+			idx=186 1.39301
+			idx=187 1.39236
+			idx=188 1.39423
+			idx=189 1.39227
+			idx=190 1.39225
+			idx=191 1.39243
+			idx=192 1.39242
+			idx=193 1.39242
+			idx=194 1.39241
+			idx=195 1.3922
+			idx=196 1.39219
+			idx=197 1.39219
+			idx=198 1.39219
+			idx=199 1.3922
+			idx=200 1.39219
+			idx=201 1.39219
+			idx=202 1.39219
+			idx=203 1.39223
+			idx=204 1.39224
+			idx=205 1.39224
+			idx=206 1.39218
+			idx=207 1.3925
+			idx=208 1.39229
+			idx=209 1.39222
+			idx=210 1.3922
+			idx=211 1.39231
+			idx=212 1.39218
+			idx=213 1.39218
+			idx=214 1.39236
+			idx=215 1.39251
+			idx=216 1.3922
+			idx=217 1.39218
+			idx=218 1.6557
+			idx=219 1.65568
+			idx=220 1.65568
+			idx=221 1.6558
+			idx=222 1.65566
+			idx=223 1.6557
+			idx=224 1.65572
+			idx=225 1.65587
+			idx=226 1.65572
+			idx=227 1.65567
+			idx=228 1.65565
+			idx=229 1.65577
+			idx=230 1.65568
+			idx=231 1.65566
+			idx=232 1.65588
+			idx=233 1.65566
+			idx=234 1.65566
+			idx=235 1.6557
+			idx=236 1.65569
+			idx=237 1.65596
+			idx=238 1.65566
+			idx=239 1.65566
+			idx=240 1.65577
+			idx=241 1.6557
+			idx=242 1.65567
+			idx=243 1.65568
+			idx=244 1.65575
+			idx=245 1.65579
+			idx=246 1.65567
+			idx=247 1.65567
+			idx=248 1.65566
+			idx=249 1.65581
+			idx=250 1.65621
+			idx=251 1.6558
+			idx=252 1.65567
+			idx=253 1.65608
+			idx=254 1.65571
+			idx=255 1.65578
+			idx=256 1.65606
+			idx=257 1.65592
+			idx=258 1.65623
+			idx=259 1.6557
+			idx=260 1.65569
+			idx=261 1.6558
+			idx=262 1.6558
+			idx=263 1.65565
+			idx=264 1.65564
+			idx=265 1.65563
+			idx=266 1.65582
+			idx=267 1.65576
+			idx=268 1.65594
+			idx=269 1.65568
+			idx=270 1.65674
+			idx=271 1.65639
+			idx=272 1.65591
+			idx=273 1.65564
+			idx=274 1.65646
+			idx=275 1.65591
+			idx=276 1.65581
+			idx=277 1.65611
+			idx=278 1.65589
+			idx=279 1.65569
+			idx=280 1.65568
+			idx=281 1.65565
+			idx=282 1.65583
+			idx=283 1.6557
+			idx=284 1.65615
+			idx=285 1.65564
+			idx=286 1.65629
+			idx=287 1.65601
+			idx=288 1.65623
+			idx=289 1.65565
+			idx=290 1.65607
+			idx=291 1.65604
+			idx=292 1.65568
+			idx=293 1.65578
+			idx=294 1.65575
+			idx=295 1.65608
+			idx=296 1.65578
+			idx=297 1.65665
+			idx=298 1.65574
+			idx=299 1.65573
+			idx=300 1.65582
+			idx=301 1.65581
+			idx=302 1.65581
+			idx=303 1.6558
+			idx=304 1.65571
+			idx=305 1.6557
+			idx=306 1.6557
+			idx=307 1.6557
+			idx=308 1.65571
+			idx=309 1.6557
+			idx=310 1.6557
+			idx=311 1.6557
+			idx=312 1.65572
+			idx=313 1.65573
+			idx=314 1.65573
+			idx=315 1.6557
+			idx=316 1.65585
+			idx=317 1.65575
+			idx=318 1.65572
+			idx=319 1.65571
+			idx=320 1.65576
+			idx=321 1.6557
+			idx=322 1.6557
+			idx=323 1.65578
+			idx=324 1.65585
+			idx=325 1.65571
+			idx=326 1.6557
+			idx=327 1.75747
+			idx=328 1.75746
+			idx=329 1.75746
+			idx=330 1.7575
+			idx=331 1.75745
+			idx=332 1.75747
+			idx=333 1.75747
+			idx=334 1.75752
+			idx=335 1.75747
+			idx=336 1.75746
+			idx=337 1.75745
+			idx=338 1.75749
+			idx=339 1.75746
+			idx=340 1.75745
+			idx=341 1.75752
+			idx=342 1.75745
+			idx=343 1.75745
+			idx=344 1.75747
+			idx=345 1.75747
+			idx=346 1.75755
+			idx=347 1.75746
+			idx=348 1.75746
+			idx=349 1.75749
+			idx=350 1.75747
+			idx=351 1.75746
+			idx=352 1.75746
+			idx=353 1.75748
+			idx=354 1.75749
+			idx=355 1.75746
+			idx=356 1.75746
+			idx=357 1.75746
+			idx=358 1.7575
+			idx=359 1.75762
+			idx=360 1.7575
+			idx=361 1.75746
+			idx=362 1.75758
+			idx=363 1.75747
+			idx=364 1.75749
+			idx=365 1.75758
+			idx=366 1.75753
+			idx=367 1.75763
+			idx=368 1.75747
+			idx=369 1.75746
+			idx=370 1.7575
+			idx=371 1.7575
+			idx=372 1.75745
+			idx=373 1.75745
+			idx=374 1.75745
+			idx=375 1.7575
+			idx=376 1.75748
+			idx=377 1.75754
+			idx=378 1.75746
+			idx=379 1.75778
+			idx=380 1.75768
+			idx=381 1.75753
+			idx=382 1.75745
+			idx=383 1.7577
+			idx=384 1.75753
+			idx=385 1.7575
+			idx=386 1.75759
+			idx=387 1.75752
+			idx=388 1.75747
+			idx=389 1.75746
+			idx=390 1.75745
+			idx=391 1.75751
+			idx=392 1.75747
+			idx=393 1.7576
+			idx=394 1.75745
+			idx=395 1.75764
+			idx=396 1.75756
+			idx=397 1.75763
+			idx=398 1.75745
+			idx=399 1.75758
+			idx=400 1.75757
+			idx=401 1.75746
+			idx=402 1.75749
+			idx=403 1.75748
+			idx=404 1.75758
+			idx=405 1.75749
+			idx=406 1.75775
+			idx=407 1.75748
+			idx=408 1.75748
+			idx=409 1.7575
+			idx=410 1.7575
+			idx=411 1.7575
+			idx=412 1.7575
+			idx=413 1.75747
+			idx=414 1.75747
+			idx=415 1.75747
+			idx=416 1.75747
+			idx=417 1.75747
+			idx=418 1.75747
+			idx=419 1.75747
+			idx=420 1.75747
+			idx=421 1.75747
+			idx=422 1.75748
+			idx=423 1.75748
+			idx=424 1.75747
+			idx=425 1.75751
+			idx=426 1.75748
+			idx=427 1.75747
+			idx=428 1.75747
+			idx=429 1.75749
+			idx=430 1.75747
+			idx=431 1.75747
+			idx=432 1.75749
+			idx=433 1.75751
+			idx=434 1.75747
+			idx=435 1.75747
 		name[mag_grad_sq] length[436] type[DOUBLE]
-			idx=0 1.65075e-06
-			idx=1 2.66266e-06
-			idx=2 3.50753e-06
-			idx=3 1.56224e-06
-			idx=4 1.77005e-05
-			idx=5 0.000133379
-			idx=6 6.30476e-06
-			idx=7 6.21396e-07
-			idx=8 2.67191e-06
-			idx=9 0.000100398
-			idx=10 9.32484e-05
-			idx=11 2.65771e-06
-			idx=12 1.10062e-05
-			idx=13 2.63258e-05
-			idx=14 4.50357e-07
-			idx=15 1.11949e-05
-			idx=16 2.32176e-05
-			idx=17 3.77596e-05
-			idx=18 7.35325e-06
-			idx=19 1.01073e-06
-			idx=20 8.92992e-06
-			idx=21 2.81396e-06
-			idx=22 4.03978e-06
-			idx=23 3.44801e-06
-			idx=24 7.49865e-05
-			idx=25 0.000280811
-			idx=26 5.09801e-06
-			idx=27 2.4393e-06
-			idx=28 5.4878e-06
-			idx=29 5.67084e-07
-			idx=30 1.20914e-05
-			idx=31 2.84599e-06
-			idx=32 7.18939e-05
-			idx=33 7.11219e-06
-			idx=34 6.21004e-05
-			idx=35 2.02144e-05
-			idx=36 1.55958e-06
-			idx=37 4.01754e-05
-			idx=38 0.000178607
-			idx=39 4.17081e-05
-			idx=40 5.81739e-05
-			idx=41 7.56448e-06
-			idx=42 0.00040072
-			idx=43 5.72778e-06
-			idx=44 2.26295e-06
-			idx=45 7.28506e-06
-			idx=46 6.83434e-06
-			idx=47 1.13978e-05
-			idx=48 5.32353e-06
-			idx=49 9.40666e-05
-			idx=50 0.00036622
-			idx=51 3.31292e-05
-			idx=52 4.81244e-05
-			idx=53 8.55607e-07
-			idx=54 3.54888e-05
-			idx=55 1.12875e-05
-			idx=56 6.05993e-06
-			idx=57 3.97542e-05
-			idx=58 4.15754e-05
-			idx=59 2.8946e-05
-			idx=60 4.15009e-06
-			idx=61 1.63851e-06
-			idx=62 5.44995e-05
-			idx=63 0.000199916
-			idx=64 5.94407e-06
-			idx=65 4.36345e-06
-			idx=66 7.22787e-06
-			idx=67 2.2559e-05
-			idx=68 8.66633e-05
-			idx=69 4.66068e-07
-			idx=70 0.000181145
-			idx=71 5.5916e-06
-			idx=72 0.000174096
-			idx=73 5.88926e-07
-			idx=74 8.48693e-05
-			idx=75 0.000169708
-			idx=76 9.57455e-06
-			idx=77 4.82782e-05
-			idx=78 0.000264016
-			idx=79 8.88215e-05
-			idx=80 1.12429e-05
-			idx=81 5.18199e-08
-			idx=82 2.74056e-08
-			idx=83 2.74056e-08
-			idx=84 3.37392e-08
-			idx=85 3.37392e-08
-			idx=86 2.71459e-07
-			idx=87 2.71459e-07
-			idx=88 1.85406e-07
-			idx=89 1.85406e-07
-			idx=90 5.14719e-09
-			idx=91 5.14719e-09
-			idx=92 1.35644e-08
-			idx=93 1.35644e-08
-			idx=94 7.14562e-08
-			idx=95 7.14562e-08
-			idx=96 5.18199e-08
-			idx=97 7.44001e-05
-			idx=98 1.43896e-06
-			idx=99 3.51768e-06
-			idx=100 4.11806e-06
-			idx=101 1.43561e-06
-			idx=102 2.12677e-06
-			idx=103 6.31449e-05
-			idx=104 2.34272e-06
-			idx=105 1.55248e-06
-			idx=106 1.41373e-06
-			idx=107 1.86152e-06
-			idx=108 1.52991e-05
-			idx=109 5.92039e-07
-			idx=110 9.5309e-07
-			idx=111 1.25566e-06
-			idx=112 5.60326e-07
-			idx=113 6.34196e-06
-			idx=114 4.76518e-05
-			idx=115 2.2593e-06
-			idx=116 2.22945e-07
-			idx=117 9.58577e-07
-			idx=118 3.59092e-05
-			idx=119 3.33345e-05
-			idx=120 9.53263e-07
-			idx=121 3.93864e-06
-			idx=122 9.42576e-06
-			idx=123 1.61573e-07
-			idx=124 4.01398e-06
-			idx=125 8.32033e-06
-			idx=126 1.35033e-05
-			idx=127 2.63492e-06
-			idx=128 3.6262e-07
-			idx=129 3.19656e-06
-			idx=130 1.00726e-06
-			idx=131 1.44914e-06
-			idx=132 1.23678e-06
-			idx=133 2.68391e-05
-			idx=134 0.000100249
-			idx=135 1.82772e-06
-			idx=136 8.75189e-07
-			idx=137 1.96847e-06
-			idx=138 2.03023e-07
-			idx=139 4.3285e-06
-			idx=140 1.02088e-06
-			idx=141 2.57135e-05
-			idx=142 2.5459e-06
-			idx=143 2.21573e-05
-			idx=144 7.2483e-06
-			idx=145 5.59542e-07
-			idx=146 1.43925e-05
-			idx=147 6.37817e-05
-			idx=148 1.49374e-05
-			idx=149 2.08523e-05
-			idx=150 2.70643e-06
-			idx=151 0.000143034
-			idx=152 2.05417e-06
-			idx=153 8.11923e-07
-			idx=154 2.61321e-06
-			idx=155 2.4465e-06
-			idx=156 4.0801e-06
-			idx=157 1.90969e-06
-			idx=158 3.36434e-05
-			idx=159 0.000130766
-			idx=160 1.18618e-05
-			idx=161 1.72389e-05
-			idx=162 3.06968e-07
-			idx=163 1.27212e-05
-			idx=164 4.04716e-06
-			idx=165 2.16985e-06
-			idx=166 1.42282e-05
-			idx=167 1.48295e-05
-			idx=168 1.03788e-05
-			idx=169 1.48894e-06
-			idx=170 5.87876e-07
-			idx=171 1.94933e-05
-			idx=172 7.13816e-05
-			idx=173 2.13199e-06
-			idx=174 1.56204e-06
-			idx=175 2.58411e-06
-			idx=176 8.07644e-06
-			idx=177 3.09993e-05
-			idx=178 1.6721e-07
-			idx=179 6.48205e-05
-			idx=180 2.00549e-06
-			idx=181 6.23076e-05
-			idx=182 2.11306e-07
-			idx=183 3.03824e-05
-			idx=184 6.06009e-05
-			idx=185 3.43269e-06
-			idx=186 1.72717e-05
-			idx=187 9.43529e-05
-			idx=188 3.18273e-05
-			idx=189 4.03227e-06
-			idx=190 1.85807e-08
-			idx=191 9.82725e-09
-			idx=192 9.82725e-09
-			idx=193 1.20979e-08
-			idx=194 1.20979e-08
-			idx=195 9.71867e-08
-			idx=196 9.71867e-08
-			idx=197 6.63703e-08
-			idx=198 6.63703e-08
-			idx=199 1.84251e-09
-			idx=200 1.84251e-09
-			idx=201 4.85543e-09
-			idx=202 4.85543e-09
-			idx=203 2.56202e-08
-			idx=204 2.56202e-08
-			idx=205 1.85807e-08
-			idx=206 2.66295e-05
-			idx=207 5.16184e-07
-			idx=208 1.26094e-06
-			idx=209 1.47267e-06
-			idx=210 5.13918e-07
-			idx=211 7.6288e-07
-			idx=212 2.2585e-05
-			idx=213 8.39984e-07
-			idx=214 5.567e-07
-			idx=215 5.07109e-07
-			idx=216 6.66638e-07
-			idx=217 5.47401e-06
-			idx=218 9.58009e-08
-			idx=219 1.53824e-07
-			idx=220 2.0269e-07
-			idx=221 9.0676e-08
-			idx=222 1.02487e-06
-			idx=223 7.67135e-06
-			idx=224 3.65184e-07
-			idx=225 3.60934e-08
-			idx=226 1.55177e-07
-			idx=227 5.78959e-06
-			idx=228 5.37075e-06
-			idx=229 1.54269e-07
-			idx=230 6.35461e-07
-			idx=231 1.52181e-06
-			idx=232 2.61564e-08
-			idx=233 6.49296e-07
-			idx=234 1.34493e-06
-			idx=235 2.17667e-06
-			idx=236 4.25872e-07
-			idx=237 5.87035e-08
-			idx=238 5.15937e-07
-			idx=239 1.62571e-07
-			idx=240 2.34552e-07
-			idx=241 2.00163e-07
-			idx=242 4.33127e-06
-			idx=243 1.61228e-05
-			idx=244 2.95609e-07
-			idx=245 1.41691e-07
-			idx=246 3.18588e-07
-			idx=247 3.27749e-08
-			idx=248 6.98688e-07
-			idx=249 1.6523e-07
-			idx=250 4.1456e-06
-			idx=251 4.10919e-07
-			idx=252 3.56086e-06
-			idx=253 1.17255e-06
-			idx=254 9.05854e-08
-			idx=255 2.32541e-06
-			idx=256 1.0262e-05
-			idx=257 2.41256e-06
-			idx=258 3.37171e-06
-			idx=259 4.36538e-07
-			idx=260 2.29992e-05
-			idx=261 3.32375e-07
-			idx=262 1.3145e-07
-			idx=263 4.2295e-07
-			idx=264 3.94888e-07
-			idx=265 6.58569e-07
-			idx=266 3.09106e-07
-			idx=267 5.424e-06
-			idx=268 2.10366e-05
-			idx=269 1.91515e-06
-			idx=270 2.78504e-06
-			idx=271 4.96949e-08
-			idx=272 2.05701e-06
-			idx=273 6.54658e-07
-			idx=274 3.50356e-07
-			idx=275 2.29599e-06
-			idx=276 2.38226e-06
-			idx=277 1.67888e-06
-			idx=278 2.41044e-07
-			idx=279 9.51765e-08
-			idx=280 3.143e-06
-			idx=281 1.14828e-05
-			idx=282 3.45022e-07
-			idx=283 2.52139e-07
-			idx=284 4.16405e-07
-			idx=285 1.30382e-06
-			idx=286 4.99853e-06
-			idx=287 2.7069e-08
-			idx=288 1.04575e-05
-			idx=289 3.24536e-07
-			idx=290 1.00541e-05
-			idx=291 3.42116e-08
-			idx=292 4.90437e-06
-			idx=293 9.74962e-06
-			idx=294 5.55202e-07
-			idx=295 2.78557e-06
-			idx=296 1.51959e-05
-			idx=297 5.14403e-06
-			idx=298 6.52483e-07
-			idx=299 3.00567e-09
-			idx=300 1.58983e-09
-			idx=301 1.58983e-09
-			idx=302 1.95708e-09
-			idx=303 1.95708e-09
-			idx=304 1.56895e-08
-			idx=305 1.56895e-08
-			idx=306 1.07129e-08
-			idx=307 1.07129e-08
-			idx=308 2.97391e-10
-			idx=309 2.97391e-10
-			idx=310 7.83664e-10
-			idx=311 7.83664e-10
-			idx=312 4.14414e-09
-			idx=313 4.14414e-09
-			idx=314 3.00567e-09
-			idx=315 4.29747e-06
-			idx=316 8.35484e-08
-			idx=317 2.03895e-07
-			idx=318 2.37386e-07
-			idx=319 8.29541e-08
-			idx=320 1.23471e-07
-			idx=321 3.64137e-06
-			idx=322 1.35873e-07
-			idx=323 9.00626e-08
-			idx=324 8.20743e-08
-			idx=325 1.07659e-07
-			idx=326 8.82995e-07
-			idx=327 6.89458e-09
-			idx=328 1.10491e-08
-			idx=329 1.45609e-08
-			idx=330 6.52611e-09
-			idx=331 7.36863e-08
-			idx=332 5.50009e-07
-			idx=333 2.62599e-08
-			idx=334 2.5985e-09
-			idx=335 1.11711e-08
-			idx=336 4.15549e-07
-			idx=337 3.85291e-07
-			idx=338 1.11033e-08
-			idx=339 4.56337e-08
-			idx=340 1.0934e-07
-			idx=341 1.88303e-09
-			idx=342 4.67164e-08
-			idx=343 9.67167e-08
-			idx=344 1.56207e-07
-			idx=345 3.06226e-08
-			idx=346 4.22615e-09
-			idx=347 3.70611e-08
-			idx=348 1.16776e-08
-			idx=349 1.68833e-08
-			idx=350 1.4407e-08
-			idx=351 3.11092e-07
-			idx=352 1.15511e-06
-			idx=353 2.12666e-08
-			idx=354 1.02011e-08
-			idx=355 2.29313e-08
-			idx=356 2.35465e-09
-			idx=357 5.01915e-08
-			idx=358 1.18932e-08
-			idx=359 2.97544e-07
-			idx=360 2.95176e-08
-			idx=361 2.54976e-07
-			idx=362 8.43684e-08
-			idx=363 6.52152e-09
-			idx=364 1.67168e-07
-			idx=365 7.35431e-07
-			idx=366 1.73386e-07
-			idx=367 2.42522e-07
-			idx=368 3.13423e-08
-			idx=369 1.64752e-06
-			idx=370 2.39192e-08
-			idx=371 9.46383e-09
-			idx=372 3.04437e-08
-			idx=373 2.83667e-08
-			idx=374 4.73082e-08
-			idx=375 2.22504e-08
-			idx=376 3.89295e-07
-			idx=377 1.50745e-06
-			idx=378 1.37603e-07
-			idx=379 2.00196e-07
-			idx=380 3.57764e-09
-			idx=381 1.47961e-07
-			idx=382 4.71019e-08
-			idx=383 2.51741e-08
-			idx=384 1.64901e-07
-			idx=385 1.70531e-07
-			idx=386 1.20795e-07
-			idx=387 1.73533e-08
-			idx=388 6.85226e-09
-			idx=389 2.25596e-07
-			idx=390 8.2281e-07
-			idx=391 2.48323e-08
-			idx=392 1.81129e-08
-			idx=393 2.98756e-08
-			idx=394 9.36704e-08
-			idx=395 3.58801e-07
-			idx=396 1.94873e-09
-			idx=397 7.50939e-07
-			idx=398 2.3357e-08
-			idx=399 7.22079e-07
-			idx=400 2.46315e-09
-			idx=401 3.52323e-07
-			idx=402 6.98678e-07
-			idx=403 3.99429e-08
-			idx=404 1.99981e-07
-			idx=405 1.08982e-06
-			idx=406 3.69881e-07
-			idx=407 4.69578e-08
-			idx=408 2.1626e-10
-			idx=409 1.14397e-10
-			idx=410 1.14397e-10
-			idx=411 1.40817e-10
-			idx=412 1.40817e-10
-			idx=413 1.12719e-09
-			idx=414 1.12719e-09
-			idx=415 7.69563e-10
-			idx=416 7.69563e-10
-			idx=417 2.13625e-11
-			idx=418 2.13625e-11
-			idx=419 5.62917e-11
-			idx=420 5.62917e-11
-			idx=421 2.98159e-10
-			idx=422 2.98159e-10
-			idx=423 2.1626e-10
-			idx=424 3.08666e-07
-			idx=425 6.01397e-09
-			idx=426 1.46662e-08
-			idx=427 1.70358e-08
-			idx=428 5.95913e-09
-			idx=429 8.88725e-09
-			idx=430 2.61362e-07
-			idx=431 9.77586e-09
-			idx=432 6.48054e-09
-			idx=433 5.90757e-09
-			idx=434 7.73673e-09
-			idx=435 6.33999e-08
+			idx=0 7.14681e-07
+			idx=1 2.12849e-07
+			idx=2 4.40955e-07
+			idx=3 4.64809e-07
+			idx=4 2.74454e-07
+			idx=5 4.46123e-06
+			idx=6 1.14171e-06
+			idx=7 2.33159e-05
+			idx=8 9.83909e-07
+			idx=9 1.71735e-07
+			idx=10 7.33908e-08
+			idx=11 3.00139e-06
+			idx=12 5.80747e-07
+			idx=13 1.16688e-06
+			idx=14 1.58799e-05
+			idx=15 3.64439e-08
+			idx=16 2.20509e-07
+			idx=17 1.88652e-06
+			idx=18 5.74335e-07
+			idx=19 0.000131525
+			idx=20 6.64398e-07
+			idx=21 9.70205e-07
+			idx=22 1.5309e-06
+			idx=23 1.51598e-06
+			idx=24 6.62076e-07
+			idx=25 5.43899e-07
+			idx=26 2.26022e-06
+			idx=27 4.80201e-06
+			idx=28 8.87543e-07
+			idx=29 7.85553e-07
+			idx=30 1.03515e-06
+			idx=31 2.00865e-07
+			idx=32 6.59561e-06
+			idx=33 1.78845e-05
+			idx=34 1.25231e-05
+			idx=35 4.22644e-05
+			idx=36 2.16228e-05
+			idx=37 6.75594e-05
+			idx=38 4.96485e-05
+			idx=39 0.000116613
+			idx=40 7.95371e-05
+			idx=41 6.622e-07
+			idx=42 1.61857e-06
+			idx=43 2.12728e-06
+			idx=44 8.38156e-06
+			idx=45 1.68884e-06
+			idx=46 1.2371e-06
+			idx=47 1.5644e-06
+			idx=48 1.26695e-06
+			idx=49 4.2342e-06
+			idx=50 4.18144e-05
+			idx=51 1.55331e-06
+			idx=52 0.000411272
+			idx=53 0.000222263
+			idx=54 7.06899e-05
+			idx=55 2.76656e-07
+			idx=56 0.000316361
+			idx=57 3.9311e-05
+			idx=58 2.08545e-05
+			idx=59 6.34875e-05
+			idx=60 2.60756e-05
+			idx=61 8.87755e-06
+			idx=62 3.96341e-07
+			idx=63 1.50656e-06
+			idx=64 3.605e-06
+			idx=65 2.73422e-06
+			idx=66 3.31178e-05
+			idx=67 3.53499e-07
+			idx=68 8.69128e-05
+			idx=69 3.84317e-05
+			idx=70 0.000174577
+			idx=71 3.93757e-08
+			idx=72 3.09788e-05
+			idx=73 5.57985e-05
+			idx=74 6.48851e-07
+			idx=75 1.01072e-05
+			idx=76 2.33614e-06
+			idx=77 0.000128061
+			idx=78 2.43227e-05
+			idx=79 0.000225686
+			idx=80 2.05353e-05
+			idx=81 2.61782e-08
+			idx=82 1.90694e-08
+			idx=83 1.90694e-08
+			idx=84 2.67719e-08
+			idx=85 2.67719e-08
+			idx=86 8.99775e-09
+			idx=87 8.99775e-09
+			idx=88 2.91152e-08
+			idx=89 2.91152e-08
+			idx=90 9.20432e-09
+			idx=91 9.20432e-09
+			idx=92 6.54017e-09
+			idx=93 6.54017e-09
+			idx=94 1.49406e-08
+			idx=95 1.49406e-08
+			idx=96 2.61782e-08
+			idx=97 6.27549e-07
+			idx=98 4.88053e-06
+			idx=99 9.54159e-07
+			idx=100 4.54855e-07
+			idx=101 2.97581e-07
+			idx=102 7.67663e-07
+			idx=103 2.64037e-07
+			idx=104 5.14814e-07
+			idx=105 9.73362e-08
+			idx=106 3.51091e-06
+			idx=107 5.84548e-07
+			idx=108 5.22542e-07
+			idx=109 3.13227e-07
+			idx=110 9.32899e-08
+			idx=111 1.93268e-07
+			idx=112 2.0364e-07
+			idx=113 1.20293e-07
+			idx=114 1.95486e-06
+			idx=115 5.00316e-07
+			idx=116 1.02098e-05
+			idx=117 4.31187e-07
+			idx=118 7.52697e-08
+			idx=119 3.21686e-08
+			idx=120 1.31493e-06
+			idx=121 2.5452e-07
+			idx=122 5.11438e-07
+			idx=123 6.95378e-06
+			idx=124 1.59741e-08
+			idx=125 9.66549e-08
+			idx=126 8.26686e-07
+			idx=127 2.51698e-07
+			idx=128 5.75517e-05
+			idx=129 2.91216e-07
+			idx=130 4.25264e-07
+			idx=131 6.70706e-07
+			idx=132 6.64435e-07
+			idx=133 2.90175e-07
+			idx=134 2.38373e-07
+			idx=135 9.9033e-07
+			idx=136 2.10357e-06
+			idx=137 3.88994e-07
+			idx=138 3.4432e-07
+			idx=139 4.53732e-07
+			idx=140 8.79986e-08
+			idx=141 2.88554e-06
+			idx=142 7.83539e-06
+			idx=143 5.4876e-06
+			idx=144 1.85065e-05
+			idx=145 9.47319e-06
+			idx=146 2.95873e-05
+			idx=147 2.17403e-05
+			idx=148 5.10403e-05
+			idx=149 3.48159e-05
+			idx=150 2.90221e-07
+			idx=151 7.09411e-07
+			idx=152 9.32001e-07
+			idx=153 3.67264e-06
+			idx=154 7.40202e-07
+			idx=155 5.42247e-07
+			idx=156 6.85728e-07
+			idx=157 5.55064e-07
+			idx=158 1.85546e-06
+			idx=159 1.83072e-05
+			idx=160 6.80827e-07
+			idx=161 0.000179789
+			idx=162 9.72489e-05
+			idx=163 3.09417e-05
+			idx=164 1.21266e-07
+			idx=165 0.000138408
+			idx=166 1.72214e-05
+			idx=167 9.13819e-06
+			idx=168 2.77999e-05
+			idx=169 1.14237e-05
+			idx=170 3.89001e-06
+			idx=171 1.73706e-07
+			idx=172 6.60322e-07
+			idx=173 1.57935e-06
+			idx=174 1.1984e-06
+			idx=175 1.44968e-05
+			idx=176 1.5495e-07
+			idx=177 3.80367e-05
+			idx=178 1.683e-05
+			idx=179 7.63084e-05
+			idx=180 1.72592e-08
+			idx=181 1.35602e-05
+			idx=182 2.44349e-05
+			idx=183 2.84379e-07
+			idx=184 4.42891e-06
+			idx=185 1.02359e-06
+			idx=186 5.60802e-05
+			idx=187 1.06553e-05
+			idx=188 9.86854e-05
+			idx=189 8.99598e-06
+			idx=190 1.14714e-08
+			idx=191 8.35409e-09
+			idx=192 8.35409e-09
+			idx=193 1.17287e-08
+			idx=194 1.17287e-08
+			idx=195 3.94318e-09
+			idx=196 3.94318e-09
+			idx=197 1.27596e-08
+			idx=198 1.27596e-08
+			idx=199 4.03372e-09
+			idx=200 4.03372e-09
+			idx=201 2.86619e-09
+			idx=202 2.86619e-09
+			idx=203 6.54714e-09
+			idx=204 6.54714e-09
+			idx=205 1.14714e-08
+			idx=206 2.75048e-07
+			idx=207 2.13795e-06
+			idx=208 4.18109e-07
+			idx=209 1.99346e-07
+			idx=210 1.3042e-07
+			idx=211 3.36402e-07
+			idx=212 1.15721e-07
+			idx=213 2.25636e-07
+			idx=214 4.26473e-08
+			idx=215 1.5379e-06
+			idx=216 2.56194e-07
+			idx=217 2.29025e-07
+			idx=218 6.73014e-08
+			idx=219 2.00458e-08
+			idx=220 4.15295e-08
+			idx=221 4.37315e-08
+			idx=222 2.5849e-08
+			idx=223 4.19908e-07
+			idx=224 1.07479e-07
+			idx=225 2.19084e-06
+			idx=226 9.26354e-08
+			idx=227 1.61736e-08
+			idx=228 6.91298e-09
+			idx=229 2.82369e-07
+			idx=230 5.46853e-08
+			idx=231 1.09898e-07
+			idx=232 1.4922e-06
+			idx=233 3.4328e-09
+			idx=234 2.07714e-08
+			idx=235 1.77584e-07
+			idx=236 5.40754e-08
+			idx=237 1.23362e-05
+			idx=238 6.25809e-08
+			idx=239 9.13896e-08
+			idx=240 1.44032e-07
+			idx=241 1.4277e-07
+			idx=242 6.23495e-08
+			idx=243 5.12169e-08
+			idx=244 2.12702e-07
+			idx=245 4.51651e-07
+			idx=246 8.35831e-08
+			idx=247 7.3993e-08
+			idx=248 9.75079e-08
+			idx=249 1.88964e-08
+			idx=250 6.18344e-07
+			idx=251 1.6826e-06
+			idx=252 1.17878e-06
+			idx=253 3.97095e-06
+			idx=254 2.03432e-06
+			idx=255 6.35008e-06
+			idx=256 4.665e-06
+			idx=257 1.09449e-05
+			idx=258 7.4668e-06
+			idx=259 6.23568e-08
+			idx=260 1.52438e-07
+			idx=261 2.00148e-07
+			idx=262 7.88866e-07
+			idx=263 1.59052e-07
+			idx=264 1.16528e-07
+			idx=265 1.47368e-07
+			idx=266 1.19197e-07
+			idx=267 3.98584e-07
+			idx=268 3.92748e-06
+			idx=269 1.46302e-07
+			idx=270 3.8482e-05
+			idx=271 2.08429e-05
+			idx=272 6.63544e-06
+			idx=273 2.60605e-08
+			idx=274 2.96602e-05
+			idx=275 3.69782e-06
+			idx=276 1.96289e-06
+			idx=277 5.96513e-06
+			idx=278 2.45306e-06
+			idx=279 8.35572e-07
+			idx=280 3.73234e-08
+			idx=281 1.41891e-07
+			idx=282 3.39146e-07
+			idx=283 2.57512e-07
+			idx=284 3.10909e-06
+			idx=285 3.32998e-08
+			idx=286 8.15506e-06
+			idx=287 3.6118e-06
+			idx=288 1.63304e-05
+			idx=289 3.70898e-09
+			idx=290 2.90816e-06
+			idx=291 5.24369e-06
+			idx=292 6.11045e-08
+			idx=293 9.51353e-07
+			idx=294 2.19844e-07
+			idx=295 1.20349e-05
+			idx=296 2.28795e-06
+			idx=297 2.11311e-05
+			idx=298 1.93159e-06
+			idx=299 2.4642e-09
+			idx=300 1.79386e-09
+			idx=301 1.79386e-09
+			idx=302 2.51858e-09
+			idx=303 2.51858e-09
+			idx=304 8.47154e-10
+			idx=305 8.47154e-10
+			idx=306 2.74131e-09
+			idx=307 2.74131e-09
+			idx=308 8.66609e-10
+			idx=309 8.66609e-10
+			idx=310 6.1578e-10
+			idx=311 6.1578e-10
+			idx=312 1.40644e-09
+			idx=313 1.40644e-09
+			idx=314 2.4642e-09
+			idx=315 5.91014e-08
+			idx=316 4.59029e-07
+			idx=317 8.9813e-08
+			idx=318 4.28308e-08
+			idx=319 2.80221e-08
+			idx=320 7.22663e-08
+			idx=321 2.48646e-08
+			idx=322 4.84831e-08
+			idx=323 9.15934e-09
+			idx=324 3.30171e-07
+			idx=325 5.50475e-08
+			idx=326 4.9212e-08
+			idx=327 6.12917e-09
+			idx=328 1.82567e-09
+			idx=329 3.78235e-09
+			idx=330 3.98065e-09
+			idx=331 2.35426e-09
+			idx=332 3.82309e-08
+			idx=333 9.78637e-09
+			idx=334 1.99278e-07
+			idx=335 8.43537e-09
+			idx=336 1.473e-09
+			idx=337 6.29658e-10
+			idx=338 2.57018e-08
+			idx=339 4.98003e-09
+			idx=340 1.00092e-08
+			idx=341 1.35733e-07
+			idx=342 3.12671e-10
+			idx=343 1.89196e-09
+			idx=344 1.61692e-08
+			idx=345 4.92418e-09
+			idx=346 1.12096e-06
+			idx=347 5.70001e-09
+			idx=348 8.32418e-09
+			idx=349 1.31103e-08
+			idx=350 1.30026e-08
+			idx=351 5.6783e-09
+			idx=352 4.66424e-09
+			idx=353 1.93636e-08
+			idx=354 4.1104e-08
+			idx=355 7.61211e-09
+			idx=356 6.73946e-09
+			idx=357 8.88149e-09
+			idx=358 1.71994e-09
+			idx=359 5.61736e-08
+			idx=360 1.53155e-07
+			idx=361 1.07326e-07
+			idx=362 3.61178e-07
+			idx=363 1.85171e-07
+			idx=364 5.777e-07
+			idx=365 4.24318e-07
+			idx=366 9.94915e-07
+			idx=367 6.78834e-07
+			idx=368 5.67873e-09
+			idx=369 1.38835e-08
+			idx=370 1.82186e-08
+			idx=371 7.18209e-08
+			idx=372 1.44856e-08
+			idx=373 1.06138e-08
+			idx=374 1.34233e-08
+			idx=375 1.08496e-08
+			idx=376 3.62917e-08
+			idx=377 3.57163e-07
+			idx=378 1.33251e-08
+			idx=379 3.49213e-06
+			idx=380 1.89376e-06
+			idx=381 6.03212e-07
+			idx=382 2.37373e-09
+			idx=383 2.69454e-06
+			idx=384 3.36555e-07
+			idx=385 1.78712e-07
+			idx=386 5.42566e-07
+			idx=387 2.23276e-07
+			idx=388 7.60743e-08
+			idx=389 3.39906e-09
+			idx=390 1.2923e-08
+			idx=391 3.08692e-08
+			idx=392 2.34533e-08
+			idx=393 2.82662e-07
+			idx=394 3.03318e-09
+			idx=395 7.41196e-07
+			idx=396 3.28559e-07
+			idx=397 1.48172e-06
+			idx=398 3.37828e-10
+			idx=399 2.64388e-07
+			idx=400 4.76998e-07
+			idx=401 5.56493e-09
+			idx=402 8.66177e-08
+			idx=403 2.00137e-08
+			idx=404 1.09479e-06
+			idx=405 2.08237e-07
+			idx=406 1.91829e-06
+			idx=407 1.75798e-07
+			idx=408 2.24365e-10
+			idx=409 1.63271e-10
+			idx=410 1.63271e-10
+			idx=411 2.2924e-10
+			idx=412 2.2924e-10
+			idx=413 7.71425e-11
+			idx=414 7.71425e-11
+			idx=415 2.49628e-10
+			idx=416 2.49628e-10
+			idx=417 7.89144e-11
+			idx=418 7.89144e-11
+			idx=419 5.60739e-11
+			idx=420 5.60739e-11
+			idx=421 1.2806e-10
+			idx=422 1.2806e-10
+			idx=423 2.24365e-10
+			idx=424 5.38266e-09
+			idx=425 4.17751e-08
+			idx=426 8.17728e-09
+			idx=427 3.90047e-09
+			idx=428 2.55193e-09
+			idx=429 6.58009e-09
+			idx=430 2.26444e-09
+			idx=431 4.41554e-09
+			idx=432 8.33801e-10
+			idx=433 3.0046e-08
+			idx=434 5.01323e-09
+			idx=435 4.48198e-09
 		name[prior_mean] length[109] type[DOUBLE]
-			idx=0 1.50697
-			idx=1 1.50828
-			idx=2 1.50822
-			idx=3 1.50692
-			idx=4 1.50786
-			idx=5 1.50914
-			idx=6 1.50736
-			idx=7 1.50664
-			idx=8 1.50668
-			idx=9 1.50937
-			idx=10 1.50889
-			idx=11 1.50692
-			idx=12 1.50834
-			idx=13 1.50792
-			idx=14 1.50669
-			idx=15 1.50704
-			idx=16 1.50737
-			idx=17 1.50875
-			idx=18 1.50767
-			idx=19 1.50669
-			idx=20 1.50847
-			idx=21 1.50841
-			idx=22 1.50687
-			idx=23 1.50681
-			idx=24 1.50894
-			idx=25 1.50929
-			idx=26 1.50715
-			idx=27 1.50669
-			idx=28 1.50693
-			idx=29 1.5082
-			idx=30 1.50809
-			idx=31 1.50677
-			idx=32 1.50943
-			idx=33 1.50821
-			idx=34 1.51057
-			idx=35 1.50677
-			idx=36 1.50665
-			idx=37 1.50746
-			idx=38 1.51061
-			idx=39 1.50769
-			idx=40 1.50684
-			idx=41 1.50884
-			idx=42 1.51138
-			idx=43 1.50696
-			idx=44 1.50651
-			idx=45 1.50664
-			idx=46 1.50814
-			idx=47 1.5085
-			idx=48 1.50662
-			idx=49 1.50941
-			idx=50 1.50898
-			idx=51 1.5078
-			idx=52 1.50816
-			idx=53 1.50658
-			idx=54 1.50721
-			idx=55 1.50703
-			idx=56 1.50822
-			idx=57 1.50807
-			idx=58 1.51137
-			idx=59 1.50733
-			idx=60 1.50674
-			idx=61 1.50652
-			idx=62 1.50851
-			idx=63 1.51
-			idx=64 1.50673
-			idx=65 1.5084
-			idx=66 1.50912
-			idx=67 1.50851
-			idx=68 1.50841
-			idx=69 1.5066
-			idx=70 1.50779
-			idx=71 1.50678
-			idx=72 1.50796
-			idx=73 1.50656
-			idx=74 1.5077
-			idx=75 1.51053
-			idx=76 1.50735
-			idx=77 1.50894
-			idx=78 1.50858
-			idx=79 1.50701
-			idx=80 1.50702
-			idx=81 1.50705
-			idx=82 1.50701
-			idx=83 1.50703
-			idx=84 1.50704
-			idx=85 1.50705
-			idx=86 1.50821
-			idx=87 1.50825
-			idx=88 1.50828
-			idx=89 1.50832
-			idx=90 1.50832
-			idx=91 1.50832
-			idx=92 1.50833
-			idx=93 1.50833
-			idx=94 1.50711
-			idx=95 1.50709
-			idx=96 1.50707
-			idx=97 1.50793
-			idx=98 1.50687
-			idx=99 1.50753
-			idx=100 1.50879
-			idx=101 1.50841
-			idx=102 1.50692
-			idx=103 1.50854
-			idx=104 1.50729
-			idx=105 1.50716
-			idx=106 1.50691
-			idx=107 1.50796
-			idx=108 1.50864
+			idx=0 0.930178
+			idx=1 0.930112
+			idx=2 0.93011
+			idx=3 0.930489
+			idx=4 0.930037
+			idx=5 0.930185
+			idx=6 0.930247
+			idx=7 0.930743
+			idx=8 0.930251
+			idx=9 0.930068
+			idx=10 0.930019
+			idx=11 0.930395
+			idx=12 0.930116
+			idx=13 0.93004
+			idx=14 0.930773
+			idx=15 0.930035
+			idx=16 0.930041
+			idx=17 0.930193
+			idx=18 0.930157
+			idx=19 0.931022
+			idx=20 0.930063
+			idx=21 0.930047
+			idx=22 0.930422
+			idx=23 0.930174
+			idx=24 0.930096
+			idx=25 0.930105
+			idx=26 0.930357
+			idx=27 0.930472
+			idx=28 0.930073
+			idx=29 0.93008
+			idx=30 0.930056
+			idx=31 0.930542
+			idx=32 0.931849
+			idx=33 0.930492
+			idx=34 0.930091
+			idx=35 0.931418
+			idx=36 0.930203
+			idx=37 0.93044
+			idx=38 0.93136
+			idx=39 0.930888
+			idx=40 0.931896
+			idx=41 0.930179
+			idx=42 0.930151
+			idx=43 0.930509
+			idx=44 0.930514
+			idx=45 0.930021
+			idx=46 0.929974
+			idx=47 0.929941
+			idx=48 0.930562
+			idx=49 0.930364
+			idx=50 0.930949
+			idx=51 0.930126
+			idx=52 0.933564
+			idx=53 0.932428
+			idx=54 0.930866
+			idx=55 0.929982
+			idx=56 0.932672
+			idx=57 0.930867
+			idx=58 0.930524
+			idx=59 0.931502
+			idx=60 0.930782
+			idx=61 0.930154
+			idx=62 0.930119
+			idx=63 0.929999
+			idx=64 0.93061
+			idx=65 0.930172
+			idx=66 0.931636
+			idx=67 0.929973
+			idx=68 0.93209
+			idx=69 0.931205
+			idx=70 0.931914
+			idx=71 0.930012
+			idx=72 0.931374
+			idx=73 0.931279
+			idx=74 0.930102
+			idx=75 0.930449
+			idx=76 0.930346
+			idx=77 0.931426
+			idx=78 0.930444
+			idx=79 0.933274
+			idx=80 0.93031
+			idx=81 0.930284
+			idx=82 0.930553
+			idx=83 0.930542
+			idx=84 0.93053
+			idx=85 0.930517
+			idx=86 0.9302
+			idx=87 0.930194
+			idx=88 0.930191
+			idx=89 0.930193
+			idx=90 0.930199
+			idx=91 0.930194
+			idx=92 0.930193
+			idx=93 0.930194
+			idx=94 0.930251
+			idx=95 0.930261
+			idx=96 0.930271
+			idx=97 0.930171
+			idx=98 0.930651
+			idx=99 0.930334
+			idx=100 0.930232
+			idx=101 0.930208
+			idx=102 0.930371
+			idx=103 0.930176
+			idx=104 0.93018
+			idx=105 0.930447
+			idx=106 0.930673
+			idx=107 0.930203
+			idx=108 0.93017
 		name[initial_growth] length[1] type[DOUBLE]
 			idx=0 0.8
 		name[initial_carry_cap] length[1] type[DOUBLE]
-			idx=0 2.19722
+			idx=0 1.79176
 		name[initial_move] length[1] type[DOUBLE]
 			idx=0 1
 		name[initial_sigma] length[1] type[DOUBLE]
@@ -1284,7 +1284,7 @@ inla_build...
 			idx=0 1
 			idx=1 1
 		name[pcc] length[2] type[DOUBLE]
-			idx=0 9
+			idx=0 6
 			idx=1 50
 		name[pmove] length[2] type[DOUBLE]
 			idx=0 1
@@ -13182,80 +13182,76 @@ inla_build...
 			idx=11879 (i=107 j=108 x=0.758817)
 			idx=11880 (i=108 j=108 x=185.284)
 		name[prior_variance] nrow[109] ncol[109] n[109] type[SPARSE.MATRIX]
-			idx=0 (i=0 j=0 x=0.218919)
-			idx=1 (i=1 j=1 x=0.218476)
-			idx=2 (i=2 j=2 x=0.218398)
-			idx=3 (i=3 j=3 x=0.218964)
-			idx=4 (i=4 j=4 x=0.217716)
-			idx=5 (i=5 j=5 x=0.218907)
-			idx=6 (i=6 j=6 x=0.218085)
-			idx=7 (i=7 j=7 x=0.21885)
-			idx=8 (i=8 j=8 x=0.218869)
-			idx=9 (i=9 j=9 x=0.219033)
-			idx=10 (i=10 j=10 x=0.218816)
-			idx=11 (i=11 j=11 x=0.218677)
-			idx=12 (i=12 j=12 x=0.218312)
-			idx=13 (i=13 j=13 x=0.21779)
-			idx=14 (i=14 j=14 x=0.218869)
-			idx=15 (i=15 j=15 x=0.218565)
-			idx=16 (i=16 j=16 x=0.218012)
-			idx=17 (i=17 j=17 x=0.218567)
-			idx=18 (i=18 j=18 x=0.217636)
-			idx=19 (i=19 j=19 x=0.218702)
-			idx=20 (i=20 j=20 x=0.218385)
-			idx=21 (i=21 j=21 x=0.218348)
-			idx=22 (i=22 j=22 x=0.218668)
-			idx=23 (i=23 j=23 x=0.218713)
-			idx=24 (i=24 j=24 x=0.21864)
-			idx=25 (i=25 j=25 x=0.218849)
-			idx=26 (i=26 j=26 x=0.218284)
-			idx=27 (i=27 j=27 x=0.2187)
-			idx=28 (i=28 j=28 x=0.218617)
-			idx=29 (i=29 j=29 x=0.218098)
-			idx=30 (i=30 j=30 x=0.217911)
-			idx=31 (i=31 j=31 x=0.218742)
-			idx=32 (i=32 j=32 x=0.218897)
-			idx=33 (i=33 j=33 x=0.218019)
-			idx=34 (i=34 j=34 x=0.219274)
-			idx=35 (i=35 j=35 x=0.218727)
-			idx=36 (i=36 j=36 x=0.218803)
-			idx=37 (i=37 j=37 x=0.217909)
-			idx=38 (i=38 j=38 x=0.219236)
-			idx=39 (i=39 j=39 x=0.217706)
-			idx=40 (i=40 j=40 x=0.218637)
-			idx=41 (i=41 j=41 x=0.218676)
-			idx=42 (i=42 j=42 x=0.219451)
-			idx=43 (i=43 j=43 x=0.218555)
-			idx=44 (i=44 j=44 x=0.218889)
-			idx=45 (i=45 j=45 x=0.218951)
-			idx=46 (i=46 j=46 x=0.218081)
-			idx=47 (i=47 j=47 x=0.218513)
-			idx=48 (i=48 j=48 x=0.218965)
-			idx=49 (i=49 j=49 x=0.218995)
-			idx=50 (i=50 j=50 x=0.218706)
-			idx=51 (i=51 j=51 x=0.217697)
-			idx=52 (i=52 j=52 x=0.217827)
-			idx=53 (i=53 j=53 x=0.218855)
-			idx=54 (i=54 j=54 x=0.218227)
-			idx=55 (i=55 j=55 x=0.218483)
-			idx=56 (i=56 j=56 x=0.217943)
-			idx=57 (i=57 j=57 x=0.217826)
-			idx=58 (i=58 j=58 x=0.219417)
-			idx=59 (i=59 j=59 x=0.218126)
-			idx=60 (i=60 j=60 x=0.218786)
-			idx=61 (i=61 j=61 x=0.21902)
-			idx=62 (i=62 j=62 x=0.218484)
-			idx=63 (i=63 j=63 x=0.219257)
-			idx=64 (i=64 j=64 x=0.218894)
-			idx=65 (i=65 j=65 x=0.218366)
-			idx=66 (i=66 j=66 x=0.218855)
-			idx=67 (i=67 j=67 x=0.218469)
-			idx=68 (i=68 j=68 x=0.218163)
-			idx=69 (i=69 j=69 x=0.218982)
-			idx=70 (i=70 j=70 x=0.217685)
-			idx=71 (i=71 j=71 x=0.218852)
-			idx=72 (i=72 j=72 x=0.217709)
-			idx=73 (i=73 j=73 x=0.218
+			idx=0 (i=0 j=0 x=0.357185)
+			idx=1 (i=1 j=1 x=0.35725)
+			idx=2 (i=2 j=2 x=0.357252)
+			idx=3 (i=3 j=3 x=0.357039)
+			idx=4 (i=4 j=4 x=0.357022)
+			idx=5 (i=5 j=5 x=0.356888)
+			idx=6 (i=6 j=6 x=0.356839)
+			idx=7 (i=7 j=7 x=0.356866)
+			idx=8 (i=8 j=8 x=0.356873)
+			idx=9 (i=9 j=9 x=0.357034)
+			idx=10 (i=10 j=10 x=0.357081)
+			idx=11 (i=11 j=11 x=0.356807)
+			idx=12 (i=12 j=12 x=0.356987)
+			idx=13 (i=13 j=13 x=0.357058)
+			idx=14 (i=14 j=14 x=0.356929)
+			idx=15 (i=15 j=15 x=0.357065)
+			idx=16 (i=16 j=16 x=0.356912)
+			idx=17 (i=17 j=17 x=0.356775)
+			idx=18 (i=18 j=18 x=0.3568)
+			idx=19 (i=19 j=19 x=0.357013)
+			idx=20 (i=20 j=20 x=0.35698)
+			idx=21 (i=21 j=21 x=0.356997)
+			idx=22 (i=22 j=22 x=0.356732)
+			idx=23 (i=23 j=23 x=0.35687)
+			idx=24 (i=24 j=24 x=0.356859)
+			idx=25 (i=25 j=25 x=0.356849)
+			idx=26 (i=26 j=26 x=0.356672)
+			idx=27 (i=27 j=27 x=0.356651)
+			idx=28 (i=28 j=28 x=0.356967)
+			idx=29 (i=29 j=29 x=0.356963)
+			idx=30 (i=30 j=30 x=0.356987)
+			idx=31 (i=31 j=31 x=0.356737)
+			idx=32 (i=32 j=32 x=0.357618)
+			idx=33 (i=33 j=33 x=0.356777)
+			idx=34 (i=34 j=34 x=0.356964)
+			idx=35 (i=35 j=35 x=0.357476)
+			idx=36 (i=36 j=36 x=0.356876)
+			idx=37 (i=37 j=37 x=0.356743)
+			idx=38 (i=38 j=38 x=0.35737)
+			idx=39 (i=39 j=39 x=0.35695)
+			idx=40 (i=40 j=40 x=0.357672)
+			idx=41 (i=41 j=41 x=0.356891)
+			idx=42 (i=42 j=42 x=0.356912)
+			idx=43 (i=43 j=43 x=0.356772)
+			idx=44 (i=44 j=44 x=0.356772)
+			idx=45 (i=45 j=45 x=0.357138)
+			idx=46 (i=46 j=46 x=0.357188)
+			idx=47 (i=47 j=47 x=0.357223)
+			idx=48 (i=48 j=48 x=0.356881)
+			idx=49 (i=49 j=49 x=0.356789)
+			idx=50 (i=50 j=50 x=0.356987)
+			idx=51 (i=51 j=51 x=0.35693)
+			idx=52 (i=52 j=52 x=0.358006)
+			idx=53 (i=53 j=53 x=0.357841)
+			idx=54 (i=54 j=54 x=0.356916)
+			idx=55 (i=55 j=55 x=0.357063)
+			idx=56 (i=56 j=56 x=0.357823)
+			idx=57 (i=57 j=57 x=0.356894)
+			idx=58 (i=58 j=58 x=0.356705)
+			idx=59 (i=59 j=59 x=0.35748)
+			idx=60 (i=60 j=60 x=0.356829)
+			idx=61 (i=61 j=61 x=0.356937)
+			idx=62 (i=62 j=62 x=0.356974)
+			idx=63 (i=63 j=63 x=0.35709)
+			idx=64 (i=64 j=64 x=0.356816)
+			idx=65 (i=65 j=65 x=0.356927)
+			idx=66 (i=66 j=66 x=0.357513)
+			idx=67 (i=67 j=67 x=0.357116)
+			idx=68 (i=68 j=68 x=0.35765)
+			idx=69 (i=69
  *** inla.core.safe:  The inla program failed, but will rerun in case better initial values may help. try=1/1 
 	Read ntt 10 1 with max.threads 12
 	Found num.threads = 10:1 max_threads = 10
@@ -13266,8 +13262,8 @@ MAX_THREADS...[10]
 Report issues/bugs to <help@r-inla.org>
 
 cwd[C:\Users\2966362B\OneDrive - University of Glasgow\Documents\GitHub\INLAlogrowth-package\inst\Tests]
-Process file/directory[C:\Users\2966362B\AppData\Local\Temp\RtmpWoRZw7\file63a873353f4f/Model.ini] model[0/1/] threads[10] max.threads[12] blas_threads_force[0] nested[10:1]
-Run with model[C:\Users\2966362B\AppData\Local\Temp\RtmpWoRZw7\file63a873353f4f/Model.ini]
+Process file/directory[C:\Users\2966362B\AppData\Local\Temp\Rtmpkvq5lz\file7fe82a596df2/Model.ini] model[0/1/] threads[10] max.threads[12] blas_threads_force[0] nested[10:1]
+Run with model[C:\Users\2966362B\AppData\Local\Temp\Rtmpkvq5lz\file7fe82a596df2/Model.ini]
 inla_build...
 	number of sections=[12]
 	parse section=[11] name=[INLA.numa] type=[NUMA]
@@ -13326,7 +13322,7 @@ inla_build...
 		pardiso-library installed and working? = [no]
 		smtp = [taucs]
 		strategy = [default]
-		store results in directory=[C:\Users\2966362B\AppData\Local\Temp\RtmpWoRZw7\file63a873353f4f/results.files-0000000000]
+		store results in directory=[C:\Users\2966362B\AppData\Local\Temp\Rtmpkvq5lz\file7fe82a596df2/results.files-0000000000]
 		output:
 			gcpo=[0]
 				num.level.sets=[-1]
@@ -13372,32 +13368,32 @@ inla_build...
 		m=[568]
 		ndata=[568]
 		compute=[1]
-		read offsets from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a817495fa]
-		read n=[2008] entries from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a817495fa]
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a817495fa] 0/1004  (idx,y) = (0, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a817495fa] 1/1004  (idx,y) = (1, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a817495fa] 2/1004  (idx,y) = (2, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a817495fa] 3/1004  (idx,y) = (3, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a817495fa] 4/1004  (idx,y) = (4, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a817495fa] 5/1004  (idx,y) = (5, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a817495fa] 6/1004  (idx,y) = (6, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a817495fa] 7/1004  (idx,y) = (7, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a817495fa] 8/1004  (idx,y) = (8, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a817495fa] 9/1004  (idx,y) = (9, 0)
-		read link.fitted.values from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a8259f7db5]
-		read n=[2008] entries from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a8259f7db5]
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a8259f7db5] 0/1004  (idx,y) = (0, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a8259f7db5] 1/1004  (idx,y) = (1, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a8259f7db5] 2/1004  (idx,y) = (2, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a8259f7db5] 3/1004  (idx,y) = (3, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a8259f7db5] 4/1004  (idx,y) = (4, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a8259f7db5] 5/1004  (idx,y) = (5, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a8259f7db5] 6/1004  (idx,y) = (6, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a8259f7db5] 7/1004  (idx,y) = (7, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a8259f7db5] 8/1004  (idx,y) = (8, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a8259f7db5] 9/1004  (idx,y) = (9, 0)
-		A=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a821d47c09]
-		Aext=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a876a2145c]
+		read offsets from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe84264244d]
+		read n=[2008] entries from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe84264244d]
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe84264244d] 0/1004  (idx,y) = (0, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe84264244d] 1/1004  (idx,y) = (1, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe84264244d] 2/1004  (idx,y) = (2, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe84264244d] 3/1004  (idx,y) = (3, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe84264244d] 4/1004  (idx,y) = (4, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe84264244d] 5/1004  (idx,y) = (5, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe84264244d] 6/1004  (idx,y) = (6, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe84264244d] 7/1004  (idx,y) = (7, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe84264244d] 8/1004  (idx,y) = (8, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe84264244d] 9/1004  (idx,y) = (9, 0)
+		read link.fitted.values from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe82d747886]
+		read n=[2008] entries from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe82d747886]
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe82d747886] 0/1004  (idx,y) = (0, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe82d747886] 1/1004  (idx,y) = (1, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe82d747886] 2/1004  (idx,y) = (2, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe82d747886] 3/1004  (idx,y) = (3, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe82d747886] 4/1004  (idx,y) = (4, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe82d747886] 5/1004  (idx,y) = (5, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe82d747886] 6/1004  (idx,y) = (6, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe82d747886] 7/1004  (idx,y) = (7, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe82d747886] 8/1004  (idx,y) = (8, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe82d747886] 9/1004  (idx,y) = (9, 0)
+		A=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe84a2b495b]
+		Aext=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe89622b9]
 		AextPrecision=[3.269e+06]
 		output:
 			summary=[1]
@@ -13410,12 +13406,12 @@ inla_build...
 		tag=[INLA.Data1]
 		family=[POISSON]
 		likelihood=[POISSON]
-		file->name=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a8532e25b9]
-		file->name=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a85f9649b7]
-		file->name=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a865a64f0c]
-		file->name=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a87f9bec8]
-		read n=[1704] entries from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a8532e25b9]
-			0/568  (idx,a,y,d) = (0, 0, 31, 1)
+		file->name=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe856d648d1]
+		file->name=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe855e0ae3]
+		file->name=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe860ff3f77]
+		file->name=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe87b56c5d]
+		read n=[1704] entries from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe856d648d1]
+			0/568  (idx,a,y,d) = (0, 0, 32, 1)
 			1/568  (idx,a,y,d) = (1, 0.000434028, 0, 1)
 			2/568  (idx,a,y,d) = (2, 0.000434028, 0, 1)
 			3/568  (idx,a,y,d) = (3, 0.000434028, 0, 1)
@@ -13446,19 +13442,19 @@ inla_build...
 		nrep=[1]
 		ngroup=[1]
 		Alocal=[no]
-		read covariates from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a872f93999]
-		read n=[872] entries from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a872f93999]
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a872f93999] 0/436  (idx,y) = (0, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a872f93999] 1/436  (idx,y) = (1, 1)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a872f93999] 2/436  (idx,y) = (2, 2)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a872f93999] 3/436  (idx,y) = (3, 3)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a872f93999] 4/436  (idx,y) = (4, 4)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a872f93999] 5/436  (idx,y) = (5, 5)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a872f93999] 6/436  (idx,y) = (6, 6)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a872f93999] 7/436  (idx,y) = (7, 7)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a872f93999] 8/436  (idx,y) = (8, 8)
-		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a872f93999] 9/436  (idx,y) = (9, 9)
-		file for locations=[C:/Users/2966362B/AppData/Local/Temp/RtmpWoRZw7/file63a873353f4f/data.files/file63a8570c2e15]
+		read covariates from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe86af2506]
+		read n=[872] entries from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe86af2506]
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe86af2506] 0/436  (idx,y) = (0, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe86af2506] 1/436  (idx,y) = (1, 1)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe86af2506] 2/436  (idx,y) = (2, 2)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe86af2506] 3/436  (idx,y) = (3, 3)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe86af2506] 4/436  (idx,y) = (4, 4)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe86af2506] 5/436  (idx,y) = (5, 5)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe86af2506] 6/436  (idx,y) = (6, 6)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe86af2506] 7/436  (idx,y) = (7, 7)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe86af2506] 8/436  (idx,y) = (8, 8)
+		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe86af2506] 9/436  (idx,y) = (9, 9)
+		file for locations=[C:/Users/2966362B/AppData/Local/Temp/Rtmpkvq5lz/file7fe82a596df2/data.files/file7fe853e12c92]
 			nlocations=[436]
 			locations[0]=[1]
 			locations[1]=[2]
@@ -13484,993 +13480,993 @@ inla_build...
 		name[step_size] length[1] type[DOUBLE]
 			idx=0 1
 		name[linpoint] length[436] type[DOUBLE]
-			idx=0 1.50697
-			idx=1 1.50828
-			idx=2 1.50822
-			idx=3 1.50692
-			idx=4 1.50786
-			idx=5 1.50914
-			idx=6 1.50736
-			idx=7 1.50664
-			idx=8 1.50668
-			idx=9 1.50937
-			idx=10 1.50889
-			idx=11 1.50692
-			idx=12 1.50834
-			idx=13 1.50792
-			idx=14 1.50669
-			idx=15 1.50704
-			idx=16 1.50737
-			idx=17 1.50875
-			idx=18 1.50767
-			idx=19 1.50669
-			idx=20 1.50847
-			idx=21 1.50841
-			idx=22 1.50687
-			idx=23 1.50681
-			idx=24 1.50894
-			idx=25 1.50929
-			idx=26 1.50715
-			idx=27 1.50669
-			idx=28 1.50693
-			idx=29 1.5082
-			idx=30 1.50809
-			idx=31 1.50677
-			idx=32 1.50943
-			idx=33 1.50821
-			idx=34 1.51057
-			idx=35 1.50677
-			idx=36 1.50665
-			idx=37 1.50746
-			idx=38 1.51061
-			idx=39 1.50769
-			idx=40 1.50684
-			idx=41 1.50884
-			idx=42 1.51138
-			idx=43 1.50696
-			idx=44 1.50651
-			idx=45 1.50664
-			idx=46 1.50814
-			idx=47 1.5085
-			idx=48 1.50662
-			idx=49 1.50941
-			idx=50 1.50898
-			idx=51 1.5078
-			idx=52 1.50816
-			idx=53 1.50658
-			idx=54 1.50721
-			idx=55 1.50703
-			idx=56 1.50822
-			idx=57 1.50807
-			idx=58 1.51137
-			idx=59 1.50733
-			idx=60 1.50674
-			idx=61 1.50652
-			idx=62 1.50851
-			idx=63 1.51
-			idx=64 1.50673
-			idx=65 1.5084
-			idx=66 1.50912
-			idx=67 1.50851
-			idx=68 1.50841
-			idx=69 1.5066
-			idx=70 1.50779
-			idx=71 1.50678
-			idx=72 1.50796
-			idx=73 1.50656
-			idx=74 1.5077
-			idx=75 1.51053
-			idx=76 1.50735
-			idx=77 1.50894
-			idx=78 1.50858
-			idx=79 1.50701
-			idx=80 1.50702
-			idx=81 1.50705
-			idx=82 1.50701
-			idx=83 1.50703
-			idx=84 1.50704
-			idx=85 1.50705
-			idx=86 1.50821
-			idx=87 1.50825
-			idx=88 1.50828
-			idx=89 1.50832
-			idx=90 1.50832
-			idx=91 1.50832
-			idx=92 1.50833
-			idx=93 1.50833
-			idx=94 1.50711
-			idx=95 1.50709
-			idx=96 1.50707
-			idx=97 1.50793
-			idx=98 1.50687
-			idx=99 1.50753
-			idx=100 1.50879
-			idx=101 1.50841
-			idx=102 1.50692
-			idx=103 1.50854
-			idx=104 1.50729
-			idx=105 1.50716
-			idx=106 1.50691
-			idx=107 1.50796
-			idx=108 1.50864
-			idx=109 1.90581
-			idx=110 1.90659
-			idx=111 1.90656
-			idx=112 1.90578
-			idx=113 1.90635
-			idx=114 1.90711
-			idx=115 1.90604
-			idx=116 1.90561
-			idx=117 1.90564
-			idx=118 1.90725
-			idx=119 1.90696
-			idx=120 1.90578
-			idx=121 1.90663
-			idx=122 1.90638
-			idx=123 1.90564
-			idx=124 1.90585
-			idx=125 1.90605
-			idx=126 1.90688
-			idx=127 1.90623
-			idx=128 1.90564
-			idx=129 1.90671
-			idx=130 1.90667
-			idx=131 1.90575
-			idx=132 1.90572
-			idx=133 1.90699
-			idx=134 1.9072
-			idx=135 1.90592
-			idx=136 1.90565
-			idx=137 1.90579
-			idx=138 1.90655
-			idx=139 1.90648
-			idx=140 1.90569
-			idx=141 1.90728
-			idx=142 1.90656
-			idx=143 1.90796
-			idx=144 1.90569
-			idx=145 1.90562
-			idx=146 1.9061
-			idx=147 1.90799
-			idx=148 1.90624
-			idx=149 1.90573
-			idx=150 1.90693
-			idx=151 1.90845
-			idx=152 1.90581
-			idx=153 1.90553
-			idx=154 1.90561
-			idx=155 1.90651
-			idx=156 1.90673
-			idx=157 1.9056
-			idx=158 1.90727
-			idx=159 1.90702
-			idx=160 1.90631
-			idx=161 1.90653
-			idx=162 1.90558
-			idx=163 1.90596
-			idx=164 1.90585
-			idx=165 1.90656
-			idx=166 1.90647
-			idx=167 1.90844
-			idx=168 1.90603
-			idx=169 1.90567
-			idx=170 1.90554
-			idx=171 1.90673
-			idx=172 1.90762
-			idx=173 1.90567
-			idx=174 1.90667
-			idx=175 1.9071
-			idx=176 1.90673
-			idx=177 1.90668
-			idx=178 1.90559
-			idx=179 1.9063
-			idx=180 1.9057
-			idx=181 1.9064
-			idx=182 1.90556
-			idx=183 1.90625
-			idx=184 1.90794
-			idx=185 1.90604
-			idx=186 1.90699
-			idx=187 1.90677
-			idx=188 1.90583
-			idx=189 1.90584
-			idx=190 1.90586
-			idx=191 1.90584
-			idx=192 1.90584
-			idx=193 1.90585
-			idx=194 1.90586
-			idx=195 1.90655
-			idx=196 1.90658
-			idx=197 1.9066
-			idx=198 1.90662
-			idx=199 1.90662
-			idx=200 1.90662
-			idx=201 1.90662
-			idx=202 1.90663
-			idx=203 1.9059
-			idx=204 1.90588
-			idx=205 1.90587
-			idx=206 1.90638
-			idx=207 1.90575
-			idx=208 1.90615
-			idx=209 1.9069
-			idx=210 1.90668
-			idx=211 1.90578
-			idx=212 1.90675
-			idx=213 1.906
-			idx=214 1.90592
-			idx=215 1.90578
-			idx=216 1.9064
-			idx=217 1.90681
-			idx=218 2.10804
-			idx=219 2.10836
-			idx=220 2.10835
-			idx=221 2.10803
-			idx=222 2.10826
-			idx=223 2.10857
-			idx=224 2.10814
-			idx=225 2.10797
-			idx=226 2.10798
-			idx=227 2.10862
-			idx=228 2.10851
-			idx=229 2.10803
-			idx=230 2.10838
-			idx=231 2.10827
-			idx=232 2.10798
-			idx=233 2.10806
-			idx=234 2.10814
-			idx=235 2.10847
-			idx=236 2.10822
-			idx=237 2.10798
-			idx=238 2.10841
-			idx=239 2.10839
-			idx=240 2.10802
-			idx=241 2.10801
-			idx=242 2.10852
-			idx=243 2.1086
-			idx=244 2.10809
-			idx=245 2.10798
-			idx=246 2.10804
-			idx=247 2.10834
-			idx=248 2.10831
-			idx=249 2.108
-			idx=250 2.10864
-			idx=251 2.10834
-			idx=252 2.10891
-			idx=253 2.108
-			idx=254 2.10797
-			idx=255 2.10816
-			idx=256 2.10892
-			idx=257 2.10822
-			idx=258 2.10801
-			idx=259 2.1085
-			idx=260 2.1091
-			idx=261 2.10804
-			idx=262 2.10793
-			idx=263 2.10797
-			idx=264 2.10833
-			idx=265 2.10841
-			idx=266 2.10796
-			idx=267 2.10863
-			idx=268 2.10853
-			idx=269 2.10825
-			idx=270 2.10833
-			idx=271 2.10795
-			idx=272 2.1081
-			idx=273 2.10806
-			idx=274 2.10835
-			idx=275 2.10831
-			idx=276 2.1091
-			idx=277 2.10813
-			idx=278 2.10799
-			idx=279 2.10794
-			idx=280 2.10842
-			idx=281 2.10877
-			idx=282 2.10799
-			idx=283 2.10839
-			idx=284 2.10856
-			idx=285 2.10842
-			idx=286 2.10839
-			idx=287 2.10796
-			idx=288 2.10824
-			idx=289 2.108
-			idx=290 2.10828
-			idx=291 2.10795
-			idx=292 2.10822
-			idx=293 2.1089
-			idx=294 2.10814
-			idx=295 2.10852
-			idx=296 2.10843
-			idx=297 2.10806
-			idx=298 2.10806
-			idx=299 2.10807
-			idx=300 2.10806
-			idx=301 2.10806
-			idx=302 2.10806
-			idx=303 2.10807
-			idx=304 2.10834
-			idx=305 2.10835
-			idx=306 2.10836
-			idx=307 2.10837
-			idx=308 2.10837
-			idx=309 2.10837
-			idx=310 2.10837
-			idx=311 2.10837
-			idx=312 2.10808
-			idx=313 2.10807
-			idx=314 2.10807
-			idx=315 2.10828
-			idx=316 2.10802
-			idx=317 2.10818
-			idx=318 2.10848
-			idx=319 2.10839
-			idx=320 2.10803
-			idx=321 2.10842
-			idx=322 2.10812
-			idx=323 2.10809
-			idx=324 2.10803
-			idx=325 2.10828
-			idx=326 2.10845
-			idx=327 2.1763
-			idx=328 2.17638
-			idx=329 2.17638
-			idx=330 2.1763
-			idx=331 2.17636
-			idx=332 2.17644
-			idx=333 2.17633
-			idx=334 2.17628
-			idx=335 2.17628
-			idx=336 2.17646
-			idx=337 2.17642
-			idx=338 2.1763
-			idx=339 2.17639
-			idx=340 2.17636
-			idx=341 2.17628
-			idx=342 2.1763
-			idx=343 2.17633
-			idx=344 2.17642
-			idx=345 2.17635
-			idx=346 2.17628
-			idx=347 2.1764
-			idx=348 2.17639
-			idx=349 2.17629
-			idx=350 2.17629
-			idx=351 2.17643
-			idx=352 2.17645
-			idx=353 2.17631
-			idx=354 2.17628
-			idx=355 2.1763
-			idx=356 2.17638
-			idx=357 2.17637
-			idx=358 2.17629
-			idx=359 2.17646
-			idx=360 2.17638
-			idx=361 2.17653
-			idx=362 2.17629
-			idx=363 2.17628
-			idx=364 2.17633
-			idx=365 2.17653
-			idx=366 2.17635
-			idx=367 2.17629
-			idx=368 2.17642
-			idx=369 2.17658
-			idx=370 2.1763
-			idx=371 2.17627
-			idx=372 2.17628
-			idx=373 2.17638
-			idx=374 2.1764
-			idx=375 2.17628
-			idx=376 2.17646
-			idx=377 2.17643
-			idx=378 2.17635
-			idx=379 2.17638
-			idx=380 2.17627
-			idx=381 2.17632
-			idx=382 2.1763
-			idx=383 2.17638
-			idx=384 2.17637
-			idx=385 2.17658
-			idx=386 2.17632
-			idx=387 2.17629
-			idx=388 2.17627
-			idx=389 2.1764
-			idx=390 2.1765
-			idx=391 2.17628
-			idx=392 2.17639
-			idx=393 2.17644
-			idx=394 2.1764
-			idx=395 2.17639
-			idx=396 2.17628
-			idx=397 2.17635
-			idx=398 2.17629
-			idx=399 2.17636
-			idx=400 2.17627
-			idx=401 2.17635
-			idx=402 2.17653
-			idx=403 2.17632
-			idx=404 2.17643
-			idx=405 2.1764
-			idx=406 2.1763
-			idx=407 2.1763
-			idx=408 2.17631
-			idx=409 2.1763
-			idx=410 2.1763
-			idx=411 2.1763
-			idx=412 2.17631
-			idx=413 2.17638
-			idx=414 2.17638
-			idx=415 2.17638
-			idx=416 2.17639
-			idx=417 2.17639
-			idx=418 2.17639
-			idx=419 2.17639
-			idx=420 2.17639
-			idx=421 2.17631
-			idx=422 2.17631
-			idx=423 2.17631
-			idx=424 2.17636
-			idx=425 2.17629
-			idx=426 2.17634
-			idx=427 2.17642
-			idx=428 2.17639
-			idx=429 2.1763
-			idx=430 2.1764
-			idx=431 2.17632
-			idx=432 2.17631
-			idx=433 2.1763
-			idx=434 2.17636
-			idx=435 2.17641
+			idx=0 0.930178
+			idx=1 0.930112
+			idx=2 0.93011
+			idx=3 0.930489
+			idx=4 0.930037
+			idx=5 0.930185
+			idx=6 0.930247
+			idx=7 0.930743
+			idx=8 0.930251
+			idx=9 0.930068
+			idx=10 0.930019
+			idx=11 0.930395
+			idx=12 0.930116
+			idx=13 0.93004
+			idx=14 0.930773
+			idx=15 0.930035
+			idx=16 0.930041
+			idx=17 0.930193
+			idx=18 0.930157
+			idx=19 0.931022
+			idx=20 0.930063
+			idx=21 0.930047
+			idx=22 0.930422
+			idx=23 0.930174
+			idx=24 0.930096
+			idx=25 0.930105
+			idx=26 0.930357
+			idx=27 0.930472
+			idx=28 0.930073
+			idx=29 0.93008
+			idx=30 0.930056
+			idx=31 0.930542
+			idx=32 0.931849
+			idx=33 0.930492
+			idx=34 0.930091
+			idx=35 0.931418
+			idx=36 0.930203
+			idx=37 0.93044
+			idx=38 0.93136
+			idx=39 0.930888
+			idx=40 0.931896
+			idx=41 0.930179
+			idx=42 0.930151
+			idx=43 0.930509
+			idx=44 0.930514
+			idx=45 0.930021
+			idx=46 0.929974
+			idx=47 0.929941
+			idx=48 0.930562
+			idx=49 0.930364
+			idx=50 0.930949
+			idx=51 0.930126
+			idx=52 0.933564
+			idx=53 0.932428
+			idx=54 0.930866
+			idx=55 0.929982
+			idx=56 0.932672
+			idx=57 0.930867
+			idx=58 0.930524
+			idx=59 0.931502
+			idx=60 0.930782
+			idx=61 0.930154
+			idx=62 0.930119
+			idx=63 0.929999
+			idx=64 0.93061
+			idx=65 0.930172
+			idx=66 0.931636
+			idx=67 0.929973
+			idx=68 0.93209
+			idx=69 0.931205
+			idx=70 0.931914
+			idx=71 0.930012
+			idx=72 0.931374
+			idx=73 0.931279
+			idx=74 0.930102
+			idx=75 0.930449
+			idx=76 0.930346
+			idx=77 0.931426
+			idx=78 0.930444
+			idx=79 0.933274
+			idx=80 0.93031
+			idx=81 0.930284
+			idx=82 0.930553
+			idx=83 0.930542
+			idx=84 0.93053
+			idx=85 0.930517
+			idx=86 0.9302
+			idx=87 0.930194
+			idx=88 0.930191
+			idx=89 0.930193
+			idx=90 0.930199
+			idx=91 0.930194
+			idx=92 0.930193
+			idx=93 0.930194
+			idx=94 0.930251
+			idx=95 0.930261
+			idx=96 0.930271
+			idx=97 0.930171
+			idx=98 0.930651
+			idx=99 0.930334
+			idx=100 0.930232
+			idx=101 0.930208
+			idx=102 0.930371
+			idx=103 0.930176
+			idx=104 0.93018
+			idx=105 0.930447
+			idx=106 0.930673
+			idx=107 0.930203
+			idx=108 0.93017
+			idx=109 1.39218
+			idx=110 1.39214
+			idx=111 1.39214
+			idx=112 1.39239
+			idx=113 1.39209
+			idx=114 1.39219
+			idx=115 1.39223
+			idx=116 1.39256
+			idx=117 1.39223
+			idx=118 1.39211
+			idx=119 1.39208
+			idx=120 1.39233
+			idx=121 1.39214
+			idx=122 1.39209
+			idx=123 1.39258
+			idx=124 1.39209
+			idx=125 1.39209
+			idx=126 1.39219
+			idx=127 1.39217
+			idx=128 1.39274
+			idx=129 1.39211
+			idx=130 1.3921
+			idx=131 1.39234
+			idx=132 1.39218
+			idx=133 1.39213
+			idx=134 1.39213
+			idx=135 1.3923
+			idx=136 1.39238
+			idx=137 1.39211
+			idx=138 1.39212
+			idx=139 1.3921
+			idx=140 1.39242
+			idx=141 1.39329
+			idx=142 1.39239
+			idx=143 1.39213
+			idx=144 1.393
+			idx=145 1.3922
+			idx=146 1.39236
+			idx=147 1.39297
+			idx=148 1.39265
+			idx=149 1.39332
+			idx=150 1.39218
+			idx=151 1.39217
+			idx=152 1.3924
+			idx=153 1.39241
+			idx=154 1.39208
+			idx=155 1.39205
+			idx=156 1.39203
+			idx=157 1.39244
+			idx=158 1.39231
+			idx=159 1.39269
+			idx=160 1.39215
+			idx=161 1.39442
+			idx=162 1.39367
+			idx=163 1.39264
+			idx=164 1.39205
+			idx=165 1.39383
+			idx=166 1.39264
+			idx=167 1.39241
+			idx=168 1.39306
+			idx=169 1.39258
+			idx=170 1.39217
+			idx=171 1.39214
+			idx=172 1.39206
+			idx=173 1.39247
+			idx=174 1.39218
+			idx=175 1.39315
+			idx=176 1.39205
+			idx=177 1.39345
+			idx=178 1.39286
+			idx=179 1.39333
+			idx=180 1.39207
+			idx=181 1.39297
+			idx=182 1.39291
+			idx=183 1.39213
+			idx=184 1.39236
+			idx=185 1.39229
+			idx=186 1.39301
+			idx=187 1.39236
+			idx=188 1.39423
+			idx=189 1.39227
+			idx=190 1.39225
+			idx=191 1.39243
+			idx=192 1.39242
+			idx=193 1.39242
+			idx=194 1.39241
+			idx=195 1.3922
+			idx=196 1.39219
+			idx=197 1.39219
+			idx=198 1.39219
+			idx=199 1.3922
+			idx=200 1.39219
+			idx=201 1.39219
+			idx=202 1.39219
+			idx=203 1.39223
+			idx=204 1.39224
+			idx=205 1.39224
+			idx=206 1.39218
+			idx=207 1.3925
+			idx=208 1.39229
+			idx=209 1.39222
+			idx=210 1.3922
+			idx=211 1.39231
+			idx=212 1.39218
+			idx=213 1.39218
+			idx=214 1.39236
+			idx=215 1.39251
+			idx=216 1.3922
+			idx=217 1.39218
+			idx=218 1.6557
+			idx=219 1.65568
+			idx=220 1.65568
+			idx=221 1.6558
+			idx=222 1.65566
+			idx=223 1.6557
+			idx=224 1.65572
+			idx=225 1.65587
+			idx=226 1.65572
+			idx=227 1.65567
+			idx=228 1.65565
+			idx=229 1.65577
+			idx=230 1.65568
+			idx=231 1.65566
+			idx=232 1.65588
+			idx=233 1.65566
+			idx=234 1.65566
+			idx=235 1.6557
+			idx=236 1.65569
+			idx=237 1.65596
+			idx=238 1.65566
+			idx=239 1.65566
+			idx=240 1.65577
+			idx=241 1.6557
+			idx=242 1.65567
+			idx=243 1.65568
+			idx=244 1.65575
+			idx=245 1.65579
+			idx=246 1.65567
+			idx=247 1.65567
+			idx=248 1.65566
+			idx=249 1.65581
+			idx=250 1.65621
+			idx=251 1.6558
+			idx=252 1.65567
+			idx=253 1.65608
+			idx=254 1.65571
+			idx=255 1.65578
+			idx=256 1.65606
+			idx=257 1.65592
+			idx=258 1.65623
+			idx=259 1.6557
+			idx=260 1.65569
+			idx=261 1.6558
+			idx=262 1.6558
+			idx=263 1.65565
+			idx=264 1.65564
+			idx=265 1.65563
+			idx=266 1.65582
+			idx=267 1.65576
+			idx=268 1.65594
+			idx=269 1.65568
+			idx=270 1.65674
+			idx=271 1.65639
+			idx=272 1.65591
+			idx=273 1.65564
+			idx=274 1.65646
+			idx=275 1.65591
+			idx=276 1.65581
+			idx=277 1.65611
+			idx=278 1.65589
+			idx=279 1.65569
+			idx=280 1.65568
+			idx=281 1.65565
+			idx=282 1.65583
+			idx=283 1.6557
+			idx=284 1.65615
+			idx=285 1.65564
+			idx=286 1.65629
+			idx=287 1.65601
+			idx=288 1.65623
+			idx=289 1.65565
+			idx=290 1.65607
+			idx=291 1.65604
+			idx=292 1.65568
+			idx=293 1.65578
+			idx=294 1.65575
+			idx=295 1.65608
+			idx=296 1.65578
+			idx=297 1.65665
+			idx=298 1.65574
+			idx=299 1.65573
+			idx=300 1.65582
+			idx=301 1.65581
+			idx=302 1.65581
+			idx=303 1.6558
+			idx=304 1.65571
+			idx=305 1.6557
+			idx=306 1.6557
+			idx=307 1.6557
+			idx=308 1.65571
+			idx=309 1.6557
+			idx=310 1.6557
+			idx=311 1.6557
+			idx=312 1.65572
+			idx=313 1.65573
+			idx=314 1.65573
+			idx=315 1.6557
+			idx=316 1.65585
+			idx=317 1.65575
+			idx=318 1.65572
+			idx=319 1.65571
+			idx=320 1.65576
+			idx=321 1.6557
+			idx=322 1.6557
+			idx=323 1.65578
+			idx=324 1.65585
+			idx=325 1.65571
+			idx=326 1.6557
+			idx=327 1.75747
+			idx=328 1.75746
+			idx=329 1.75746
+			idx=330 1.7575
+			idx=331 1.75745
+			idx=332 1.75747
+			idx=333 1.75747
+			idx=334 1.75752
+			idx=335 1.75747
+			idx=336 1.75746
+			idx=337 1.75745
+			idx=338 1.75749
+			idx=339 1.75746
+			idx=340 1.75745
+			idx=341 1.75752
+			idx=342 1.75745
+			idx=343 1.75745
+			idx=344 1.75747
+			idx=345 1.75747
+			idx=346 1.75755
+			idx=347 1.75746
+			idx=348 1.75746
+			idx=349 1.75749
+			idx=350 1.75747
+			idx=351 1.75746
+			idx=352 1.75746
+			idx=353 1.75748
+			idx=354 1.75749
+			idx=355 1.75746
+			idx=356 1.75746
+			idx=357 1.75746
+			idx=358 1.7575
+			idx=359 1.75762
+			idx=360 1.7575
+			idx=361 1.75746
+			idx=362 1.75758
+			idx=363 1.75747
+			idx=364 1.75749
+			idx=365 1.75758
+			idx=366 1.75753
+			idx=367 1.75763
+			idx=368 1.75747
+			idx=369 1.75746
+			idx=370 1.7575
+			idx=371 1.7575
+			idx=372 1.75745
+			idx=373 1.75745
+			idx=374 1.75745
+			idx=375 1.7575
+			idx=376 1.75748
+			idx=377 1.75754
+			idx=378 1.75746
+			idx=379 1.75778
+			idx=380 1.75768
+			idx=381 1.75753
+			idx=382 1.75745
+			idx=383 1.7577
+			idx=384 1.75753
+			idx=385 1.7575
+			idx=386 1.75759
+			idx=387 1.75752
+			idx=388 1.75747
+			idx=389 1.75746
+			idx=390 1.75745
+			idx=391 1.75751
+			idx=392 1.75747
+			idx=393 1.7576
+			idx=394 1.75745
+			idx=395 1.75764
+			idx=396 1.75756
+			idx=397 1.75763
+			idx=398 1.75745
+			idx=399 1.75758
+			idx=400 1.75757
+			idx=401 1.75746
+			idx=402 1.75749
+			idx=403 1.75748
+			idx=404 1.75758
+			idx=405 1.75749
+			idx=406 1.75775
+			idx=407 1.75748
+			idx=408 1.75748
+			idx=409 1.7575
+			idx=410 1.7575
+			idx=411 1.7575
+			idx=412 1.7575
+			idx=413 1.75747
+			idx=414 1.75747
+			idx=415 1.75747
+			idx=416 1.75747
+			idx=417 1.75747
+			idx=418 1.75747
+			idx=419 1.75747
+			idx=420 1.75747
+			idx=421 1.75747
+			idx=422 1.75748
+			idx=423 1.75748
+			idx=424 1.75747
+			idx=425 1.75751
+			idx=426 1.75748
+			idx=427 1.75747
+			idx=428 1.75747
+			idx=429 1.75749
+			idx=430 1.75747
+			idx=431 1.75747
+			idx=432 1.75749
+			idx=433 1.75751
+			idx=434 1.75747
+			idx=435 1.75747
 		name[mag_grad_sq] length[436] type[DOUBLE]
-			idx=0 1.65075e-06
-			idx=1 2.66266e-06
-			idx=2 3.50753e-06
-			idx=3 1.56224e-06
-			idx=4 1.77005e-05
-			idx=5 0.000133379
-			idx=6 6.30476e-06
-			idx=7 6.21396e-07
-			idx=8 2.67191e-06
-			idx=9 0.000100398
-			idx=10 9.32484e-05
-			idx=11 2.65771e-06
-			idx=12 1.10062e-05
-			idx=13 2.63258e-05
-			idx=14 4.50357e-07
-			idx=15 1.11949e-05
-			idx=16 2.32176e-05
-			idx=17 3.77596e-05
-			idx=18 7.35325e-06
-			idx=19 1.01073e-06
-			idx=20 8.92992e-06
-			idx=21 2.81396e-06
-			idx=22 4.03978e-06
-			idx=23 3.44801e-06
-			idx=24 7.49865e-05
-			idx=25 0.000280811
-			idx=26 5.09801e-06
-			idx=27 2.4393e-06
-			idx=28 5.4878e-06
-			idx=29 5.67084e-07
-			idx=30 1.20914e-05
-			idx=31 2.84599e-06
-			idx=32 7.18939e-05
-			idx=33 7.11219e-06
-			idx=34 6.21004e-05
-			idx=35 2.02144e-05
-			idx=36 1.55958e-06
-			idx=37 4.01754e-05
-			idx=38 0.000178607
-			idx=39 4.17081e-05
-			idx=40 5.81739e-05
-			idx=41 7.56448e-06
-			idx=42 0.00040072
-			idx=43 5.72778e-06
-			idx=44 2.26295e-06
-			idx=45 7.28506e-06
-			idx=46 6.83434e-06
-			idx=47 1.13978e-05
-			idx=48 5.32353e-06
-			idx=49 9.40666e-05
-			idx=50 0.00036622
-			idx=51 3.31292e-05
-			idx=52 4.81244e-05
-			idx=53 8.55607e-07
-			idx=54 3.54888e-05
-			idx=55 1.12875e-05
-			idx=56 6.05993e-06
-			idx=57 3.97542e-05
-			idx=58 4.15754e-05
-			idx=59 2.8946e-05
-			idx=60 4.15009e-06
-			idx=61 1.63851e-06
-			idx=62 5.44995e-05
-			idx=63 0.000199916
-			idx=64 5.94407e-06
-			idx=65 4.36345e-06
-			idx=66 7.22787e-06
-			idx=67 2.2559e-05
-			idx=68 8.66633e-05
-			idx=69 4.66068e-07
-			idx=70 0.000181145
-			idx=71 5.5916e-06
-			idx=72 0.000174096
-			idx=73 5.88926e-07
-			idx=74 8.48693e-05
-			idx=75 0.000169708
-			idx=76 9.57455e-06
-			idx=77 4.82782e-05
-			idx=78 0.000264016
-			idx=79 8.88215e-05
-			idx=80 1.12429e-05
-			idx=81 5.18199e-08
-			idx=82 2.74056e-08
-			idx=83 2.74056e-08
-			idx=84 3.37392e-08
-			idx=85 3.37392e-08
-			idx=86 2.71459e-07
-			idx=87 2.71459e-07
-			idx=88 1.85406e-07
-			idx=89 1.85406e-07
-			idx=90 5.14719e-09
-			idx=91 5.14719e-09
-			idx=92 1.35644e-08
-			idx=93 1.35644e-08
-			idx=94 7.14562e-08
-			idx=95 7.14562e-08
-			idx=96 5.18199e-08
-			idx=97 7.44001e-05
-			idx=98 1.43896e-06
-			idx=99 3.51768e-06
-			idx=100 4.11806e-06
-			idx=101 1.43561e-06
-			idx=102 2.12677e-06
-			idx=103 6.31449e-05
-			idx=104 2.34272e-06
-			idx=105 1.55248e-06
-			idx=106 1.41373e-06
-			idx=107 1.86152e-06
-			idx=108 1.52991e-05
-			idx=109 5.92039e-07
-			idx=110 9.5309e-07
-			idx=111 1.25566e-06
-			idx=112 5.60326e-07
-			idx=113 6.34196e-06
-			idx=114 4.76518e-05
-			idx=115 2.2593e-06
-			idx=116 2.22945e-07
-			idx=117 9.58577e-07
-			idx=118 3.59092e-05
-			idx=119 3.33345e-05
-			idx=120 9.53263e-07
-			idx=121 3.93864e-06
-			idx=122 9.42576e-06
-			idx=123 1.61573e-07
-			idx=124 4.01398e-06
-			idx=125 8.32033e-06
-			idx=126 1.35033e-05
-			idx=127 2.63492e-06
-			idx=128 3.6262e-07
-			idx=129 3.19656e-06
-			idx=130 1.00726e-06
-			idx=131 1.44914e-06
-			idx=132 1.23678e-06
-			idx=133 2.68391e-05
-			idx=134 0.000100249
-			idx=135 1.82772e-06
-			idx=136 8.75189e-07
-			idx=137 1.96847e-06
-			idx=138 2.03023e-07
-			idx=139 4.3285e-06
-			idx=140 1.02088e-06
-			idx=141 2.57135e-05
-			idx=142 2.5459e-06
-			idx=143 2.21573e-05
-			idx=144 7.2483e-06
-			idx=145 5.59542e-07
-			idx=146 1.43925e-05
-			idx=147 6.37817e-05
-			idx=148 1.49374e-05
-			idx=149 2.08523e-05
-			idx=150 2.70643e-06
-			idx=151 0.000143034
-			idx=152 2.05417e-06
-			idx=153 8.11923e-07
-			idx=154 2.61321e-06
-			idx=155 2.4465e-06
-			idx=156 4.0801e-06
-			idx=157 1.90969e-06
-			idx=158 3.36434e-05
-			idx=159 0.000130766
-			idx=160 1.18618e-05
-			idx=161 1.72389e-05
-			idx=162 3.06968e-07
-			idx=163 1.27212e-05
-			idx=164 4.04716e-06
-			idx=165 2.16985e-06
-			idx=166 1.42282e-05
-			idx=167 1.48295e-05
-			idx=168 1.03788e-05
-			idx=169 1.48894e-06
-			idx=170 5.87876e-07
-			idx=171 1.94933e-05
-			idx=172 7.13816e-05
-			idx=173 2.13199e-06
-			idx=174 1.56204e-06
-			idx=175 2.58411e-06
-			idx=176 8.07644e-06
-			idx=177 3.09993e-05
-			idx=178 1.6721e-07
-			idx=179 6.48205e-05
-			idx=180 2.00549e-06
-			idx=181 6.23076e-05
-			idx=182 2.11306e-07
-			idx=183 3.03824e-05
-			idx=184 6.06009e-05
-			idx=185 3.43269e-06
-			idx=186 1.72717e-05
-			idx=187 9.43529e-05
-			idx=188 3.18273e-05
-			idx=189 4.03227e-06
-			idx=190 1.85807e-08
-			idx=191 9.82725e-09
-			idx=192 9.82725e-09
-			idx=193 1.20979e-08
-			idx=194 1.20979e-08
-			idx=195 9.71867e-08
-			idx=196 9.71867e-08
-			idx=197 6.63703e-08
-			idx=198 6.63703e-08
-			idx=199 1.84251e-09
-			idx=200 1.84251e-09
-			idx=201 4.85543e-09
-			idx=202 4.85543e-09
-			idx=203 2.56202e-08
-			idx=204 2.56202e-08
-			idx=205 1.85807e-08
-			idx=206 2.66295e-05
-			idx=207 5.16184e-07
-			idx=208 1.26094e-06
-			idx=209 1.47267e-06
-			idx=210 5.13918e-07
-			idx=211 7.6288e-07
-			idx=212 2.2585e-05
-			idx=213 8.39984e-07
-			idx=214 5.567e-07
-			idx=215 5.07109e-07
-			idx=216 6.66638e-07
-			idx=217 5.47401e-06
-			idx=218 9.58009e-08
-			idx=219 1.53824e-07
-			idx=220 2.0269e-07
-			idx=221 9.0676e-08
-			idx=222 1.02487e-06
-			idx=223 7.67135e-06
-			idx=224 3.65184e-07
-			idx=225 3.60934e-08
-			idx=226 1.55177e-07
-			idx=227 5.78959e-06
-			idx=228 5.37075e-06
-			idx=229 1.54269e-07
-			idx=230 6.35461e-07
-			idx=231 1.52181e-06
-			idx=232 2.61564e-08
-			idx=233 6.49296e-07
-			idx=234 1.34493e-06
-			idx=235 2.17667e-06
-			idx=236 4.25872e-07
-			idx=237 5.87035e-08
-			idx=238 5.15937e-07
-			idx=239 1.62571e-07
-			idx=240 2.34552e-07
-			idx=241 2.00163e-07
-			idx=242 4.33127e-06
-			idx=243 1.61228e-05
-			idx=244 2.95609e-07
-			idx=245 1.41691e-07
-			idx=246 3.18588e-07
-			idx=247 3.27749e-08
-			idx=248 6.98688e-07
-			idx=249 1.6523e-07
-			idx=250 4.1456e-06
-			idx=251 4.10919e-07
-			idx=252 3.56086e-06
-			idx=253 1.17255e-06
-			idx=254 9.05854e-08
-			idx=255 2.32541e-06
-			idx=256 1.0262e-05
-			idx=257 2.41256e-06
-			idx=258 3.37171e-06
-			idx=259 4.36538e-07
-			idx=260 2.29992e-05
-			idx=261 3.32375e-07
-			idx=262 1.3145e-07
-			idx=263 4.2295e-07
-			idx=264 3.94888e-07
-			idx=265 6.58569e-07
-			idx=266 3.09106e-07
-			idx=267 5.424e-06
-			idx=268 2.10366e-05
-			idx=269 1.91515e-06
-			idx=270 2.78504e-06
-			idx=271 4.96949e-08
-			idx=272 2.05701e-06
-			idx=273 6.54658e-07
-			idx=274 3.50356e-07
-			idx=275 2.29599e-06
-			idx=276 2.38226e-06
-			idx=277 1.67888e-06
-			idx=278 2.41044e-07
-			idx=279 9.51765e-08
-			idx=280 3.143e-06
-			idx=281 1.14828e-05
-			idx=282 3.45022e-07
-			idx=283 2.52139e-07
-			idx=284 4.16405e-07
-			idx=285 1.30382e-06
-			idx=286 4.99853e-06
-			idx=287 2.7069e-08
-			idx=288 1.04575e-05
-			idx=289 3.24536e-07
-			idx=290 1.00541e-05
-			idx=291 3.42116e-08
-			idx=292 4.90437e-06
-			idx=293 9.74962e-06
-			idx=294 5.55202e-07
-			idx=295 2.78557e-06
-			idx=296 1.51959e-05
-			idx=297 5.14403e-06
-			idx=298 6.52483e-07
-			idx=299 3.00567e-09
-			idx=300 1.58983e-09
-			idx=301 1.58983e-09
-			idx=302 1.95708e-09
-			idx=303 1.95708e-09
-			idx=304 1.56895e-08
-			idx=305 1.56895e-08
-			idx=306 1.07129e-08
-			idx=307 1.07129e-08
-			idx=308 2.97391e-10
-			idx=309 2.97391e-10
-			idx=310 7.83664e-10
-			idx=311 7.83664e-10
-			idx=312 4.14414e-09
-			idx=313 4.14414e-09
-			idx=314 3.00567e-09
-			idx=315 4.29747e-06
-			idx=316 8.35484e-08
-			idx=317 2.03895e-07
-			idx=318 2.37386e-07
-			idx=319 8.29541e-08
-			idx=320 1.23471e-07
-			idx=321 3.64137e-06
-			idx=322 1.35873e-07
-			idx=323 9.00626e-08
-			idx=324 8.20743e-08
-			idx=325 1.07659e-07
-			idx=326 8.82995e-07
-			idx=327 6.89458e-09
-			idx=328 1.10491e-08
-			idx=329 1.45609e-08
-			idx=330 6.52611e-09
-			idx=331 7.36863e-08
-			idx=332 5.50009e-07
-			idx=333 2.62599e-08
-			idx=334 2.5985e-09
-			idx=335 1.11711e-08
-			idx=336 4.15549e-07
-			idx=337 3.85291e-07
-			idx=338 1.11033e-08
-			idx=339 4.56337e-08
-			idx=340 1.0934e-07
-			idx=341 1.88303e-09
-			idx=342 4.67164e-08
-			idx=343 9.67167e-08
-			idx=344 1.56207e-07
-			idx=345 3.06226e-08
-			idx=346 4.22615e-09
-			idx=347 3.70611e-08
-			idx=348 1.16776e-08
-			idx=349 1.68833e-08
-			idx=350 1.4407e-08
-			idx=351 3.11092e-07
-			idx=352 1.15511e-06
-			idx=353 2.12666e-08
-			idx=354 1.02011e-08
-			idx=355 2.29313e-08
-			idx=356 2.35465e-09
-			idx=357 5.01915e-08
-			idx=358 1.18932e-08
-			idx=359 2.97544e-07
-			idx=360 2.95176e-08
-			idx=361 2.54976e-07
-			idx=362 8.43684e-08
-			idx=363 6.52152e-09
-			idx=364 1.67168e-07
-			idx=365 7.35431e-07
-			idx=366 1.73386e-07
-			idx=367 2.42522e-07
-			idx=368 3.13423e-08
-			idx=369 1.64752e-06
-			idx=370 2.39192e-08
-			idx=371 9.46383e-09
-			idx=372 3.04437e-08
-			idx=373 2.83667e-08
-			idx=374 4.73082e-08
-			idx=375 2.22504e-08
-			idx=376 3.89295e-07
-			idx=377 1.50745e-06
-			idx=378 1.37603e-07
-			idx=379 2.00196e-07
-			idx=380 3.57764e-09
-			idx=381 1.47961e-07
-			idx=382 4.71019e-08
-			idx=383 2.51741e-08
-			idx=384 1.64901e-07
-			idx=385 1.70531e-07
-			idx=386 1.20795e-07
-			idx=387 1.73533e-08
-			idx=388 6.85226e-09
-			idx=389 2.25596e-07
-			idx=390 8.2281e-07
-			idx=391 2.48323e-08
-			idx=392 1.81129e-08
-			idx=393 2.98756e-08
-			idx=394 9.36704e-08
-			idx=395 3.58801e-07
-			idx=396 1.94873e-09
-			idx=397 7.50939e-07
-			idx=398 2.3357e-08
-			idx=399 7.22079e-07
-			idx=400 2.46315e-09
-			idx=401 3.52323e-07
-			idx=402 6.98678e-07
-			idx=403 3.99429e-08
-			idx=404 1.99981e-07
-			idx=405 1.08982e-06
-			idx=406 3.69881e-07
-			idx=407 4.69578e-08
-			idx=408 2.1626e-10
-			idx=409 1.14397e-10
-			idx=410 1.14397e-10
-			idx=411 1.40817e-10
-			idx=412 1.40817e-10
-			idx=413 1.12719e-09
-			idx=414 1.12719e-09
-			idx=415 7.69563e-10
-			idx=416 7.69563e-10
-			idx=417 2.13625e-11
-			idx=418 2.13625e-11
-			idx=419 5.62917e-11
-			idx=420 5.62917e-11
-			idx=421 2.98159e-10
-			idx=422 2.98159e-10
-			idx=423 2.1626e-10
-			idx=424 3.08666e-07
-			idx=425 6.01397e-09
-			idx=426 1.46662e-08
-			idx=427 1.70358e-08
-			idx=428 5.95913e-09
-			idx=429 8.88725e-09
-			idx=430 2.61362e-07
-			idx=431 9.77586e-09
-			idx=432 6.48054e-09
-			idx=433 5.90757e-09
-			idx=434 7.73673e-09
-			idx=435 6.33999e-08
+			idx=0 7.14681e-07
+			idx=1 2.12849e-07
+			idx=2 4.40955e-07
+			idx=3 4.64809e-07
+			idx=4 2.74454e-07
+			idx=5 4.46123e-06
+			idx=6 1.14171e-06
+			idx=7 2.33159e-05
+			idx=8 9.83909e-07
+			idx=9 1.71735e-07
+			idx=10 7.33908e-08
+			idx=11 3.00139e-06
+			idx=12 5.80747e-07
+			idx=13 1.16688e-06
+			idx=14 1.58799e-05
+			idx=15 3.64439e-08
+			idx=16 2.20509e-07
+			idx=17 1.88652e-06
+			idx=18 5.74335e-07
+			idx=19 0.000131525
+			idx=20 6.64398e-07
+			idx=21 9.70205e-07
+			idx=22 1.5309e-06
+			idx=23 1.51598e-06
+			idx=24 6.62076e-07
+			idx=25 5.43899e-07
+			idx=26 2.26022e-06
+			idx=27 4.80201e-06
+			idx=28 8.87543e-07
+			idx=29 7.85553e-07
+			idx=30 1.03515e-06
+			idx=31 2.00865e-07
+			idx=32 6.59561e-06
+			idx=33 1.78845e-05
+			idx=34 1.25231e-05
+			idx=35 4.22644e-05
+			idx=36 2.16228e-05
+			idx=37 6.75594e-05
+			idx=38 4.96485e-05
+			idx=39 0.000116613
+			idx=40 7.95371e-05
+			idx=41 6.622e-07
+			idx=42 1.61857e-06
+			idx=43 2.12728e-06
+			idx=44 8.38156e-06
+			idx=45 1.68884e-06
+			idx=46 1.2371e-06
+			idx=47 1.5644e-06
+			idx=48 1.26695e-06
+			idx=49 4.2342e-06
+			idx=50 4.18144e-05
+			idx=51 1.55331e-06
+			idx=52 0.000411272
+			idx=53 0.000222263
+			idx=54 7.06899e-05
+			idx=55 2.76656e-07
+			idx=56 0.000316361
+			idx=57 3.9311e-05
+			idx=58 2.08545e-05
+			idx=59 6.34875e-05
+			idx=60 2.60756e-05
+			idx=61 8.87755e-06
+			idx=62 3.96341e-07
+			idx=63 1.50656e-06
+			idx=64 3.605e-06
+			idx=65 2.73422e-06
+			idx=66 3.31178e-05
+			idx=67 3.53499e-07
+			idx=68 8.69128e-05
+			idx=69 3.84317e-05
+			idx=70 0.000174577
+			idx=71 3.93757e-08
+			idx=72 3.09788e-05
+			idx=73 5.57985e-05
+			idx=74 6.48851e-07
+			idx=75 1.01072e-05
+			idx=76 2.33614e-06
+			idx=77 0.000128061
+			idx=78 2.43227e-05
+			idx=79 0.000225686
+			idx=80 2.05353e-05
+			idx=81 2.61782e-08
+			idx=82 1.90694e-08
+			idx=83 1.90694e-08
+			idx=84 2.67719e-08
+			idx=85 2.67719e-08
+			idx=86 8.99775e-09
+			idx=87 8.99775e-09
+			idx=88 2.91152e-08
+			idx=89 2.91152e-08
+			idx=90 9.20432e-09
+			idx=91 9.20432e-09
+			idx=92 6.54017e-09
+			idx=93 6.54017e-09
+			idx=94 1.49406e-08
+			idx=95 1.49406e-08
+			idx=96 2.61782e-08
+			idx=97 6.27549e-07
+			idx=98 4.88053e-06
+			idx=99 9.54159e-07
+			idx=100 4.54855e-07
+			idx=101 2.97581e-07
+			idx=102 7.67663e-07
+			idx=103 2.64037e-07
+			idx=104 5.14814e-07
+			idx=105 9.73362e-08
+			idx=106 3.51091e-06
+			idx=107 5.84548e-07
+			idx=108 5.22542e-07
+			idx=109 3.13227e-07
+			idx=110 9.32899e-08
+			idx=111 1.93268e-07
+			idx=112 2.0364e-07
+			idx=113 1.20293e-07
+			idx=114 1.95486e-06
+			idx=115 5.00316e-07
+			idx=116 1.02098e-05
+			idx=117 4.31187e-07
+			idx=118 7.52697e-08
+			idx=119 3.21686e-08
+			idx=120 1.31493e-06
+			idx=121 2.5452e-07
+			idx=122 5.11438e-07
+			idx=123 6.95378e-06
+			idx=124 1.59741e-08
+			idx=125 9.66549e-08
+			idx=126 8.26686e-07
+			idx=127 2.51698e-07
+			idx=128 5.75517e-05
+			idx=129 2.91216e-07
+			idx=130 4.25264e-07
+			idx=131 6.70706e-07
+			idx=132 6.64435e-07
+			idx=133 2.90175e-07
+			idx=134 2.38373e-07
+			idx=135 9.9033e-07
+			idx=136 2.10357e-06
+			idx=137 3.88994e-07
+			idx=138 3.4432e-07
+			idx=139 4.53732e-07
+			idx=140 8.79986e-08
+			idx=141 2.88554e-06
+			idx=142 7.83539e-06
+			idx=143 5.4876e-06
+			idx=144 1.85065e-05
+			idx=145 9.47319e-06
+			idx=146 2.95873e-05
+			idx=147 2.17403e-05
+			idx=148 5.10403e-05
+			idx=149 3.48159e-05
+			idx=150 2.90221e-07
+			idx=151 7.09411e-07
+			idx=152 9.32001e-07
+			idx=153 3.67264e-06
+			idx=154 7.40202e-07
+			idx=155 5.42247e-07
+			idx=156 6.85728e-07
+			idx=157 5.55064e-07
+			idx=158 1.85546e-06
+			idx=159 1.83072e-05
+			idx=160 6.80827e-07
+			idx=161 0.000179789
+			idx=162 9.72489e-05
+			idx=163 3.09417e-05
+			idx=164 1.21266e-07
+			idx=165 0.000138408
+			idx=166 1.72214e-05
+			idx=167 9.13819e-06
+			idx=168 2.77999e-05
+			idx=169 1.14237e-05
+			idx=170 3.89001e-06
+			idx=171 1.73706e-07
+			idx=172 6.60322e-07
+			idx=173 1.57935e-06
+			idx=174 1.1984e-06
+			idx=175 1.44968e-05
+			idx=176 1.5495e-07
+			idx=177 3.80367e-05
+			idx=178 1.683e-05
+			idx=179 7.63084e-05
+			idx=180 1.72592e-08
+			idx=181 1.35602e-05
+			idx=182 2.44349e-05
+			idx=183 2.84379e-07
+			idx=184 4.42891e-06
+			idx=185 1.02359e-06
+			idx=186 5.60802e-05
+			idx=187 1.06553e-05
+			idx=188 9.86854e-05
+			idx=189 8.99598e-06
+			idx=190 1.14714e-08
+			idx=191 8.35409e-09
+			idx=192 8.35409e-09
+			idx=193 1.17287e-08
+			idx=194 1.17287e-08
+			idx=195 3.94318e-09
+			idx=196 3.94318e-09
+			idx=197 1.27596e-08
+			idx=198 1.27596e-08
+			idx=199 4.03372e-09
+			idx=200 4.03372e-09
+			idx=201 2.86619e-09
+			idx=202 2.86619e-09
+			idx=203 6.54714e-09
+			idx=204 6.54714e-09
+			idx=205 1.14714e-08
+			idx=206 2.75048e-07
+			idx=207 2.13795e-06
+			idx=208 4.18109e-07
+			idx=209 1.99346e-07
+			idx=210 1.3042e-07
+			idx=211 3.36402e-07
+			idx=212 1.15721e-07
+			idx=213 2.25636e-07
+			idx=214 4.26473e-08
+			idx=215 1.5379e-06
+			idx=216 2.56194e-07
+			idx=217 2.29025e-07
+			idx=218 6.73014e-08
+			idx=219 2.00458e-08
+			idx=220 4.15295e-08
+			idx=221 4.37315e-08
+			idx=222 2.5849e-08
+			idx=223 4.19908e-07
+			idx=224 1.07479e-07
+			idx=225 2.19084e-06
+			idx=226 9.26354e-08
+			idx=227 1.61736e-08
+			idx=228 6.91298e-09
+			idx=229 2.82369e-07
+			idx=230 5.46853e-08
+			idx=231 1.09898e-07
+			idx=232 1.4922e-06
+			idx=233 3.4328e-09
+			idx=234 2.07714e-08
+			idx=235 1.77584e-07
+			idx=236 5.40754e-08
+			idx=237 1.23362e-05
+			idx=238 6.25809e-08
+			idx=239 9.13896e-08
+			idx=240 1.44032e-07
+			idx=241 1.4277e-07
+			idx=242 6.23495e-08
+			idx=243 5.12169e-08
+			idx=244 2.12702e-07
+			idx=245 4.51651e-07
+			idx=246 8.35831e-08
+			idx=247 7.3993e-08
+			idx=248 9.75079e-08
+			idx=249 1.88964e-08
+			idx=250 6.18344e-07
+			idx=251 1.6826e-06
+			idx=252 1.17878e-06
+			idx=253 3.97095e-06
+			idx=254 2.03432e-06
+			idx=255 6.35008e-06
+			idx=256 4.665e-06
+			idx=257 1.09449e-05
+			idx=258 7.4668e-06
+			idx=259 6.23568e-08
+			idx=260 1.52438e-07
+			idx=261 2.00148e-07
+			idx=262 7.88866e-07
+			idx=263 1.59052e-07
+			idx=264 1.16528e-07
+			idx=265 1.47368e-07
+			idx=266 1.19197e-07
+			idx=267 3.98584e-07
+			idx=268 3.92748e-06
+			idx=269 1.46302e-07
+			idx=270 3.8482e-05
+			idx=271 2.08429e-05
+			idx=272 6.63544e-06
+			idx=273 2.60605e-08
+			idx=274 2.96602e-05
+			idx=275 3.69782e-06
+			idx=276 1.96289e-06
+			idx=277 5.96513e-06
+			idx=278 2.45306e-06
+			idx=279 8.35572e-07
+			idx=280 3.73234e-08
+			idx=281 1.41891e-07
+			idx=282 3.39146e-07
+			idx=283 2.57512e-07
+			idx=284 3.10909e-06
+			idx=285 3.32998e-08
+			idx=286 8.15506e-06
+			idx=287 3.6118e-06
+			idx=288 1.63304e-05
+			idx=289 3.70898e-09
+			idx=290 2.90816e-06
+			idx=291 5.24369e-06
+			idx=292 6.11045e-08
+			idx=293 9.51353e-07
+			idx=294 2.19844e-07
+			idx=295 1.20349e-05
+			idx=296 2.28795e-06
+			idx=297 2.11311e-05
+			idx=298 1.93159e-06
+			idx=299 2.4642e-09
+			idx=300 1.79386e-09
+			idx=301 1.79386e-09
+			idx=302 2.51858e-09
+			idx=303 2.51858e-09
+			idx=304 8.47154e-10
+			idx=305 8.47154e-10
+			idx=306 2.74131e-09
+			idx=307 2.74131e-09
+			idx=308 8.66609e-10
+			idx=309 8.66609e-10
+			idx=310 6.1578e-10
+			idx=311 6.1578e-10
+			idx=312 1.40644e-09
+			idx=313 1.40644e-09
+			idx=314 2.4642e-09
+			idx=315 5.91014e-08
+			idx=316 4.59029e-07
+			idx=317 8.9813e-08
+			idx=318 4.28308e-08
+			idx=319 2.80221e-08
+			idx=320 7.22663e-08
+			idx=321 2.48646e-08
+			idx=322 4.84831e-08
+			idx=323 9.15934e-09
+			idx=324 3.30171e-07
+			idx=325 5.50475e-08
+			idx=326 4.9212e-08
+			idx=327 6.12917e-09
+			idx=328 1.82567e-09
+			idx=329 3.78235e-09
+			idx=330 3.98065e-09
+			idx=331 2.35426e-09
+			idx=332 3.82309e-08
+			idx=333 9.78637e-09
+			idx=334 1.99278e-07
+			idx=335 8.43537e-09
+			idx=336 1.473e-09
+			idx=337 6.29658e-10
+			idx=338 2.57018e-08
+			idx=339 4.98003e-09
+			idx=340 1.00092e-08
+			idx=341 1.35733e-07
+			idx=342 3.12671e-10
+			idx=343 1.89196e-09
+			idx=344 1.61692e-08
+			idx=345 4.92418e-09
+			idx=346 1.12096e-06
+			idx=347 5.70001e-09
+			idx=348 8.32418e-09
+			idx=349 1.31103e-08
+			idx=350 1.30026e-08
+			idx=351 5.6783e-09
+			idx=352 4.66424e-09
+			idx=353 1.93636e-08
+			idx=354 4.1104e-08
+			idx=355 7.61211e-09
+			idx=356 6.73946e-09
+			idx=357 8.88149e-09
+			idx=358 1.71994e-09
+			idx=359 5.61736e-08
+			idx=360 1.53155e-07
+			idx=361 1.07326e-07
+			idx=362 3.61178e-07
+			idx=363 1.85171e-07
+			idx=364 5.777e-07
+			idx=365 4.24318e-07
+			idx=366 9.94915e-07
+			idx=367 6.78834e-07
+			idx=368 5.67873e-09
+			idx=369 1.38835e-08
+			idx=370 1.82186e-08
+			idx=371 7.18209e-08
+			idx=372 1.44856e-08
+			idx=373 1.06138e-08
+			idx=374 1.34233e-08
+			idx=375 1.08496e-08
+			idx=376 3.62917e-08
+			idx=377 3.57163e-07
+			idx=378 1.33251e-08
+			idx=379 3.49213e-06
+			idx=380 1.89376e-06
+			idx=381 6.03212e-07
+			idx=382 2.37373e-09
+			idx=383 2.69454e-06
+			idx=384 3.36555e-07
+			idx=385 1.78712e-07
+			idx=386 5.42566e-07
+			idx=387 2.23276e-07
+			idx=388 7.60743e-08
+			idx=389 3.39906e-09
+			idx=390 1.2923e-08
+			idx=391 3.08692e-08
+			idx=392 2.34533e-08
+			idx=393 2.82662e-07
+			idx=394 3.03318e-09
+			idx=395 7.41196e-07
+			idx=396 3.28559e-07
+			idx=397 1.48172e-06
+			idx=398 3.37828e-10
+			idx=399 2.64388e-07
+			idx=400 4.76998e-07
+			idx=401 5.56493e-09
+			idx=402 8.66177e-08
+			idx=403 2.00137e-08
+			idx=404 1.09479e-06
+			idx=405 2.08237e-07
+			idx=406 1.91829e-06
+			idx=407 1.75798e-07
+			idx=408 2.24365e-10
+			idx=409 1.63271e-10
+			idx=410 1.63271e-10
+			idx=411 2.2924e-10
+			idx=412 2.2924e-10
+			idx=413 7.71425e-11
+			idx=414 7.71425e-11
+			idx=415 2.49628e-10
+			idx=416 2.49628e-10
+			idx=417 7.89144e-11
+			idx=418 7.89144e-11
+			idx=419 5.60739e-11
+			idx=420 5.60739e-11
+			idx=421 1.2806e-10
+			idx=422 1.2806e-10
+			idx=423 2.24365e-10
+			idx=424 5.38266e-09
+			idx=425 4.17751e-08
+			idx=426 8.17728e-09
+			idx=427 3.90047e-09
+			idx=428 2.55193e-09
+			idx=429 6.58009e-09
+			idx=430 2.26444e-09
+			idx=431 4.41554e-09
+			idx=432 8.33801e-10
+			idx=433 3.0046e-08
+			idx=434 5.01323e-09
+			idx=435 4.48198e-09
 		name[prior_mean] length[109] type[DOUBLE]
-			idx=0 1.50697
-			idx=1 1.50828
-			idx=2 1.50822
-			idx=3 1.50692
-			idx=4 1.50786
-			idx=5 1.50914
-			idx=6 1.50736
-			idx=7 1.50664
-			idx=8 1.50668
-			idx=9 1.50937
-			idx=10 1.50889
-			idx=11 1.50692
-			idx=12 1.50834
-			idx=13 1.50792
-			idx=14 1.50669
-			idx=15 1.50704
-			idx=16 1.50737
-			idx=17 1.50875
-			idx=18 1.50767
-			idx=19 1.50669
-			idx=20 1.50847
-			idx=21 1.50841
-			idx=22 1.50687
-			idx=23 1.50681
-			idx=24 1.50894
-			idx=25 1.50929
-			idx=26 1.50715
-			idx=27 1.50669
-			idx=28 1.50693
-			idx=29 1.5082
-			idx=30 1.50809
-			idx=31 1.50677
-			idx=32 1.50943
-			idx=33 1.50821
-			idx=34 1.51057
-			idx=35 1.50677
-			idx=36 1.50665
-			idx=37 1.50746
-			idx=38 1.51061
-			idx=39 1.50769
-			idx=40 1.50684
-			idx=41 1.50884
-			idx=42 1.51138
-			idx=43 1.50696
-			idx=44 1.50651
-			idx=45 1.50664
-			idx=46 1.50814
-			idx=47 1.5085
-			idx=48 1.50662
-			idx=49 1.50941
-			idx=50 1.50898
-			idx=51 1.5078
-			idx=52 1.50816
-			idx=53 1.50658
-			idx=54 1.50721
-			idx=55 1.50703
-			idx=56 1.50822
-			idx=57 1.50807
-			idx=58 1.51137
-			idx=59 1.50733
-			idx=60 1.50674
-			idx=61 1.50652
-			idx=62 1.50851
-			idx=63 1.51
-			idx=64 1.50673
-			idx=65 1.5084
-			idx=66 1.50912
-			idx=67 1.50851
-			idx=68 1.50841
-			idx=69 1.5066
-			idx=70 1.50779
-			idx=71 1.50678
-			idx=72 1.50796
-			idx=73 1.50656
-			idx=74 1.5077
-			idx=75 1.51053
-			idx=76 1.50735
-			idx=77 1.50894
-			idx=78 1.50858
-			idx=79 1.50701
-			idx=80 1.50702
-			idx=81 1.50705
-			idx=82 1.50701
-			idx=83 1.50703
-			idx=84 1.50704
-			idx=85 1.50705
-			idx=86 1.50821
-			idx=87 1.50825
-			idx=88 1.50828
-			idx=89 1.50832
-			idx=90 1.50832
-			idx=91 1.50832
-			idx=92 1.50833
-			idx=93 1.50833
-			idx=94 1.50711
-			idx=95 1.50709
-			idx=96 1.50707
-			idx=97 1.50793
-			idx=98 1.50687
-			idx=99 1.50753
-			idx=100 1.50879
-			idx=101 1.50841
-			idx=102 1.50692
-			idx=103 1.50854
-			idx=104 1.50729
-			idx=105 1.50716
-			idx=106 1.50691
-			idx=107 1.50796
-			idx=108 1.50864
+			idx=0 0.930178
+			idx=1 0.930112
+			idx=2 0.93011
+			idx=3 0.930489
+			idx=4 0.930037
+			idx=5 0.930185
+			idx=6 0.930247
+			idx=7 0.930743
+			idx=8 0.930251
+			idx=9 0.930068
+			idx=10 0.930019
+			idx=11 0.930395
+			idx=12 0.930116
+			idx=13 0.93004
+			idx=14 0.930773
+			idx=15 0.930035
+			idx=16 0.930041
+			idx=17 0.930193
+			idx=18 0.930157
+			idx=19 0.931022
+			idx=20 0.930063
+			idx=21 0.930047
+			idx=22 0.930422
+			idx=23 0.930174
+			idx=24 0.930096
+			idx=25 0.930105
+			idx=26 0.930357
+			idx=27 0.930472
+			idx=28 0.930073
+			idx=29 0.93008
+			idx=30 0.930056
+			idx=31 0.930542
+			idx=32 0.931849
+			idx=33 0.930492
+			idx=34 0.930091
+			idx=35 0.931418
+			idx=36 0.930203
+			idx=37 0.93044
+			idx=38 0.93136
+			idx=39 0.930888
+			idx=40 0.931896
+			idx=41 0.930179
+			idx=42 0.930151
+			idx=43 0.930509
+			idx=44 0.930514
+			idx=45 0.930021
+			idx=46 0.929974
+			idx=47 0.929941
+			idx=48 0.930562
+			idx=49 0.930364
+			idx=50 0.930949
+			idx=51 0.930126
+			idx=52 0.933564
+			idx=53 0.932428
+			idx=54 0.930866
+			idx=55 0.929982
+			idx=56 0.932672
+			idx=57 0.930867
+			idx=58 0.930524
+			idx=59 0.931502
+			idx=60 0.930782
+			idx=61 0.930154
+			idx=62 0.930119
+			idx=63 0.929999
+			idx=64 0.93061
+			idx=65 0.930172
+			idx=66 0.931636
+			idx=67 0.929973
+			idx=68 0.93209
+			idx=69 0.931205
+			idx=70 0.931914
+			idx=71 0.930012
+			idx=72 0.931374
+			idx=73 0.931279
+			idx=74 0.930102
+			idx=75 0.930449
+			idx=76 0.930346
+			idx=77 0.931426
+			idx=78 0.930444
+			idx=79 0.933274
+			idx=80 0.93031
+			idx=81 0.930284
+			idx=82 0.930553
+			idx=83 0.930542
+			idx=84 0.93053
+			idx=85 0.930517
+			idx=86 0.9302
+			idx=87 0.930194
+			idx=88 0.930191
+			idx=89 0.930193
+			idx=90 0.930199
+			idx=91 0.930194
+			idx=92 0.930193
+			idx=93 0.930194
+			idx=94 0.930251
+			idx=95 0.930261
+			idx=96 0.930271
+			idx=97 0.930171
+			idx=98 0.930651
+			idx=99 0.930334
+			idx=100 0.930232
+			idx=101 0.930208
+			idx=102 0.930371
+			idx=103 0.930176
+			idx=104 0.93018
+			idx=105 0.930447
+			idx=106 0.930673
+			idx=107 0.930203
+			idx=108 0.93017
 		name[initial_growth] length[1] type[DOUBLE]
 			idx=0 0.8
 		name[initial_carry_cap] length[1] type[DOUBLE]
-			idx=0 2.19722
+			idx=0 1.79176
 		name[initial_move] length[1] type[DOUBLE]
 			idx=0 1
 		name[initial_sigma] length[1] type[DOUBLE]
@@ -14479,7 +14475,7 @@ inla_build...
 			idx=0 1
 			idx=1 1
 		name[pcc] length[2] type[DOUBLE]
-			idx=0 9
+			idx=0 6
 			idx=1 50
 		name[pmove] length[2] type[DOUBLE]
 			idx=0 1
@@ -26377,81 +26373,75 @@ inla_build...
 			idx=11879 (i=107 j=108 x=0.758817)
 			idx=11880 (i=108 j=108 x=185.284)
 		name[prior_variance] nrow[109] ncol[109] n[109] type[SPARSE.MATRIX]
-			idx=0 (i=0 j=0 x=0.218919)
-			idx=1 (i=1 j=1 x=0.218476)
-			idx=2 (i=2 j=2 x=0.218398)
-			idx=3 (i=3 j=3 x=0.218964)
-			idx=4 (i=4 j=4 x=0.217716)
-			idx=5 (i=5 j=5 x=0.218907)
-			idx=6 (i=6 j=6 x=0.218085)
-			idx=7 (i=7 j=7 x=0.21885)
-			idx=8 (i=8 j=8 x=0.218869)
-			idx=9 (i=9 j=9 x=0.219033)
-			idx=10 (i=10 j=10 x=0.218816)
-			idx=11 (i=11 j=11 x=0.218677)
-			idx=12 (i=12 j=12 x=0.218312)
-			idx=13 (i=13 j=13 x=0.21779)
-			idx=14 (i=14 j=14 x=0.218869)
-			idx=15 (i=15 j=15 x=0.218565)
-			idx=16 (i=16 j=16 x=0.218012)
-			idx=17 (i=17 j=17 x=0.218567)
-			idx=18 (i=18 j=18 x=0.217636)
-			idx=19 (i=19 j=19 x=0.218702)
-			idx=20 (i=20 j=20 x=0.218385)
-			idx=21 (i=21 j=21 x=0.218348)
-			idx=22 (i=22 j=22 x=0.218668)
-			idx=23 (i=23 j=23 x=0.218713)
-			idx=24 (i=24 j=24 x=0.21864)
-			idx=25 (i=25 j=25 x=0.218849)
-			idx=26 (i=26 j=26 x=0.218284)
-			idx=27 (i=27 j=27 x=0.2187)
-			idx=28 (i=28 j=28 x=0.218617)
-			idx=29 (i=29 j=29 x=0.218098)
-			idx=30 (i=30 j=30 x=0.217911)
-			idx=31 (i=31 j=31 x=0.218742)
-			idx=32 (i=32 j=32 x=0.218897)
-			idx=33 (i=33 j=33 x=0.218019)
-			idx=34 (i=34 j=34 x=0.219274)
-			idx=35 (i=35 j=35 x=0.218727)
-			idx=36 (i=36 j=36 x=0.218803)
-			idx=37 (i=37 j=37 x=0.217909)
-			idx=38 (i=38 j=38 x=0.219236)
-			idx=39 (i=39 j=39 x=0.217706)
-			idx=40 (i=40 j=40 x=0.218637)
-			idx=41 (i=41 j=41 x=0.218676)
-			idx=42 (i=42 j=42 x=0.219451)
-			idx=43 (i=43 j=43 x=0.218555)
-			idx=44 (i=44 j=44 x=0.218889)
-			idx=45 (i=45 j=45 x=0.218951)
-			idx=46 (i=46 j=46 x=0.218081)
-			idx=47 (i=47 j=47 x=0.218513)
-			idx=48 (i=48 j=48 x=0.218965)
-			idx=49 (i=49 j=49 x=0.218995)
-			idx=50 (i=50 j=50 x=0.218706)
-			idx=51 (i=51 j=51 x=0.217697)
-			idx=52 (i=52 j=52 x=0.217827)
-			idx=53 (i=53 j=53 x=0.218855)
-			idx=54 (i=54 j=54 x=0.218227)
-			idx=55 (i=55 j=55 x=0.218483)
-			idx=56 (i=56 j=56 x=0.217943)
-			idx=57 (i=57 j=57 x=0.217826)
-			idx=58 (i=58 j=58 x=0.219417)
-			idx=59 (i=59 j=59 x=0.218126)
-			idx=60 (i=60 j=60 x=0.218786)
-			idx=61 (i=61 j=61 x=0.21902)
-			idx=62 (i=62 j=62 x=0.218484)
-			idx=63 (i=63 j=63 x=0.219257)
-			idx=64 (i=64 j=64 x=0.218894)
-			idx=65 (i=65 j=65 x=0.218366)
-			idx=66 (i=66 j=66 x=0.218855)
-			idx=67 (i=67 j=67 x=0.218469)
-			idx=68 (i=68 j=68 x=0.218163)
-			idx=69 (i=69 j=69 x=0.218982)
-			idx=70 (i=70 j=70 x=0.217685)
-			idx=71 (i=71 j=71 x=0.218852)
-			idx=72 (i=72 j=72 x=0.217709)
-			idx=73 (i=73 j=73 x=0.218953)
-			idx=7Warning in bru_log_warn(paste0("iinla: Problem in inla:\n", result)) :
+			idx=0 (i=0 j=0 x=0.357185)
+			idx=1 (i=1 j=1 x=0.35725)
+			idx=2 (i=2 j=2 x=0.357252)
+			idx=3 (i=3 j=3 x=0.357039)
+			idx=4 (i=4 j=4 x=0.357022)
+			idx=5 (i=5 j=5 x=0.356888)
+			idx=6 (i=6 j=6 x=0.356839)
+			idx=7 (i=7 j=7 x=0.356866)
+			idx=8 (i=8 j=8 x=0.356873)
+			idx=9 (i=9 j=9 x=0.357034)
+			idx=10 (i=10 j=10 x=0.357081)
+			idx=11 (i=11 j=11 x=0.356807)
+			idx=12 (i=12 j=12 x=0.356987)
+			idx=13 (i=13 j=13 x=0.357058)
+			idx=14 (i=14 j=14 x=0.356929)
+			idx=15 (i=15 j=15 x=0.357065)
+			idx=16 (i=16 j=16 x=0.356912)
+			idx=17 (i=17 j=17 x=0.356775)
+			idx=18 (i=18 j=18 x=0.3568)
+			idx=19 (i=19 j=19 x=0.357013)
+			idx=20 (i=20 j=20 x=0.35698)
+			idx=21 (i=21 j=21 x=0.356997)
+			idx=22 (i=22 j=22 x=0.356732)
+			idx=23 (i=23 j=23 x=0.35687)
+			idx=24 (i=24 j=24 x=0.356859)
+			idx=25 (i=25 j=25 x=0.356849)
+			idx=26 (i=26 j=26 x=0.356672)
+			idx=27 (i=27 j=27 x=0.356651)
+			idx=28 (i=28 j=28 x=0.356967)
+			idx=29 (i=29 j=29 x=0.356963)
+			idx=30 (i=30 j=30 x=0.356987)
+			idx=31 (i=31 j=31 x=0.356737)
+			idx=32 (i=32 j=32 x=0.357618)
+			idx=33 (i=33 j=33 x=0.356777)
+			idx=34 (i=34 j=34 x=0.356964)
+			idx=35 (i=35 j=35 x=0.357476)
+			idx=36 (i=36 j=36 x=0.356876)
+			idx=37 (i=37 j=37 x=0.356743)
+			idx=38 (i=38 j=38 x=0.35737)
+			idx=39 (i=39 j=39 x=0.35695)
+			idx=40 (i=40 j=40 x=0.357672)
+			idx=41 (i=41 j=41 x=0.356891)
+			idx=42 (i=42 j=42 x=0.356912)
+			idx=43 (i=43 j=43 x=0.356772)
+			idx=44 (i=44 j=44 x=0.356772)
+			idx=45 (i=45 j=45 x=0.357138)
+			idx=46 (i=46 j=46 x=0.357188)
+			idx=47 (i=47 j=47 x=0.357223)
+			idx=48 (i=48 j=48 x=0.356881)
+			idx=49 (i=49 j=49 x=0.356789)
+			idx=50 (i=50 j=50 x=0.356987)
+			idx=51 (i=51 j=51 x=0.35693)
+			idx=52 (i=52 j=52 x=0.358006)
+			idx=53 (i=53 j=53 x=0.357841)
+			idx=54 (i=54 j=54 x=0.356916)
+			idx=55 (i=55 j=55 x=0.357063)
+			idx=56 (i=56 j=56 x=0.357823)
+			idx=57 (i=57 j=57 x=0.356894)
+			idx=58 (i=58 j=58 x=0.356705)
+			idx=59 (i=59 j=59 x=0.35748)
+			idx=60 (i=60 j=60 x=0.356829)
+			idx=61 (i=61 j=61 x=0.356937)
+			idx=62 (i=62 j=62 x=0.356974)
+			idx=63 (i=63 j=63 x=0.35709)
+			idx=64 (i=64 j=64 x=0.356816)
+			idx=65 (i=65 j=65 x=0.356927)
+			idx=66 (i=66 j=66 x=0.357513)
+			idx=67 (i=67 j=67 x=0.357116)
+			idx=68 (i=Warning in bru_log_warn(paste0("iinla: Problem in inla:\n", result)) :
   iinla: Problem in inla:
 Error in inla.core.safe(formula = formula, family = family, contrasts = contrasts,  : 
   The inla-program exited with an error. Unless you interupted it yourself, please rerun with verbose=TRUE and check the output carefully.
