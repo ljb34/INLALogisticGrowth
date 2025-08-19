@@ -221,7 +221,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         L_mat->nrow = N;
         L_mat->ncol = N;
         Lmat(growth, carry_cap, move_const, step_size, linpoint->doubles, ns, nt, CinvG, L_mat->x);
-        if(debug) {
+        /*if(debug) {
             printf("L_mat:\n");
             for (int ii = 0; ii < N; ii++) {
                 for (int jj = 0; jj < N; jj++) {
@@ -229,7 +229,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 }
                 printf("\n");
             }
-		}
+		}*/
      
 
         //Noise matrix
