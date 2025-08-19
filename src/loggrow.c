@@ -32,7 +32,7 @@ void a_func(double growth, double carry_cap,
 }
 
 void Lmat(double growth, double carry_cap, double move_const, double step_size,
-	double* linpoint, int ns, int nt, inla_cgeneric_mat_tp* CinvG, double* result) { /* result is nsnt x nsnt double matrix in inla_cgeneric_mat_tp form*/
+	double* linpoint, int ns, int nt, inla_cgeneric_smat_tp* CinvG, double* result) { /* result is nsnt x nsnt double matrix in inla_cgeneric_mat_tp form*/
 	//identity sub matrix in first block
 	int ntotal = ns * nt;
 	for (int i = 0; i < ns; i++) {
@@ -53,13 +53,24 @@ void Lmat(double growth, double carry_cap, double move_const, double step_size,
 	}
 
 	//CinvG part
-	for (int t = 1; t < nt; t++) {
-		for (int j = 0; j < ns; j++) {
-			for (int i = 0; i < ns; i++) {
-				result[(ns * t + i) * ntotal + t * ns + j] += move_const * CinvG->x[i * ns + j];
-			}
+    if(CinvG->n != ns * ns) {
+        for(int idx = 0; idx < CinvG->n; idx++) {
+            int i = CinvG->i[idx];
+            int j = CinvG->j[idx];
+            for (int t = 1; t < nt; t++) {
+                result[(ns * t + i) * ntotal + t * ns + j] += move_const * CinvG->x[idx];
+            }
 		}
-	}
+    }
+    else {
+        for (int t = 1; t < nt; t++) {
+            for (int j = 0; j < ns; j++) {
+                for (int i = 0; i < ns; i++) {
+                    result[(ns * t + i) * ntotal + t * ns + j] += move_const * CinvG->x[i * ns + j];
+                }
+            }
+        }
+    }
 }
 
 void r_vector(double growth, double carry_cap, double move_const,
@@ -158,12 +169,13 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     inla_cgeneric_vec_tp* psigma = data->doubles[11];
     assert(psigma->len == 2);
 
+	//matrices
     assert(!strcasecmp(data->mats[0]->name, "CinvG"));
-    inla_cgeneric_mat_tp* CinvG = data->mats[0];
+    inla_cgeneric_smat_tp* CinvG = data->smats[0];
     assert(CinvG->nrow == ns);
 
     assert(!strcasecmp(data->mats[1]->name, "prior_variance"));
-    inla_cgeneric_mat_tp* prior_variance = data->mats[1];
+    inla_cgeneric_smat_tp* prior_variance = data->smats[1];
     assert(prior_variance->nrow == ns); 
 
     //different outputs for the commands supplied
@@ -200,6 +212,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     case INLA_CGENERIC_Q:
     {
         // return c(-1, M, Qij) in the same order as defined in INLA_CGENERIC_GRAPH
+		printf("INLA_CGENERIC_Q\n");
         int M = N;
         ret = Calloc(2 + N * (N+1)/2, double);
 
@@ -208,14 +221,16 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         L_mat->nrow = N;
         L_mat->ncol = N;
         Lmat(growth, carry_cap, move_const, step_size, linpoint->doubles, ns, nt, CinvG, L_mat->x);
-
-        //print L_mat
-        /*for (int ii = 0; ii < N; ii++) {
-            for (int jj = 0; jj < N; jj++) {
-                printf("%f \t", L_mat->x[ii * N + jj]);
+        if(debug) {
+            printf("L_mat:\n");
+            for (int ii = 0; ii < N; ii++) {
+                for (int jj = 0; jj < N; jj++) {
+                    printf("%f \t", L_mat->x[ii * N + jj]);
+                }
+                printf("\n");
             }
-            printf("\n");
-        }*/ //checked 14/8 and it comes out correctly
+		}
+     
 
         //Noise matrix
         inla_cgeneric_mat_tp* noise = malloc(sizeof(inla_cgeneric_mat_tp));
@@ -223,9 +238,16 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         noise->nrow = N;
         noise->ncol = N;
         //initial year variance
-        for (int i = 0; i < ns; i++) {
-            for (int j = 0; j < ns; j++) {
-                noise->x[i * N + j] = prior_variance->x[i * N + j];
+        if(prior_variance->n != ns*ns){
+            for(int idx = 0; idx < prior_variance->n; idx++) {
+				noise->x[prior_variance->i[idx] * N + prior_variance->j[idx]] = prior_variance->x[idx];
+			}
+        }
+        else {
+            for (int i = 0; i < ns; i++) {
+                for (int j = 0; j < ns; j++) {
+                    noise->x[i * N + j] = prior_variance->x[i * N + j];
+                }
             }
         }
 

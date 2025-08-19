@@ -71,8 +71,8 @@ MAX_THREADS...[10]
 Report issues/bugs to <help@r-inla.org>
 
 cwd[C:\Users\2966362B\OneDrive - University of Glasgow\Documents\GitHub\INLAlogrowth-package\inst\Tests]
-Process file/directory[C:\Users\2966362B\AppData\Local\Temp\Rtmp8yTli6\file45a822bded2/Model.ini] model[0/1/] threads[10] max.threads[12] blas_threads_force[0] nested[10:1]
-Run with model[C:\Users\2966362B\AppData\Local\Temp\Rtmp8yTli6\file45a822bded2/Model.ini]
+Process file/directory[C:\Users\2966362B\AppData\Local\Temp\RtmpWGaA6s\file430034c344c/Model.ini] model[0/1/] threads[10] max.threads[12] blas_threads_force[0] nested[10:1]
+Run with model[C:\Users\2966362B\AppData\Local\Temp\RtmpWGaA6s\file430034c344c/Model.ini]
 inla_build...
 	number of sections=[12]
 	parse section=[11] name=[INLA.numa] type=[NUMA]
@@ -131,7 +131,7 @@ inla_build...
 		pardiso-library installed and working? = [no]
 		smtp = [taucs]
 		strategy = [default]
-		store results in directory=[C:\Users\2966362B\AppData\Local\Temp\Rtmp8yTli6\file45a822bded2/results.files-0000000000]
+		store results in directory=[C:\Users\2966362B\AppData\Local\Temp\RtmpWGaA6s\file430034c344c/results.files-0000000000]
 		output:
 			gcpo=[0]
 				num.level.sets=[-1]
@@ -177,32 +177,32 @@ inla_build...
 		m=[66]
 		ndata=[66]
 		compute=[1]
-		read offsets from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a85343114c]
-		read n=[330] entries from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a85343114c]
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a85343114c] 0/165  (idx,y) = (0, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a85343114c] 1/165  (idx,y) = (1, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a85343114c] 2/165  (idx,y) = (2, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a85343114c] 3/165  (idx,y) = (3, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a85343114c] 4/165  (idx,y) = (4, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a85343114c] 5/165  (idx,y) = (5, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a85343114c] 6/165  (idx,y) = (6, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a85343114c] 7/165  (idx,y) = (7, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a85343114c] 8/165  (idx,y) = (8, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a85343114c] 9/165  (idx,y) = (9, 0)
-		read link.fitted.values from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a840d243cd]
-		read n=[330] entries from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a840d243cd]
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a840d243cd] 0/165  (idx,y) = (0, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a840d243cd] 1/165  (idx,y) = (1, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a840d243cd] 2/165  (idx,y) = (2, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a840d243cd] 3/165  (idx,y) = (3, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a840d243cd] 4/165  (idx,y) = (4, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a840d243cd] 5/165  (idx,y) = (5, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a840d243cd] 6/165  (idx,y) = (6, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a840d243cd] 7/165  (idx,y) = (7, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a840d243cd] 8/165  (idx,y) = (8, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a840d243cd] 9/165  (idx,y) = (9, 0)
-		A=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a85ae57775]
-		Aext=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a8766a4d0b]
+		read offsets from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file430033d22602]
+		read n=[330] entries from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file430033d22602]
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file430033d22602] 0/165  (idx,y) = (0, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file430033d22602] 1/165  (idx,y) = (1, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file430033d22602] 2/165  (idx,y) = (2, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file430033d22602] 3/165  (idx,y) = (3, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file430033d22602] 4/165  (idx,y) = (4, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file430033d22602] 5/165  (idx,y) = (5, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file430033d22602] 6/165  (idx,y) = (6, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file430033d22602] 7/165  (idx,y) = (7, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file430033d22602] 8/165  (idx,y) = (8, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file430033d22602] 9/165  (idx,y) = (9, 0)
+		read link.fitted.values from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file4300482c236f]
+		read n=[330] entries from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file4300482c236f]
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file4300482c236f] 0/165  (idx,y) = (0, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file4300482c236f] 1/165  (idx,y) = (1, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file4300482c236f] 2/165  (idx,y) = (2, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file4300482c236f] 3/165  (idx,y) = (3, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file4300482c236f] 4/165  (idx,y) = (4, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file4300482c236f] 5/165  (idx,y) = (5, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file4300482c236f] 6/165  (idx,y) = (6, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file4300482c236f] 7/165  (idx,y) = (7, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file4300482c236f] 8/165  (idx,y) = (8, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file4300482c236f] 9/165  (idx,y) = (9, 0)
+		A=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file43008927fd6]
+		Aext=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file430043b661fe]
 		AextPrecision=[3.269e+06]
 		output:
 			summary=[1]
@@ -215,12 +215,12 @@ inla_build...
 		tag=[INLA.Data1]
 		family=[POISSON]
 		likelihood=[POISSON]
-		file->name=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a873c25a54]
-		file->name=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a873aa58f5]
-		file->name=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a867552d1a]
-		file->name=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a8bda26c9]
-		read n=[198] entries from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a873c25a54]
-			0/66  (idx,a,y,d) = (0, 0, 234, 1)
+		file->name=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file43005584479f]
+		file->name=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file430058b77525]
+		file->name=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file43001fe34a1c]
+		file->name=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file43005eea19df]
+		read n=[198] entries from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file43005584479f]
+			0/66  (idx,a,y,d) = (0, 0, 244, 1)
 			1/66  (idx,a,y,d) = (1, 0.00694444, 0, 1)
 			2/66  (idx,a,y,d) = (2, 0.00694444, 0, 1)
 			3/66  (idx,a,y,d) = (3, 0.00694444, 0, 1)
@@ -251,19 +251,19 @@ inla_build...
 		nrep=[1]
 		ngroup=[1]
 		Alocal=[no]
-		read covariates from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a87ba2528f]
-		read n=[198] entries from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a87ba2528f]
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a87ba2528f] 0/99  (idx,y) = (0, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a87ba2528f] 1/99  (idx,y) = (1, 1)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a87ba2528f] 2/99  (idx,y) = (2, 2)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a87ba2528f] 3/99  (idx,y) = (3, 3)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a87ba2528f] 4/99  (idx,y) = (4, 4)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a87ba2528f] 5/99  (idx,y) = (5, 5)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a87ba2528f] 6/99  (idx,y) = (6, 6)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a87ba2528f] 7/99  (idx,y) = (7, 7)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a87ba2528f] 8/99  (idx,y) = (8, 8)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a87ba2528f] 9/99  (idx,y) = (9, 9)
-		file for locations=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a81a5a1bc7]
+		read covariates from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file43005f526ba6]
+		read n=[198] entries from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file43005f526ba6]
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file43005f526ba6] 0/99  (idx,y) = (0, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file43005f526ba6] 1/99  (idx,y) = (1, 1)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file43005f526ba6] 2/99  (idx,y) = (2, 2)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file43005f526ba6] 3/99  (idx,y) = (3, 3)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file43005f526ba6] 4/99  (idx,y) = (4, 4)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file43005f526ba6] 5/99  (idx,y) = (5, 5)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file43005f526ba6] 6/99  (idx,y) = (6, 6)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file43005f526ba6] 7/99  (idx,y) = (7, 7)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file43005f526ba6] 8/99  (idx,y) = (8, 8)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file43005f526ba6] 9/99  (idx,y) = (9, 9)
+		file for locations=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file4300549c32d4]
 			nlocations=[99]
 			locations[0]=[1]
 			locations[1]=[2]
@@ -289,243 +289,243 @@ inla_build...
 		name[step_size] length[1] type[DOUBLE]
 			idx=0 1
 		name[linpoint] length[99] type[DOUBLE]
-			idx=0 4.04488
-			idx=1 4.02754
-			idx=2 4.02961
-			idx=3 4.03711
-			idx=4 4.03592
-			idx=5 4.0234
-			idx=6 4.02892
-			idx=7 4.04376
-			idx=8 4.02909
-			idx=9 4.02609
-			idx=10 4.0283
-			idx=11 4.03198
-			idx=12 4.04873
-			idx=13 4.04317
-			idx=14 4.03686
-			idx=15 4.03674
-			idx=16 4.03658
-			idx=17 4.03637
-			idx=18 4.02985
-			idx=19 4.02972
-			idx=20 4.02966
-			idx=21 4.02966
-			idx=22 4.02817
-			idx=23 4.02826
-			idx=24 4.0284
-			idx=25 4.02862
-			idx=26 4.04293
-			idx=27 4.04301
-			idx=28 4.04309
-			idx=29 4.03551
-			idx=30 4.04168
-			idx=31 4.03031
-			idx=32 4.02567
-			idx=33 4.33158
-			idx=34 4.32307
-			idx=35 4.32409
-			idx=36 4.32778
-			idx=37 4.3272
-			idx=38 4.32101
-			idx=39 4.32375
-			idx=40 4.33104
-			idx=41 4.32384
-			idx=42 4.32235
-			idx=43 4.32344
-			idx=44 4.32526
-			idx=45 4.33345
-			idx=46 4.33075
-			idx=47 4.32766
-			idx=48 4.3276
-			idx=49 4.32752
-			idx=50 4.32742
-			idx=51 4.32421
-			idx=52 4.32415
-			idx=53 4.32412
-			idx=54 4.32411
-			idx=55 4.32338
-			idx=56 4.32342
-			idx=57 4.32349
-			idx=58 4.3236
-			idx=59 4.33063
-			idx=60 4.33067
-			idx=61 4.33071
-			idx=62 4.327
-			idx=63 4.33002
-			idx=64 4.32443
-			idx=65 4.32214
-			idx=66 4.44786
-			idx=67 4.44514
-			idx=68 4.44547
-			idx=69 4.44665
-			idx=70 4.44646
-			idx=71 4.44448
-			idx=72 4.44536
-			idx=73 4.44768
-			idx=74 4.44539
-			idx=75 4.44491
-			idx=76 4.44526
-			idx=77 4.44584
-			idx=78 4.44845
-			idx=79 4.44759
-			idx=80 4.44661
-			idx=81 4.44659
-			idx=82 4.44657
-			idx=83 4.44653
-			idx=84 4.44551
-			idx=85 4.44549
-			idx=86 4.44548
-			idx=87 4.44548
-			idx=88 4.44524
-			idx=89 4.44525
-			idx=90 4.44527
-			idx=91 4.44531
-			idx=92 4.44755
-			idx=93 4.44757
-			idx=94 4.44758
-			idx=95 4.4464
-			idx=96 4.44736
-			idx=97 4.44558
-			idx=98 4.44484
+			idx=0 3.845
+			idx=1 3.83829
+			idx=2 3.83524
+			idx=3 3.83636
+			idx=4 3.84262
+			idx=5 3.83995
+			idx=6 3.83223
+			idx=7 3.83946
+			idx=8 3.83834
+			idx=9 3.83673
+			idx=10 3.837
+			idx=11 3.83335
+			idx=12 3.84651
+			idx=13 3.84375
+			idx=14 3.83667
+			idx=15 3.83653
+			idx=16 3.83645
+			idx=17 3.83644
+			idx=18 3.83561
+			idx=19 3.83561
+			idx=20 3.83568
+			idx=21 3.83583
+			idx=22 3.83846
+			idx=23 3.83849
+			idx=24 3.83852
+			idx=25 3.83857
+			idx=26 3.84385
+			idx=27 3.84392
+			idx=28 3.84388
+			idx=29 3.84164
+			idx=30 3.83942
+			idx=31 3.83402
+			idx=32 3.83918
+			idx=33 4.27463
+			idx=34 4.2704
+			idx=35 4.26847
+			idx=36 4.26918
+			idx=37 4.27314
+			idx=38 4.27145
+			idx=39 4.26657
+			idx=40 4.27114
+			idx=41 4.27044
+			idx=42 4.26941
+			idx=43 4.26959
+			idx=44 4.26728
+			idx=45 4.27558
+			idx=46 4.27385
+			idx=47 4.26938
+			idx=48 4.26929
+			idx=49 4.26924
+			idx=50 4.26923
+			idx=51 4.2687
+			idx=52 4.26871
+			idx=53 4.26875
+			idx=54 4.26885
+			idx=55 4.27051
+			idx=56 4.27053
+			idx=57 4.27055
+			idx=58 4.27058
+			idx=59 4.27391
+			idx=60 4.27395
+			idx=61 4.27393
+			idx=62 4.27252
+			idx=63 4.27112
+			idx=64 4.2677
+			idx=65 4.27096
+			idx=66 4.50549
+			idx=67 4.50367
+			idx=68 4.50283
+			idx=69 4.50314
+			idx=70 4.50485
+			idx=71 4.50412
+			idx=72 4.502
+			idx=73 4.50399
+			idx=74 4.50368
+			idx=75 4.50324
+			idx=76 4.50331
+			idx=77 4.50231
+			idx=78 4.5059
+			idx=79 4.50516
+			idx=80 4.50322
+			idx=81 4.50318
+			idx=82 4.50316
+			idx=83 4.50316
+			idx=84 4.50293
+			idx=85 4.50293
+			idx=86 4.50295
+			idx=87 4.50299
+			idx=88 4.50371
+			idx=89 4.50372
+			idx=90 4.50373
+			idx=91 4.50374
+			idx=92 4.50518
+			idx=93 4.5052
+			idx=94 4.50519
+			idx=95 4.50458
+			idx=96 4.50398
+			idx=97 4.50249
+			idx=98 4.50391
 		name[mag_grad_sq] length[99] type[DOUBLE]
-			idx=0 0.000104499
-			idx=1 1.56905e-05
-			idx=2 1.3568e-06
-			idx=3 1.27512e-05
-			idx=4 0.00170575
-			idx=5 0.000574555
-			idx=6 5.86592e-05
-			idx=7 0.00334258
-			idx=8 7.70646e-05
-			idx=9 0.000789488
-			idx=10 0.000205273
-			idx=11 0.000285343
-			idx=12 0.00143052
-			idx=13 9.36547e-07
-			idx=14 3.77905e-06
-			idx=15 3.77905e-06
-			idx=16 7.58993e-06
-			idx=17 7.58993e-06
-			idx=18 5.96012e-06
-			idx=19 5.96012e-06
-			idx=20 3.43507e-06
-			idx=21 3.43507e-06
-			idx=22 4.2534e-06
-			idx=23 4.2534e-06
-			idx=24 1.04201e-05
-			idx=25 1.04201e-05
-			idx=26 1.05376e-06
-			idx=27 1.05376e-06
-			idx=28 9.36547e-07
-			idx=29 0.00170575
-			idx=30 0.000197059
-			idx=31 0.000393546
-			idx=32 0.00103072
-			idx=33 2.48022e-05
-			idx=34 3.84941e-06
-			idx=35 3.31668e-07
-			idx=36 3.0726e-06
-			idx=37 0.000415684
-			idx=38 0.000141918
-			idx=39 1.43377e-05
-			idx=40 0.000801896
-			idx=41 1.89181e-05
-			idx=42 0.000192522
-			idx=43 5.05561e-05
-			idx=44 6.92185e-05
-			idx=45 0.000340418
-			idx=46 2.22672e-07
-			idx=47 9.10862e-07
-			idx=48 9.10862e-07
-			idx=49 1.83031e-06
-			idx=50 1.83031e-06
-			idx=51 1.45661e-06
-			idx=52 1.45661e-06
-			idx=53 8.39773e-07
-			idx=54 8.39773e-07
-			idx=55 1.04254e-06
-			idx=56 1.04254e-06
-			idx=57 2.55283e-06
-			idx=58 2.55283e-06
-			idx=59 2.50627e-07
-			idx=60 2.50627e-07
-			idx=61 2.22672e-07
-			idx=62 0.000415684
-			idx=63 4.65419e-05
-			idx=64 9.613e-05
-			idx=65 0.000254248
-			idx=66 2.4858e-06
-			idx=67 3.98945e-07
-			idx=68 3.42466e-08
-			idx=69 3.12673e-07
-			idx=70 4.27882e-05
-			idx=71 1.48109e-05
-			idx=72 1.48029e-06
-			idx=73 8.12433e-05
-			idx=74 1.96187e-06
-			idx=75 1.98304e-05
-			idx=76 5.26046e-06
-			idx=77 7.09177e-06
-			idx=78 3.421e-05
-			idx=79 2.23562e-08
-			idx=80 9.27155e-08
-			idx=81 9.27155e-08
-			idx=82 1.86399e-07
-			idx=83 1.86399e-07
-			idx=84 1.50368e-07
-			idx=85 1.50368e-07
-			idx=86 8.67192e-08
-			idx=87 8.67192e-08
-			idx=88 1.07944e-07
-			idx=89 1.07944e-07
-			idx=90 2.64193e-07
-			idx=91 2.64193e-07
-			idx=92 2.51717e-08
-			idx=93 2.51717e-08
-			idx=94 2.23562e-08
-			idx=95 4.27882e-05
-			idx=96 4.64205e-06
-			idx=97 9.91844e-06
-			idx=98 2.64971e-05
+			idx=0 4.47133e-05
+			idx=1 1.15511e-06
+			idx=2 8.02132e-06
+			idx=3 6.71466e-07
+			idx=4 0.000818936
+			idx=5 0.000285251
+			idx=6 0.000827056
+			idx=7 0.000605845
+			idx=8 3.53152e-05
+			idx=9 0.000297839
+			idx=10 9.41526e-05
+			idx=11 8.23148e-05
+			idx=12 0.000138586
+			idx=13 1.05928e-05
+			idx=14 6.46355e-06
+			idx=15 6.46355e-06
+			idx=16 4.12214e-06
+			idx=17 4.12214e-06
+			idx=18 4.59717e-06
+			idx=19 4.59717e-06
+			idx=20 7.40011e-06
+			idx=21 7.40011e-06
+			idx=22 2.08296e-07
+			idx=23 2.08296e-07
+			idx=24 3.21114e-07
+			idx=25 3.21114e-07
+			idx=26 8.63689e-06
+			idx=27 8.63689e-06
+			idx=28 1.05928e-05
+			idx=29 0.000818936
+			idx=30 0.000783954
+			idx=31 0.000237229
+			idx=32 0.0002501
+			idx=33 1.77387e-05
+			idx=34 4.61477e-07
+			idx=35 3.21537e-06
+			idx=36 2.68868e-07
+			idx=37 0.000326515
+			idx=38 0.000113928
+			idx=39 0.000332083
+			idx=40 0.000242598
+			idx=41 1.41222e-05
+			idx=42 0.000118833
+			idx=43 3.76392e-05
+			idx=44 3.30311e-05
+			idx=45 5.49589e-05
+			idx=46 4.20536e-06
+			idx=47 2.58746e-06
+			idx=48 2.58746e-06
+			idx=49 1.6505e-06
+			idx=50 1.6505e-06
+			idx=51 1.84251e-06
+			idx=52 1.84251e-06
+			idx=53 2.9653e-06
+			idx=54 2.9653e-06
+			idx=55 8.32045e-08
+			idx=56 8.32045e-08
+			idx=57 1.28263e-07
+			idx=58 1.28263e-07
+			idx=59 3.42848e-06
+			idx=60 3.42848e-06
+			idx=61 4.20536e-06
+			idx=62 0.000326515
+			idx=63 0.000311518
+			idx=64 9.53666e-05
+			idx=65 9.98746e-05
+			idx=66 3.29632e-06
+			idx=67 8.66111e-08
+			idx=68 6.06354e-07
+			idx=69 5.06251e-08
+			idx=70 6.11062e-05
+			idx=71 2.13738e-05
+			idx=72 6.27737e-05
+			idx=73 4.56805e-05
+			idx=74 2.65405e-06
+			idx=75 2.22614e-05
+			idx=76 7.0707e-06
+			idx=77 6.2384e-06
+			idx=78 1.02074e-05
+			idx=79 7.82251e-07
+			idx=80 4.8701e-07
+			idx=81 4.8701e-07
+			idx=82 3.10749e-07
+			idx=83 3.10749e-07
+			idx=84 3.47385e-07
+			idx=85 3.47385e-07
+			idx=86 5.5891e-07
+			idx=87 5.5891e-07
+			idx=88 1.56128e-08
+			idx=89 1.56128e-08
+			idx=90 2.40661e-08
+			idx=91 2.40661e-08
+			idx=92 6.37644e-07
+			idx=93 6.37644e-07
+			idx=94 7.82251e-07
+			idx=95 6.11062e-05
+			idx=96 5.80228e-05
+			idx=97 1.80577e-05
+			idx=98 1.87333e-05
 		name[prior_mean] length[33] type[DOUBLE]
-			idx=0 4.04488
-			idx=1 4.02754
-			idx=2 4.02961
-			idx=3 4.03711
-			idx=4 4.03592
-			idx=5 4.0234
-			idx=6 4.02892
-			idx=7 4.04376
-			idx=8 4.02909
-			idx=9 4.02609
-			idx=10 4.0283
-			idx=11 4.03198
-			idx=12 4.04873
-			idx=13 4.04317
-			idx=14 4.03686
-			idx=15 4.03674
-			idx=16 4.03658
-			idx=17 4.03637
-			idx=18 4.02985
-			idx=19 4.02972
-			idx=20 4.02966
-			idx=21 4.02966
-			idx=22 4.02817
-			idx=23 4.02826
-			idx=24 4.0284
-			idx=25 4.02862
-			idx=26 4.04293
-			idx=27 4.04301
-			idx=28 4.04309
-			idx=29 4.03551
-			idx=30 4.04168
-			idx=31 4.03031
-			idx=32 4.02567
+			idx=0 3.845
+			idx=1 3.83829
+			idx=2 3.83524
+			idx=3 3.83636
+			idx=4 3.84262
+			idx=5 3.83995
+			idx=6 3.83223
+			idx=7 3.83946
+			idx=8 3.83834
+			idx=9 3.83673
+			idx=10 3.837
+			idx=11 3.83335
+			idx=12 3.84651
+			idx=13 3.84375
+			idx=14 3.83667
+			idx=15 3.83653
+			idx=16 3.83645
+			idx=17 3.83644
+			idx=18 3.83561
+			idx=19 3.83561
+			idx=20 3.83568
+			idx=21 3.83583
+			idx=22 3.83846
+			idx=23 3.83849
+			idx=24 3.83852
+			idx=25 3.83857
+			idx=26 3.84385
+			idx=27 3.84392
+			idx=28 3.84388
+			idx=29 3.84164
+			idx=30 3.83942
+			idx=31 3.83402
+			idx=32 3.83918
 		name[initial_growth] length[1] type[DOUBLE]
 			idx=0 0.8
 		name[initial_carry_cap] length[1] type[DOUBLE]
-			idx=0 4.48864
+			idx=0 4.61512
 		name[initial_move] length[1] type[DOUBLE]
 			idx=0 1
 		name[initial_sigma] length[1] type[DOUBLE]
@@ -534,7 +534,7 @@ inla_build...
 			idx=0 1
 			idx=1 1
 		name[pcc] length[2] type[DOUBLE]
-			idx=0 89
+			idx=0 101
 			idx=1 50
 		name[pmove] length[2] type[DOUBLE]
 			idx=0 1
@@ -1640,42 +1640,42 @@ inla_build...
 			idx=1087 (i=31 j=32 x=2.03303)
 			idx=1088 (i=32 j=32 x=106.52)
 		name[prior_variance] nrow[33] ncol[33] n[33] type[SPARSE.MATRIX]
-			idx=0 (i=0 j=0 x=0.0279229)
-			idx=1 (i=1 j=1 x=0.0271947)
-			idx=2 (i=2 j=2 x=0.02685)
-			idx=3 (i=3 j=3 x=0.0265803)
-			idx=4 (i=4 j=4 x=0.0255655)
-			idx=5 (i=5 j=5 x=0.0270136)
-			idx=6 (i=6 j=6 x=0.0261895)
-			idx=7 (i=7 j=7 x=0.0270292)
-			idx=8 (i=8 j=8 x=0.0255791)
-			idx=9 (i=9 j=9 x=0.0265627)
-			idx=10 (i=10 j=10 x=0.0263392)
-			idx=11 (i=11 j=11 x=0.0248893)
-			idx=12 (i=12 j=12 x=0.0271866)
-			idx=13 (i=13 j=13 x=0.0309459)
-			idx=14 (i=14 j=14 x=0.029289)
-			idx=15 (i=15 j=15 x=0.0305698)
-			idx=16 (i=16 j=16 x=0.0305268)
-			idx=17 (i=17 j=17 x=0.0291275)
-			idx=18 (i=18 j=18 x=0.0294499)
-			idx=19 (i=19 j=19 x=0.0307761)
-			idx=20 (i=20 j=20 x=0.0307939)
-			idx=21 (i=21 j=21 x=0.0295172)
-			idx=22 (i=22 j=22 x=0.0299283)
-			idx=23 (i=23 j=23 x=0.0311202)
-			idx=24 (i=24 j=24 x=0.0310845)
-			idx=25 (i=25 j=25 x=0.0297915)
-			idx=26 (i=26 j=26 x=0.0308982)
-			idx=27 (i=27 j=27 x=0.0319997)
-			idx=28 (i=28 j=28 x=0.0320146)
-			idx=29 (i=29 j=29 x=0.0266108)
-			idx=30 (i=30 j=30 x=0.0283247)
-			idx=31 (i=31 j=31 x=0.0270152)
-			idx=32 (i=32 j=32 x=0.0282672)
-		cgeneric.shlib  [C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a877aa3221.dll]
+			idx=0 (i=0 j=0 x=0.02957)
+			idx=1 (i=1 j=1 x=0.0274725)
+			idx=2 (i=2 j=2 x=0.0290465)
+			idx=3 (i=3 j=3 x=0.028691)
+			idx=4 (i=4 j=4 x=0.0287394)
+			idx=5 (i=5 j=5 x=0.0278912)
+			idx=6 (i=6 j=6 x=0.029015)
+			idx=7 (i=7 j=7 x=0.0278223)
+			idx=8 (i=8 j=8 x=0.0268348)
+			idx=9 (i=9 j=9 x=0.0280582)
+			idx=10 (i=10 j=10 x=0.0280993)
+			idx=11 (i=11 j=11 x=0.0288114)
+			idx=12 (i=12 j=12 x=0.0290809)
+			idx=13 (i=13 j=13 x=0.0322238)
+			idx=14 (i=14 j=14 x=0.0314067)
+			idx=15 (i=15 j=15 x=0.0327429)
+			idx=16 (i=16 j=16 x=0.0327663)
+			idx=17 (i=17 j=17 x=0.0314708)
+			idx=18 (i=18 j=18 x=0.0316606)
+			idx=19 (i=19 j=19 x=0.0329548)
+			idx=20 (i=20 j=20 x=0.0329387)
+			idx=21 (i=21 j=21 x=0.0316042)
+			idx=22 (i=22 j=22 x=0.0302384)
+			idx=23 (i=23 j=23 x=0.031599)
+			idx=24 (i=24 j=24 x=0.031597)
+			idx=25 (i=25 j=25 x=0.0302317)
+			idx=26 (i=26 j=26 x=0.0322471)
+			idx=27 (i=27 j=27 x=0.0334683)
+			idx=28 (i=28 j=28 x=0.0334621)
+			idx=29 (i=29 j=29 x=0.0296076)
+			idx=30 (i=30 j=30 x=0.0289041)
+			idx=31 (i=31 j=31 x=0.0299891)
+			idx=32 (i=32 j=32 x=0.0287491)
+		cgeneric.shlib  [C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file43003e92b0a.dll]
 		cgeneric.model  [inla_cgeneric_loggrow_model]
-		cgeneric.data   [C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a822bded2/data.files/file45a84f18760f]
+		cgeneric.data   [C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430034c344c/data.files/file4300f1c5ae6]
 		cgeneric.n      [99]
 		cgeneric.q      [0]
 		cgeneric.debug  [1]
@@ -6634,17 +6634,17 @@ cgeneric[ loggrow ]  cmd = graph
 cgeneric[ loggrow ]  cmd = initial
 n = 4
 	idx = 0 initial = 0.80000000
-	idx = 1 initial = 4.48863637
+	idx = 1 initial = 4.61512052
 	idx = 2 initial = 1.00000000
 	idx = 3 initial = 0.40546511
 		ntheta = [4]
 		initial[0] = 0.8
-		initial[1] = 4.48864
+		initial[1] = 4.61512
 		initial[2] = 1
 		initial[3] = 0.405465
 		initialise theta[0]=[0.8]
 		fixed[0]=[0]
-		initialise theta[1]=[4.48864]
+		initialise theta[1]=[4.61512]
 		fixed[1]=[0]
 		initialise theta[2]=[1]
 		fixed[2]=[0]
@@ -11600,7 +11600,7 @@ cgeneric[ loggrow ]  cmd = graph
 	idx = 4945 i = 96 j = 97
 	idx = 4946 i = 96 j = 98
 	idx = 4947 i = 97 j = 97
-	idx = 49
+	idx = 4948 i 
  *** inla.core.safe:  The inla program failed, but will rerun in case better initial values may help. try=1/1 
 	Read ntt 10 1 with max.threads 12
 	Found num.threads = 10:1 max_threads = 10
@@ -11611,8 +11611,8 @@ MAX_THREADS...[10]
 Report issues/bugs to <help@r-inla.org>
 
 cwd[C:\Users\2966362B\OneDrive - University of Glasgow\Documents\GitHub\INLAlogrowth-package\inst\Tests]
-Process file/directory[C:\Users\2966362B\AppData\Local\Temp\Rtmp8yTli6\file45a81ec44642/Model.ini] model[0/1/] threads[10] max.threads[12] blas_threads_force[0] nested[10:1]
-Run with model[C:\Users\2966362B\AppData\Local\Temp\Rtmp8yTli6\file45a81ec44642/Model.ini]
+Process file/directory[C:\Users\2966362B\AppData\Local\Temp\RtmpWGaA6s\file430072357430/Model.ini] model[0/1/] threads[10] max.threads[12] blas_threads_force[0] nested[10:1]
+Run with model[C:\Users\2966362B\AppData\Local\Temp\RtmpWGaA6s\file430072357430/Model.ini]
 inla_build...
 	number of sections=[12]
 	parse section=[11] name=[INLA.numa] type=[NUMA]
@@ -11671,7 +11671,7 @@ inla_build...
 		pardiso-library installed and working? = [no]
 		smtp = [taucs]
 		strategy = [default]
-		store results in directory=[C:\Users\2966362B\AppData\Local\Temp\Rtmp8yTli6\file45a81ec44642/results.files-0000000000]
+		store results in directory=[C:\Users\2966362B\AppData\Local\Temp\RtmpWGaA6s\file430072357430/results.files-0000000000]
 		output:
 			gcpo=[0]
 				num.level.sets=[-1]
@@ -11717,32 +11717,32 @@ inla_build...
 		m=[66]
 		ndata=[66]
 		compute=[1]
-		read offsets from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a813646e75]
-		read n=[330] entries from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a813646e75]
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a813646e75] 0/165  (idx,y) = (0, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a813646e75] 1/165  (idx,y) = (1, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a813646e75] 2/165  (idx,y) = (2, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a813646e75] 3/165  (idx,y) = (3, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a813646e75] 4/165  (idx,y) = (4, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a813646e75] 5/165  (idx,y) = (5, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a813646e75] 6/165  (idx,y) = (6, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a813646e75] 7/165  (idx,y) = (7, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a813646e75] 8/165  (idx,y) = (8, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a813646e75] 9/165  (idx,y) = (9, 0)
-		read link.fitted.values from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a83f703966]
-		read n=[330] entries from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a83f703966]
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a83f703966] 0/165  (idx,y) = (0, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a83f703966] 1/165  (idx,y) = (1, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a83f703966] 2/165  (idx,y) = (2, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a83f703966] 3/165  (idx,y) = (3, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a83f703966] 4/165  (idx,y) = (4, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a83f703966] 5/165  (idx,y) = (5, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a83f703966] 6/165  (idx,y) = (6, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a83f703966] 7/165  (idx,y) = (7, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a83f703966] 8/165  (idx,y) = (8, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a83f703966] 9/165  (idx,y) = (9, 0)
-		A=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a8a8491b]
-		Aext=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a86aaf545e]
+		read offsets from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430019d53dad]
+		read n=[330] entries from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430019d53dad]
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430019d53dad] 0/165  (idx,y) = (0, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430019d53dad] 1/165  (idx,y) = (1, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430019d53dad] 2/165  (idx,y) = (2, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430019d53dad] 3/165  (idx,y) = (3, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430019d53dad] 4/165  (idx,y) = (4, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430019d53dad] 5/165  (idx,y) = (5, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430019d53dad] 6/165  (idx,y) = (6, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430019d53dad] 7/165  (idx,y) = (7, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430019d53dad] 8/165  (idx,y) = (8, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430019d53dad] 9/165  (idx,y) = (9, 0)
+		read link.fitted.values from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430010ce545f]
+		read n=[330] entries from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430010ce545f]
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430010ce545f] 0/165  (idx,y) = (0, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430010ce545f] 1/165  (idx,y) = (1, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430010ce545f] 2/165  (idx,y) = (2, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430010ce545f] 3/165  (idx,y) = (3, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430010ce545f] 4/165  (idx,y) = (4, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430010ce545f] 5/165  (idx,y) = (5, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430010ce545f] 6/165  (idx,y) = (6, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430010ce545f] 7/165  (idx,y) = (7, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430010ce545f] 8/165  (idx,y) = (8, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430010ce545f] 9/165  (idx,y) = (9, 0)
+		A=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file43002800128d]
+		Aext=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430021464dec]
 		AextPrecision=[3.269e+06]
 		output:
 			summary=[1]
@@ -11755,12 +11755,12 @@ inla_build...
 		tag=[INLA.Data1]
 		family=[POISSON]
 		likelihood=[POISSON]
-		file->name=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a83ba465dc]
-		file->name=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a81e45d49]
-		file->name=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a853906dc]
-		file->name=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a87f331585]
-		read n=[198] entries from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a83ba465dc]
-			0/66  (idx,a,y,d) = (0, 0, 234, 1)
+		file->name=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file43002eb83529]
+		file->name=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file4300596878eb]
+		file->name=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430054e2a1c]
+		file->name=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file43001cd2743c]
+		read n=[198] entries from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file43002eb83529]
+			0/66  (idx,a,y,d) = (0, 0, 244, 1)
 			1/66  (idx,a,y,d) = (1, 0.00694444, 0, 1)
 			2/66  (idx,a,y,d) = (2, 0.00694444, 0, 1)
 			3/66  (idx,a,y,d) = (3, 0.00694444, 0, 1)
@@ -11791,19 +11791,19 @@ inla_build...
 		nrep=[1]
 		ngroup=[1]
 		Alocal=[no]
-		read covariates from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a87d8a69d8]
-		read n=[198] entries from file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a87d8a69d8]
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a87d8a69d8] 0/99  (idx,y) = (0, 0)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a87d8a69d8] 1/99  (idx,y) = (1, 1)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a87d8a69d8] 2/99  (idx,y) = (2, 2)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a87d8a69d8] 3/99  (idx,y) = (3, 3)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a87d8a69d8] 4/99  (idx,y) = (4, 4)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a87d8a69d8] 5/99  (idx,y) = (5, 5)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a87d8a69d8] 6/99  (idx,y) = (6, 6)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a87d8a69d8] 7/99  (idx,y) = (7, 7)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a87d8a69d8] 8/99  (idx,y) = (8, 8)
-		file=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a87d8a69d8] 9/99  (idx,y) = (9, 9)
-		file for locations=[C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a838bd148]
+		read covariates from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file43006a2d2bc7]
+		read n=[198] entries from file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file43006a2d2bc7]
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file43006a2d2bc7] 0/99  (idx,y) = (0, 0)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file43006a2d2bc7] 1/99  (idx,y) = (1, 1)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file43006a2d2bc7] 2/99  (idx,y) = (2, 2)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file43006a2d2bc7] 3/99  (idx,y) = (3, 3)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file43006a2d2bc7] 4/99  (idx,y) = (4, 4)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file43006a2d2bc7] 5/99  (idx,y) = (5, 5)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file43006a2d2bc7] 6/99  (idx,y) = (6, 6)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file43006a2d2bc7] 7/99  (idx,y) = (7, 7)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file43006a2d2bc7] 8/99  (idx,y) = (8, 8)
+		file=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file43006a2d2bc7] 9/99  (idx,y) = (9, 9)
+		file for locations=[C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file430031bc2c75]
 			nlocations=[99]
 			locations[0]=[1]
 			locations[1]=[2]
@@ -11829,243 +11829,243 @@ inla_build...
 		name[step_size] length[1] type[DOUBLE]
 			idx=0 1
 		name[linpoint] length[99] type[DOUBLE]
-			idx=0 4.04488
-			idx=1 4.02754
-			idx=2 4.02961
-			idx=3 4.03711
-			idx=4 4.03592
-			idx=5 4.0234
-			idx=6 4.02892
-			idx=7 4.04376
-			idx=8 4.02909
-			idx=9 4.02609
-			idx=10 4.0283
-			idx=11 4.03198
-			idx=12 4.04873
-			idx=13 4.04317
-			idx=14 4.03686
-			idx=15 4.03674
-			idx=16 4.03658
-			idx=17 4.03637
-			idx=18 4.02985
-			idx=19 4.02972
-			idx=20 4.02966
-			idx=21 4.02966
-			idx=22 4.02817
-			idx=23 4.02826
-			idx=24 4.0284
-			idx=25 4.02862
-			idx=26 4.04293
-			idx=27 4.04301
-			idx=28 4.04309
-			idx=29 4.03551
-			idx=30 4.04168
-			idx=31 4.03031
-			idx=32 4.02567
-			idx=33 4.33158
-			idx=34 4.32307
-			idx=35 4.32409
-			idx=36 4.32778
-			idx=37 4.3272
-			idx=38 4.32101
-			idx=39 4.32375
-			idx=40 4.33104
-			idx=41 4.32384
-			idx=42 4.32235
-			idx=43 4.32344
-			idx=44 4.32526
-			idx=45 4.33345
-			idx=46 4.33075
-			idx=47 4.32766
-			idx=48 4.3276
-			idx=49 4.32752
-			idx=50 4.32742
-			idx=51 4.32421
-			idx=52 4.32415
-			idx=53 4.32412
-			idx=54 4.32411
-			idx=55 4.32338
-			idx=56 4.32342
-			idx=57 4.32349
-			idx=58 4.3236
-			idx=59 4.33063
-			idx=60 4.33067
-			idx=61 4.33071
-			idx=62 4.327
-			idx=63 4.33002
-			idx=64 4.32443
-			idx=65 4.32214
-			idx=66 4.44786
-			idx=67 4.44514
-			idx=68 4.44547
-			idx=69 4.44665
-			idx=70 4.44646
-			idx=71 4.44448
-			idx=72 4.44536
-			idx=73 4.44768
-			idx=74 4.44539
-			idx=75 4.44491
-			idx=76 4.44526
-			idx=77 4.44584
-			idx=78 4.44845
-			idx=79 4.44759
-			idx=80 4.44661
-			idx=81 4.44659
-			idx=82 4.44657
-			idx=83 4.44653
-			idx=84 4.44551
-			idx=85 4.44549
-			idx=86 4.44548
-			idx=87 4.44548
-			idx=88 4.44524
-			idx=89 4.44525
-			idx=90 4.44527
-			idx=91 4.44531
-			idx=92 4.44755
-			idx=93 4.44757
-			idx=94 4.44758
-			idx=95 4.4464
-			idx=96 4.44736
-			idx=97 4.44558
-			idx=98 4.44484
+			idx=0 3.845
+			idx=1 3.83829
+			idx=2 3.83524
+			idx=3 3.83636
+			idx=4 3.84262
+			idx=5 3.83995
+			idx=6 3.83223
+			idx=7 3.83946
+			idx=8 3.83834
+			idx=9 3.83673
+			idx=10 3.837
+			idx=11 3.83335
+			idx=12 3.84651
+			idx=13 3.84375
+			idx=14 3.83667
+			idx=15 3.83653
+			idx=16 3.83645
+			idx=17 3.83644
+			idx=18 3.83561
+			idx=19 3.83561
+			idx=20 3.83568
+			idx=21 3.83583
+			idx=22 3.83846
+			idx=23 3.83849
+			idx=24 3.83852
+			idx=25 3.83857
+			idx=26 3.84385
+			idx=27 3.84392
+			idx=28 3.84388
+			idx=29 3.84164
+			idx=30 3.83942
+			idx=31 3.83402
+			idx=32 3.83918
+			idx=33 4.27463
+			idx=34 4.2704
+			idx=35 4.26847
+			idx=36 4.26918
+			idx=37 4.27314
+			idx=38 4.27145
+			idx=39 4.26657
+			idx=40 4.27114
+			idx=41 4.27044
+			idx=42 4.26941
+			idx=43 4.26959
+			idx=44 4.26728
+			idx=45 4.27558
+			idx=46 4.27385
+			idx=47 4.26938
+			idx=48 4.26929
+			idx=49 4.26924
+			idx=50 4.26923
+			idx=51 4.2687
+			idx=52 4.26871
+			idx=53 4.26875
+			idx=54 4.26885
+			idx=55 4.27051
+			idx=56 4.27053
+			idx=57 4.27055
+			idx=58 4.27058
+			idx=59 4.27391
+			idx=60 4.27395
+			idx=61 4.27393
+			idx=62 4.27252
+			idx=63 4.27112
+			idx=64 4.2677
+			idx=65 4.27096
+			idx=66 4.50549
+			idx=67 4.50367
+			idx=68 4.50283
+			idx=69 4.50314
+			idx=70 4.50485
+			idx=71 4.50412
+			idx=72 4.502
+			idx=73 4.50399
+			idx=74 4.50368
+			idx=75 4.50324
+			idx=76 4.50331
+			idx=77 4.50231
+			idx=78 4.5059
+			idx=79 4.50516
+			idx=80 4.50322
+			idx=81 4.50318
+			idx=82 4.50316
+			idx=83 4.50316
+			idx=84 4.50293
+			idx=85 4.50293
+			idx=86 4.50295
+			idx=87 4.50299
+			idx=88 4.50371
+			idx=89 4.50372
+			idx=90 4.50373
+			idx=91 4.50374
+			idx=92 4.50518
+			idx=93 4.5052
+			idx=94 4.50519
+			idx=95 4.50458
+			idx=96 4.50398
+			idx=97 4.50249
+			idx=98 4.50391
 		name[mag_grad_sq] length[99] type[DOUBLE]
-			idx=0 0.000104499
-			idx=1 1.56905e-05
-			idx=2 1.3568e-06
-			idx=3 1.27512e-05
-			idx=4 0.00170575
-			idx=5 0.000574555
-			idx=6 5.86592e-05
-			idx=7 0.00334258
-			idx=8 7.70646e-05
-			idx=9 0.000789488
-			idx=10 0.000205273
-			idx=11 0.000285343
-			idx=12 0.00143052
-			idx=13 9.36547e-07
-			idx=14 3.77905e-06
-			idx=15 3.77905e-06
-			idx=16 7.58993e-06
-			idx=17 7.58993e-06
-			idx=18 5.96012e-06
-			idx=19 5.96012e-06
-			idx=20 3.43507e-06
-			idx=21 3.43507e-06
-			idx=22 4.2534e-06
-			idx=23 4.2534e-06
-			idx=24 1.04201e-05
-			idx=25 1.04201e-05
-			idx=26 1.05376e-06
-			idx=27 1.05376e-06
-			idx=28 9.36547e-07
-			idx=29 0.00170575
-			idx=30 0.000197059
-			idx=31 0.000393546
-			idx=32 0.00103072
-			idx=33 2.48022e-05
-			idx=34 3.84941e-06
-			idx=35 3.31668e-07
-			idx=36 3.0726e-06
-			idx=37 0.000415684
-			idx=38 0.000141918
-			idx=39 1.43377e-05
-			idx=40 0.000801896
-			idx=41 1.89181e-05
-			idx=42 0.000192522
-			idx=43 5.05561e-05
-			idx=44 6.92185e-05
-			idx=45 0.000340418
-			idx=46 2.22672e-07
-			idx=47 9.10862e-07
-			idx=48 9.10862e-07
-			idx=49 1.83031e-06
-			idx=50 1.83031e-06
-			idx=51 1.45661e-06
-			idx=52 1.45661e-06
-			idx=53 8.39773e-07
-			idx=54 8.39773e-07
-			idx=55 1.04254e-06
-			idx=56 1.04254e-06
-			idx=57 2.55283e-06
-			idx=58 2.55283e-06
-			idx=59 2.50627e-07
-			idx=60 2.50627e-07
-			idx=61 2.22672e-07
-			idx=62 0.000415684
-			idx=63 4.65419e-05
-			idx=64 9.613e-05
-			idx=65 0.000254248
-			idx=66 2.4858e-06
-			idx=67 3.98945e-07
-			idx=68 3.42466e-08
-			idx=69 3.12673e-07
-			idx=70 4.27882e-05
-			idx=71 1.48109e-05
-			idx=72 1.48029e-06
-			idx=73 8.12433e-05
-			idx=74 1.96187e-06
-			idx=75 1.98304e-05
-			idx=76 5.26046e-06
-			idx=77 7.09177e-06
-			idx=78 3.421e-05
-			idx=79 2.23562e-08
-			idx=80 9.27155e-08
-			idx=81 9.27155e-08
-			idx=82 1.86399e-07
-			idx=83 1.86399e-07
-			idx=84 1.50368e-07
-			idx=85 1.50368e-07
-			idx=86 8.67192e-08
-			idx=87 8.67192e-08
-			idx=88 1.07944e-07
-			idx=89 1.07944e-07
-			idx=90 2.64193e-07
-			idx=91 2.64193e-07
-			idx=92 2.51717e-08
-			idx=93 2.51717e-08
-			idx=94 2.23562e-08
-			idx=95 4.27882e-05
-			idx=96 4.64205e-06
-			idx=97 9.91844e-06
-			idx=98 2.64971e-05
+			idx=0 4.47133e-05
+			idx=1 1.15511e-06
+			idx=2 8.02132e-06
+			idx=3 6.71466e-07
+			idx=4 0.000818936
+			idx=5 0.000285251
+			idx=6 0.000827056
+			idx=7 0.000605845
+			idx=8 3.53152e-05
+			idx=9 0.000297839
+			idx=10 9.41526e-05
+			idx=11 8.23148e-05
+			idx=12 0.000138586
+			idx=13 1.05928e-05
+			idx=14 6.46355e-06
+			idx=15 6.46355e-06
+			idx=16 4.12214e-06
+			idx=17 4.12214e-06
+			idx=18 4.59717e-06
+			idx=19 4.59717e-06
+			idx=20 7.40011e-06
+			idx=21 7.40011e-06
+			idx=22 2.08296e-07
+			idx=23 2.08296e-07
+			idx=24 3.21114e-07
+			idx=25 3.21114e-07
+			idx=26 8.63689e-06
+			idx=27 8.63689e-06
+			idx=28 1.05928e-05
+			idx=29 0.000818936
+			idx=30 0.000783954
+			idx=31 0.000237229
+			idx=32 0.0002501
+			idx=33 1.77387e-05
+			idx=34 4.61477e-07
+			idx=35 3.21537e-06
+			idx=36 2.68868e-07
+			idx=37 0.000326515
+			idx=38 0.000113928
+			idx=39 0.000332083
+			idx=40 0.000242598
+			idx=41 1.41222e-05
+			idx=42 0.000118833
+			idx=43 3.76392e-05
+			idx=44 3.30311e-05
+			idx=45 5.49589e-05
+			idx=46 4.20536e-06
+			idx=47 2.58746e-06
+			idx=48 2.58746e-06
+			idx=49 1.6505e-06
+			idx=50 1.6505e-06
+			idx=51 1.84251e-06
+			idx=52 1.84251e-06
+			idx=53 2.9653e-06
+			idx=54 2.9653e-06
+			idx=55 8.32045e-08
+			idx=56 8.32045e-08
+			idx=57 1.28263e-07
+			idx=58 1.28263e-07
+			idx=59 3.42848e-06
+			idx=60 3.42848e-06
+			idx=61 4.20536e-06
+			idx=62 0.000326515
+			idx=63 0.000311518
+			idx=64 9.53666e-05
+			idx=65 9.98746e-05
+			idx=66 3.29632e-06
+			idx=67 8.66111e-08
+			idx=68 6.06354e-07
+			idx=69 5.06251e-08
+			idx=70 6.11062e-05
+			idx=71 2.13738e-05
+			idx=72 6.27737e-05
+			idx=73 4.56805e-05
+			idx=74 2.65405e-06
+			idx=75 2.22614e-05
+			idx=76 7.0707e-06
+			idx=77 6.2384e-06
+			idx=78 1.02074e-05
+			idx=79 7.82251e-07
+			idx=80 4.8701e-07
+			idx=81 4.8701e-07
+			idx=82 3.10749e-07
+			idx=83 3.10749e-07
+			idx=84 3.47385e-07
+			idx=85 3.47385e-07
+			idx=86 5.5891e-07
+			idx=87 5.5891e-07
+			idx=88 1.56128e-08
+			idx=89 1.56128e-08
+			idx=90 2.40661e-08
+			idx=91 2.40661e-08
+			idx=92 6.37644e-07
+			idx=93 6.37644e-07
+			idx=94 7.82251e-07
+			idx=95 6.11062e-05
+			idx=96 5.80228e-05
+			idx=97 1.80577e-05
+			idx=98 1.87333e-05
 		name[prior_mean] length[33] type[DOUBLE]
-			idx=0 4.04488
-			idx=1 4.02754
-			idx=2 4.02961
-			idx=3 4.03711
-			idx=4 4.03592
-			idx=5 4.0234
-			idx=6 4.02892
-			idx=7 4.04376
-			idx=8 4.02909
-			idx=9 4.02609
-			idx=10 4.0283
-			idx=11 4.03198
-			idx=12 4.04873
-			idx=13 4.04317
-			idx=14 4.03686
-			idx=15 4.03674
-			idx=16 4.03658
-			idx=17 4.03637
-			idx=18 4.02985
-			idx=19 4.02972
-			idx=20 4.02966
-			idx=21 4.02966
-			idx=22 4.02817
-			idx=23 4.02826
-			idx=24 4.0284
-			idx=25 4.02862
-			idx=26 4.04293
-			idx=27 4.04301
-			idx=28 4.04309
-			idx=29 4.03551
-			idx=30 4.04168
-			idx=31 4.03031
-			idx=32 4.02567
+			idx=0 3.845
+			idx=1 3.83829
+			idx=2 3.83524
+			idx=3 3.83636
+			idx=4 3.84262
+			idx=5 3.83995
+			idx=6 3.83223
+			idx=7 3.83946
+			idx=8 3.83834
+			idx=9 3.83673
+			idx=10 3.837
+			idx=11 3.83335
+			idx=12 3.84651
+			idx=13 3.84375
+			idx=14 3.83667
+			idx=15 3.83653
+			idx=16 3.83645
+			idx=17 3.83644
+			idx=18 3.83561
+			idx=19 3.83561
+			idx=20 3.83568
+			idx=21 3.83583
+			idx=22 3.83846
+			idx=23 3.83849
+			idx=24 3.83852
+			idx=25 3.83857
+			idx=26 3.84385
+			idx=27 3.84392
+			idx=28 3.84388
+			idx=29 3.84164
+			idx=30 3.83942
+			idx=31 3.83402
+			idx=32 3.83918
 		name[initial_growth] length[1] type[DOUBLE]
 			idx=0 0.8
 		name[initial_carry_cap] length[1] type[DOUBLE]
-			idx=0 4.48864
+			idx=0 4.61512
 		name[initial_move] length[1] type[DOUBLE]
 			idx=0 1
 		name[initial_sigma] length[1] type[DOUBLE]
@@ -12074,7 +12074,7 @@ inla_build...
 			idx=0 1
 			idx=1 1
 		name[pcc] length[2] type[DOUBLE]
-			idx=0 89
+			idx=0 101
 			idx=1 50
 		name[pmove] length[2] type[DOUBLE]
 			idx=0 1
@@ -13180,42 +13180,42 @@ inla_build...
 			idx=1087 (i=31 j=32 x=2.03303)
 			idx=1088 (i=32 j=32 x=106.52)
 		name[prior_variance] nrow[33] ncol[33] n[33] type[SPARSE.MATRIX]
-			idx=0 (i=0 j=0 x=0.0279229)
-			idx=1 (i=1 j=1 x=0.0271947)
-			idx=2 (i=2 j=2 x=0.02685)
-			idx=3 (i=3 j=3 x=0.0265803)
-			idx=4 (i=4 j=4 x=0.0255655)
-			idx=5 (i=5 j=5 x=0.0270136)
-			idx=6 (i=6 j=6 x=0.0261895)
-			idx=7 (i=7 j=7 x=0.0270292)
-			idx=8 (i=8 j=8 x=0.0255791)
-			idx=9 (i=9 j=9 x=0.0265627)
-			idx=10 (i=10 j=10 x=0.0263392)
-			idx=11 (i=11 j=11 x=0.0248893)
-			idx=12 (i=12 j=12 x=0.0271866)
-			idx=13 (i=13 j=13 x=0.0309459)
-			idx=14 (i=14 j=14 x=0.029289)
-			idx=15 (i=15 j=15 x=0.0305698)
-			idx=16 (i=16 j=16 x=0.0305268)
-			idx=17 (i=17 j=17 x=0.0291275)
-			idx=18 (i=18 j=18 x=0.0294499)
-			idx=19 (i=19 j=19 x=0.0307761)
-			idx=20 (i=20 j=20 x=0.0307939)
-			idx=21 (i=21 j=21 x=0.0295172)
-			idx=22 (i=22 j=22 x=0.0299283)
-			idx=23 (i=23 j=23 x=0.0311202)
-			idx=24 (i=24 j=24 x=0.0310845)
-			idx=25 (i=25 j=25 x=0.0297915)
-			idx=26 (i=26 j=26 x=0.0308982)
-			idx=27 (i=27 j=27 x=0.0319997)
-			idx=28 (i=28 j=28 x=0.0320146)
-			idx=29 (i=29 j=29 x=0.0266108)
-			idx=30 (i=30 j=30 x=0.0283247)
-			idx=31 (i=31 j=31 x=0.0270152)
-			idx=32 (i=32 j=32 x=0.0282672)
-		cgeneric.shlib  [C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a85d8c750a.dll]
+			idx=0 (i=0 j=0 x=0.02957)
+			idx=1 (i=1 j=1 x=0.0274725)
+			idx=2 (i=2 j=2 x=0.0290465)
+			idx=3 (i=3 j=3 x=0.028691)
+			idx=4 (i=4 j=4 x=0.0287394)
+			idx=5 (i=5 j=5 x=0.0278912)
+			idx=6 (i=6 j=6 x=0.029015)
+			idx=7 (i=7 j=7 x=0.0278223)
+			idx=8 (i=8 j=8 x=0.0268348)
+			idx=9 (i=9 j=9 x=0.0280582)
+			idx=10 (i=10 j=10 x=0.0280993)
+			idx=11 (i=11 j=11 x=0.0288114)
+			idx=12 (i=12 j=12 x=0.0290809)
+			idx=13 (i=13 j=13 x=0.0322238)
+			idx=14 (i=14 j=14 x=0.0314067)
+			idx=15 (i=15 j=15 x=0.0327429)
+			idx=16 (i=16 j=16 x=0.0327663)
+			idx=17 (i=17 j=17 x=0.0314708)
+			idx=18 (i=18 j=18 x=0.0316606)
+			idx=19 (i=19 j=19 x=0.0329548)
+			idx=20 (i=20 j=20 x=0.0329387)
+			idx=21 (i=21 j=21 x=0.0316042)
+			idx=22 (i=22 j=22 x=0.0302384)
+			idx=23 (i=23 j=23 x=0.031599)
+			idx=24 (i=24 j=24 x=0.031597)
+			idx=25 (i=25 j=25 x=0.0302317)
+			idx=26 (i=26 j=26 x=0.0322471)
+			idx=27 (i=27 j=27 x=0.0334683)
+			idx=28 (i=28 j=28 x=0.0334621)
+			idx=29 (i=29 j=29 x=0.0296076)
+			idx=30 (i=30 j=30 x=0.0289041)
+			idx=31 (i=31 j=31 x=0.0299891)
+			idx=32 (i=32 j=32 x=0.0287491)
+		cgeneric.shlib  [C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file43007cda71ec.dll]
 		cgeneric.model  [inla_cgeneric_loggrow_model]
-		cgeneric.data   [C:/Users/2966362B/AppData/Local/Temp/Rtmp8yTli6/file45a81ec44642/data.files/file45a8416e2394]
+		cgeneric.data   [C:/Users/2966362B/AppData/Local/Temp/RtmpWGaA6s/file430072357430/data.files/file43001c077b36]
 		cgeneric.n      [99]
 		cgeneric.q      [0]
 		cgeneric.debug  [1]
@@ -18174,17 +18174,17 @@ cgeneric[ loggrow ]  cmd = graph
 cgeneric[ loggrow ]  cmd = initial
 n = 4
 	idx = 0 initial = 0.80000000
-	idx = 1 initial = 4.48863637
+	idx = 1 initial = 4.61512052
 	idx = 2 initial = 1.00000000
 	idx = 3 initial = 0.40546511
 		ntheta = [4]
 		initial[0] = 0.8
-		initial[1] = 4.48864
+		initial[1] = 4.61512
 		initial[2] = 1
 		initial[3] = 0.405465
 		initialise theta[0]=[0.8]
 		fixed[0]=[0]
-		initialise theta[1]=[4.48864]
+		initialise theta[1]=[4.61512]
 		fixed[1]=[0]
 		initialise theta[2]=[1]
 		fixed[2]=[0]
@@ -23138,7 +23138,7 @@ cgeneric[ loggrow ]  cmd = graph
 	idx = 4943 i = 95 j = 98
 	idx = 4944 i = 96 j = 96
 	idx = 4945 i = 96 j = 97
-	idx = 4946 i = Warning in bru_log_warn(paste0("iinla: Problem in inla:\n", result)) :
+	idx = 4946 i =Warning in bru_log_warn(paste0("iinla: Problem in inla:\n", result)) :
   iinla: Problem in inla:
 Error in inla.core.safe(formula = formula, family = family, contrasts = contrasts,  : 
   The inla-program exited with an error. Unless you interupted it yourself, please rerun with verbose=TRUE and check the output carefully.
