@@ -191,7 +191,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         for (int i = 0; i < N; i++) {
             for (int j = i; j < N; j++) {
                 ret[idx] = i; /* ii */
-                ret[N + idx] = j; /* jj */
+                ret[N*(N+1)/2 + idx] = j; /* jj */
                 idx++;
             }
         }

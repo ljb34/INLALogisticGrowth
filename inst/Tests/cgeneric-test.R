@@ -1,8 +1,8 @@
 #' Cgeneric unit test
 library(INLAloggrowth)
 library(sf)
-out.lgcp <- simulate_loggrowth(growth = 1, k = 150, movement = 1, sigma = 20,
-                               initial = 50,timesteps = 4,sample.type = "LGCP")
+out.lgcp <- simulate_loggrowth(growth = 1, k = 10, movement = 1, sigma = 1,
+                               initial = 5,timesteps = 4,sample.type = "LGCP")
 
 #fit initial year
 bnd <- spoly(data.frame(easting = c(0,1,1,0), northing = c(0,0,1,1)))
@@ -26,6 +26,7 @@ initial.variance <- Diagonal(mesh_obs$n, (fit0$summary.fixed$sd**2)+(fit0$summar
 #fit other years
 priors <- list(cc = c(nrow(out.lgcp$animal_obs[out.lgcp$animal_obs$time == 4,]),50),
                growth = c(1,1),move = c(1,1),sigma = c(log(20),1))
+
 iterated.fit.lgcp <- iterate.cgeneric.fit.lgcp(data = out.lgcp$animal_obs, smesh = mesh_obs, tmesh = mesh_time,
                                       samplers = bnd,prior.mean = fit0$summary.fixed$mean +fit0$summary.fitted.values$mean[index-1 +1:mesh_obs$n],
                                       prior.variance = initial.variance, priors = priors,
@@ -34,3 +35,5 @@ iterated.fit.lgcp <- iterate.cgeneric.fit.lgcp(data = out.lgcp$animal_obs, smesh
                                       initial.linpoint = NULL, initial.growth = 0.8,
                                       initial.carry.cap = log(nrow(out.lgcp$animal_obs[out.lgcp$animal_obs$time == 4,])),
                                       verbose = T)
+
+
