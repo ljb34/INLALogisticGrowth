@@ -6,6 +6,7 @@ RoxygenNote: 7.3.2
 Imports: 
     dplyr,
     fmesher,
+    INLAtools (>= 0.0.4),
     Matrix,
     parallel,
     sf,
@@ -16,3 +17,5 @@ Depends:
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: yes
+Remotes:  
+    inbo/INLAtools
