@@ -213,7 +213,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     {
         // return c(-1, M, Qij) in the same order as defined in INLA_CGENERIC_GRAPH
 		printf("INLA_CGENERIC_Q\n");
-        int M = N;
+        int M = N * (N + 1) / 2;
         ret = Calloc(2 + N * (N+1)/2, double);
 
         inla_cgeneric_mat_tp* L_mat = malloc(sizeof(inla_cgeneric_mat_tp));
@@ -245,7 +245,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         }
         else {
             for (int i = 0; i < ns; i++) {
-                for (int j = 0; j < ns; j++) {
+                for (int j = i; j < ns; j++) {
                     noise->x[i * N + j] = prior_variance->x[i * N + j];
                 }
             }
@@ -310,7 +310,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         free(ipiv);
 
         ret[0] = -1; /* REQUIRED! */
-        ret[1] = N; /* number of rows */
+        ret[1] = M; 
         // Fill in ret with upper triangular part of out
         int idx = 2; // Start after -1 and M
         for (int i = 0; i < N; i++) {
