@@ -1,0 +1,39 @@
+Called from: define.cgeneric.loggrow.model(linpoint = initial.linpoint, smesh = smesh, 
+    tmesh = tmesh, step.size = step.size, prior.mean = prior.mean, 
+    prior.variance = prior.variance, priors = priors, initial.growth = initial.growth, 
+    initial.carry.cap = initial.carry.cap, initial.move.const = initial.move.const, 
+    initial.log.sigma = initial.log.sigma, debug = 1)
+debug: INLAversion <- INLAtools::packageCheck(name = "INLA", minimum_version = "23.08.16", 
+    quietly = TRUE)
+debug: if (INLAversion <= "25.02.10") {
+    libpath <- INLA::inla.external.lib("INLAloggrowth")
+    hasverbose <- TRUE
+} else {
+    libpath <- system.file("libs", package = "INLAloggrowth")
+    if (Sys.info()["sysname"] == "Windows") {
+        libpath <- file.path(libpath, "INLAloggrowth.dll")
+        if (!file.exists(libpath)) {
+            libpath <- system.file("libs", package = "INLAloggrowth")
+            libpath <- file.path(libpath, "x64/INLAloggrowth.dll")
+        }
+    }
+    else {
+        libpath <- file.path(libpath, "INLAloggrowth.so")
+    }
+    hasverbose <- FALSE
+}
+debug: libpath <- system.file("libs", package = "INLAloggrowth")
+debug: if (Sys.info()["sysname"] == "Windows") {
+    libpath <- file.path(libpath, "INLAloggrowth.dll")
+    if (!file.exists(libpath)) {
+        libpath <- system.file("libs", package = "INLAloggrowth")
+        libpath <- file.path(libpath, "x64/INLAloggrowth.dll")
+    }
+} else {
+    libpath <- file.path(libpath, "INLAloggrowth.so")
+}
+debug: libpath <- file.path(libpath, "INLAloggrowth.dll")
+debug: if (!file.exists(libpath)) {
+    libpath <- system.file("libs", package = "INLAloggrowth")
+    libpath <- file.path(libpath, "x64/INLAloggrowth.dll")
+}

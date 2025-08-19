@@ -31,7 +31,7 @@ define.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.size,
   
   fem.matrices <- fmesher::fm_fem(smesh)
   CinvG <- Matrix::solve(fem.matrices$c1, fem.matrices$g1)
-  browser()
+  #browser()
   INLAversion <- INLAtools::packageCheck(
     name = "INLA",
     minimum_version = "23.08.16",
@@ -48,12 +48,15 @@ define.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.size,
     
     if (Sys.info()["sysname"] == "Windows") {
       libpath <- file.path(libpath, "INLAloggrowth.dll")
+      if(!file.exists(libpath)){
+        libpath <- system.file("libs", package = "INLAloggrowth")
+        libpath <- file.path(libpath, "x64/INLAloggrowth.dll")
+      }
     } else {
       libpath <- file.path(libpath, "INLAloggrowth.so")
     }
     hasverbose <- FALSE
   }
-  
   stopifnot(file.exists(libpath))
   n <- smesh$n*tmesh$n
   if(is.null(debug)) debug = 0

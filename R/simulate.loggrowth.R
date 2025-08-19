@@ -59,7 +59,7 @@ simulate_loggrowth<- function(growth, k, movement, sigma,
     animal_tempsf <- expand.grid(
       easting = seq(corners[1],corners[2], by = 0.01),
       northing = seq(corners[1],corners[2], by = 0.01))
-    animal_tempsf <- mutate(sf::st_as_sf(animal_tempsf, coords = c("easting", "northing")),
+    animal_tempsf <- dplyr::mutate(sf::st_as_sf(animal_tempsf, coords = c("easting", "northing")),
                             time = i)
     animal_tempsf$field <- fmesher::fm_evaluate(
       mesh_extended,
@@ -75,7 +75,7 @@ simulate_loggrowth<- function(growth, k, movement, sigma,
     points.to.sample <- sample(unique(sf::st_filter(animal,bnd_inner)$geometry),
                                npoints)
     animal_obs <- filter(animal, geometry %in% points.to.sample) %>% 
-      mutate(obs = rnorm(npoints*(timesteps), field, obs.sd))
+      dplyr::mutate(obs = rnorm(npoints*(timesteps), field, obs.sd))
   }
   if(sample.type == "LGCP"){
     animal_field$field[animal_field$field <0] <- 0.00001
@@ -84,7 +84,7 @@ simulate_loggrowth<- function(growth, k, movement, sigma,
                                  loglambda = log(animal_field$field[animal_field$time == i]),
                                  samplers = bnd_inner)
       samp_animal <- sf::st_as_sf(samp_animal, coords = c("x","y"))
-      samp_animal_df <- mutate(samp_animal, time = i)
+      samp_animal_df <- dplyr::mutate(samp_animal, time = i)
       return(samp_animal_df)
     }
     observations <- parallel::mclapply(1:timesteps, simulate_obs,  mc.cores =  ncores)

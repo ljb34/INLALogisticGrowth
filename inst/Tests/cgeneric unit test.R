@@ -1,12 +1,13 @@
 #' Cgeneric unit test
-
-out.lgcp <- simulate.loggrowth(growth = 1, k = 150, movement = 1, sigma = 20,
+library(INLAloggrowth)
+library(sf)
+out.lgcp <- simulate_loggrowth(growth = 1, k = 150, movement = 1, sigma = 20,
                                initial = 50,timesteps = 4,sample.type = "LGCP")
 
 #fit initial year
 bnd <- spoly(data.frame(easting = c(0,1,1,0), northing = c(0,0,1,1)))
 mesh_obs <- fm_mesh_2d_inla(boundary = bnd,
-                            max.edge = c(0.07,1))
+                            max.edge = c(0.2,1))
 bnd <- st_as_sf(bnd)
 mesh_time <- fm_mesh_1d(loc = 1:4)
 matern <- inla.spde2.pcmatern(mesh_obs,
