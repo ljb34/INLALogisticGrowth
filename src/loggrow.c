@@ -315,7 +315,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         int idx = 2; // Start after -1 and M
         for (int i = 0; i < N; i++) {
             for (int j = i; j < N; j++) {
-                ret[idx++] = out[i * N + j];
+                ret[idx++] = out[j * N + i];
             }
         }
     }

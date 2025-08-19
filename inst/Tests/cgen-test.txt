@@ -1,3 +1,0 @@
-
- *** inla.core.safe:  The inla program failed, but will rerun in case better initial values may help. try=1/1 
-[1] "First fitting finished"

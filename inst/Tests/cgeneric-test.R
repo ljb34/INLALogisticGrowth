@@ -34,6 +34,6 @@ iterated.fit.lgcp <- iterate.cgeneric.fit.lgcp(data = out.lgcp$animal_obs, smesh
                                                stop.crit = 0.01,
                                                initial.linpoint = NULL, initial.growth = 0.8,
                                                initial.carry.cap = log(nrow(out.lgcp$animal_obs[out.lgcp$animal_obs$time == 3,])),
-                                               verbose = T)
+                                               verbose = 5)
 
 
