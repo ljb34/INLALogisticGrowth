@@ -12,7 +12,9 @@
 #' Each is a two element vector containing the mean and variance for each parameter. 
 #' @param initial.growth,initial.carry.cap,initial.move.const,initial.log.sigma Starting values for the growth, 
 #' \emph{log} carrying capacity, movement constant and \emph{log} standard deviation
-#'@returns INLA cgeneric model
+#'@returns INLA cgeneric model packageCheck
+#'
+#'@importFrom INLAtools packageCheck
 #'@export
 define.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.size,
                                  prior.mean, prior.variance,

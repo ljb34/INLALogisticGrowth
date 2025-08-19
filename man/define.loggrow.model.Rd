@@ -57,7 +57,7 @@ Each is a two element vector containing the mean and variance for each parameter
 \emph{log} carrying capacity, movement constant and \emph{log} standard deviation}
 }
 \value{
-INLA cgeneric model
+INLA cgeneric model packageCheck
 
 INLA rgeneric model
 }
