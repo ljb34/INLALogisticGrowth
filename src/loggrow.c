@@ -183,10 +183,10 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         // for j=i, ...
         // G_ij =
         // and M is the total length while N is the dimension
-        ret = Calloc(2 + N * N, double);
+        ret = Calloc(2 + N * (N + 1) / 2, double);
         assert(ret);
         ret[0] = N; /* dimension */
-        ret[1] = N; /* number of (i <= j) */
+        ret[1] = N * (N + 1) / 2; /* number of (i <= j) */
         int idx = 2; // Start after N and M
         for (int i = 0; i < N; i++) {
             for (int j = i; j < N; j++) {
