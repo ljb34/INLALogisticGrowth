@@ -170,11 +170,11 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     assert(psigma->len == 2);
 
 	//matrices
-    assert(!strcasecmp(data->mats[0]->name, "CinvG"));
+    assert(!strcasecmp(data->smats[0]->name, "CinvG"));
     inla_cgeneric_smat_tp* CinvG = data->smats[0];
     assert(CinvG->nrow == ns);
 
-    assert(!strcasecmp(data->mats[1]->name, "prior_variance"));
+    assert(!strcasecmp(data->smats[1]->name, "prior_variance"));
     inla_cgeneric_smat_tp* prior_variance = data->smats[1];
     assert(prior_variance->nrow == ns); 
 
@@ -324,7 +324,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     {
         // return (N, mu)
 		printf("INLA_CGENERIC_MU\n");
-        double* ret = Calloc(1 + N, double);
+        ret = Calloc(1 + N, double);
         assert(ret);
         ret[0] = N; /* dimension */
 
@@ -346,7 +346,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         int* ipiv = malloc(ns * nt * sizeof(int));
         int lda = N;
         int ldb = N;
-        int nrhs = N;
+        int nrhs = 1;
         int info;
         double* A = malloc(N * N * sizeof(double));
         double* B = malloc(N * sizeof(double));
@@ -423,7 +423,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     {
         // return c(LOG_PRIOR)
 		printf("INLA_CGENERIC_LOG_PRIOR\n");
-        double* ret = Calloc(1, double);
+        ret = Calloc(1, double);
 
         ret[0] = normal_pdf_log(growth, pgrowth->doubles[0], pgrowth->doubles[1]) +
             normal_pdf_log(theta[1], pcc->doubles[0], pcc->doubles[1]) + 
