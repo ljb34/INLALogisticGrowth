@@ -20,7 +20,8 @@ iterate.cgeneric.fit.lgcp(
   initial.carry.cap = 100,
   initial.move.const = 1,
   initial.log.sigma = log(1.5),
-  verbose = F
+  verbose = F,
+  debug = NULL
 )
 }
 \arguments{
@@ -43,7 +44,8 @@ iterate.cgeneric.fit.lgcp(
 \item{stop.crit}{stopping criteria for linearisation point update rule. Stop updating if mean(abs(new_linearisation_point-old_linearisation_point))<=stop.crit}
 
 \item{priors}{named list of prior parameters, named \code{cc} (carrying capacity), \code{growth}, \code{move}, \code{sigma}. 
-Each is a two element vector containing the mean and variance for parameter.}
+Each is a two element vector containing the mean and standard deviation for parameter. Growth and movement have Normal priors,
+ carrying capacity and sigma have log normal priors.}
 
 \item{initial.linpoint}{Optional. Starting guess for the linearisation point. If NULL, will be estimated within function}
 

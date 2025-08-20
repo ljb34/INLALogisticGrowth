@@ -19,7 +19,7 @@ iterate.fit.custom(
   priors = NULL,
   initial.linpoint = NULL,
   initial.growth = 1,
-  initial.inv.carry.cap = 0.05,
+  initial.carry.cap = 100,
   initial.move.const = 1,
   initial.log.sigma = log(1.5),
   verbose = F
@@ -58,7 +58,7 @@ The others are two element vectors containing the mean and variance for the othe
 
 \item{initial.linpoint}{Optional. Starting guess for the linearisation point. If NULL, will be estimated within function}
 
-\item{initial.growth, initial.inv.carry.cap, initial.move.const, initial.log.sigma}{Starting values for the growth, 
+\item{initial.growth, initial.carry.cap, initial.move.const, initial.log.sigma}{Starting values for the growth, 
 inverse carrying capacity, movement constant and \emph{log} standard deviation}
 
 \item{verbose}{logical supplied to INLA}

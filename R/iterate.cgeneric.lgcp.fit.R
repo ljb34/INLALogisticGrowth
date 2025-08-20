@@ -11,7 +11,8 @@
 #' @param gamma dampening parameter for update rule
 #' @param stop.crit stopping criteria for linearisation point update rule. Stop updating if mean(abs(new_linearisation_point-old_linearisation_point))<=stop.crit
 #' @param priors named list of prior parameters, named \code{cc} (carrying capacity), \code{growth}, \code{move}, \code{sigma}. 
-#' Each is a two element vector containing the mean and variance for parameter. 
+#' Each is a two element vector containing the mean and standard deviation for parameter. Growth and movement have Normal priors,
+#'  carrying capacity and sigma have log normal priors. 
 #' @param initial.linpoint Optional. Starting guess for the linearisation point. If NULL, will be estimated within function
 #' @param initial.growth,initial.carry.cap,initial.move.const,initial.log.sigma Starting values for the growth, 
 #' \emph{log} carrying capacity, movement constant and \emph{log} standard deviation
