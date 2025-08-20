@@ -35,5 +35,14 @@ iterated.fit.lgcp <- iterate.cgeneric.fit.lgcp(data = out.lgcp$animal_obs, smesh
                                                initial.linpoint = NULL, initial.growth = 0.8,
                                                initial.carry.cap = log(nrow(out.lgcp$animal_obs[out.lgcp$animal_obs$time == 4,])),
                                                verbose = F)
+iterated.fit.lgcp$data <- out.lgcp
+saveRDS(iterated.fit.lgcp, "LogGrowth/cgeneric.RData")
+pred.pixels <- fm_pixels(mesh_obs, mask = bnd, format = "sf")
+pred.pixels.time <- fm_cprod(pred.pixels, data.frame(time = c(1:4)))
+preds <- predict(iterated.fit.lgcp$fit, pred.pixels.time,
+                 ~data.frame(time = 1:4, loglambda = loggrow,
+                             lambda = exp(loggrow)),
+                 n.samples = 100)
+saveRDS(preds, "LogGrowth/cgeneric_preds.RData")
 
 
