@@ -2,6 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <strings.h>
 #include "cgeneric.h"
 #define Calloc(n_, type_) (type_ *)calloc((n_), sizeof(type_))
@@ -212,7 +213,9 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     case INLA_CGENERIC_Q:
     {
         // return c(-1, M, Qij) in the same order as defined in INLA_CGENERIC_GRAPH
-		printf("INLA_CGENERIC_Q\n");
+        if (debug > 0) {
+            printf("INLA_CGENERIC_Q\n");
+        }
         int M = N * (N + 1) / 2;
         ret = Calloc(2 + N * (N+1)/2, double);
 
@@ -323,7 +326,9 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     case INLA_CGENERIC_MU:
     {
         // return (N, mu)
-		printf("INLA_CGENERIC_MU\n");
+        if (debug > 0) {
+            printf("INLA_CGENERIC_MU\n");
+        }
         ret = Calloc(1 + N, double);
         assert(ret);
         ret[0] = N; /* dimension */
@@ -386,7 +391,9 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     {
         // return c(P, initials)
         // where P is the number of hyperparameters
-		printf("INLA_CGENERIC_INITIAL\n");
+        if(debug>0) {
+            printf("INLA_CGENERIC_INITIAL\n");
+		}
         ret = Calloc(5, double);
         ret[0] = 4;
 
@@ -422,7 +429,9 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     case INLA_CGENERIC_LOG_PRIOR:
     {
         // return c(LOG_PRIOR)
-		printf("INLA_CGENERIC_LOG_PRIOR\n");
+        if (debug > 0) {
+            printf("INLA_CGENERIC_LOG_PRIOR\n");
+        }
         ret = Calloc(1, double);
 
         ret[0] = normal_pdf_log(growth, pgrowth->doubles[0], pgrowth->doubles[1]) +

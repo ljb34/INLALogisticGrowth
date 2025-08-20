@@ -11,7 +11,7 @@ log.growth.rgeneric =  function(
             "log.prior", "quit"),
     theta = NULL){ 
   envir = parent.env(environment()) #gets extra parameters (linpoint etc.) from definition data
-
+  #the library calls should be unnecessary but breaks if I take them out...
   library(Matrix)
   library(fmesher)
   a.func <- function(growth,carry.cap, linpoint){
@@ -78,11 +78,11 @@ log.growth.rgeneric =  function(
     if(!is.nan(det(Lmat))) {
       if(abs(det(Lmat)) <= .Machine$double.eps|(is.infinite(det(Lmat)) & !is.infinite(det(crossprod(Lmat,Lmat))))){ #if close to singular use
         #print(det(crossprod(Lmat,Lmat)))
-        mu = solve(crossprod(Lmat,Lmat),crossprod(Lmat,r)) #more stable form of solve(lmat,r)
+        mu = Matrix::solve(crossprod(Lmat,Lmat),crossprod(Lmat,r)) #more stable form of solve(lmat,r)
         mu= as.vector(mu)
         #print("Trick version")
       }else{
-        mu = solve(Lmat,r)
+        mu = Matrix::solve(Lmat,r)
         #print("Default Solve")
       }}else{
         print("There's some NaNs going on?")
@@ -99,10 +99,10 @@ log.growth.rgeneric =  function(
     par = interpret.theta()
     #print(par)
     if(!is.null(priors)) warning("Parameters missing for priors")
-    val = dnorm(par$carry.cap, mean = priors$cc[1], sd = priors$cc[2], log = T)+
-      dnorm(par$growth, mean = priors$growth[1], sd = priors$growth[2], log = T)+
-      dnorm(par$move.const,mean = priors$move[1], sd = priors$move[2], log = T)+ 
-      dnorm(par$sigma, mean = priors$sigma[1], sd = priors$sigma[2], log = T)
+    val = dnorm(theta[1L], mean = priors$growth[1], sd = priors$growth[2], log = T)+
+      dnorm(theta[2L], mean = priors$cc[1], sd = priors$cc[2], log = T)+
+      dnorm(theta[3L],mean = priors$move[1], sd = priors$move[2], log = T)+ 
+      dnorm(theta[4L], mean = priors$sigma[1], sd = priors$sigma[2], log = T)
     return(val)
   }
   initial = function(){#can change params to make user specified

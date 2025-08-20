@@ -14,7 +14,7 @@ matern <- inla.spde2.pcmatern(mesh_obs,
                               prior.sigma = c(0.1, 0.1),
                               prior.range = c(0.1, 0.1))
 cmp <- geometry ~ smooth(geometry, model = matern) +
-  initial(1,model = "linear", mean.linear = length(out.lgcp$animal_obs[out.lgcp$animal_obs$time == 1,]))-1
+  initial(1,model = "linear", mean.linear = log(length(out.lgcp$animal_obs[out.lgcp$animal_obs$time == 1,])))-1
 
 fit0 <- bru(cmp, out.lgcp$animal_obs[out.lgcp$animal_obs$time == 1,],domain = list(geometry = mesh_obs),
             family = "cp",samplers = bnd)
@@ -24,7 +24,7 @@ index <- min(which(str_sub(rownames(fit0$summary.fitted.values),8,8)!= "A"))
 
 initial.variance <- Diagonal(mesh_obs$n, (fit0$summary.fixed$sd**2)+(fit0$summary.fitted.values$sd[index-1 +1:mesh_obs$n]**2))
 #fit other years
-priors <- list(cc = c(nrow(out.lgcp$animal_obs[out.lgcp$animal_obs$time == 4,]),50),
+priors <- list(cc = c(log(nrow(out.lgcp$animal_obs[out.lgcp$animal_obs$time == 4,])),1),
                growth = c(1,1),move = c(1,1),sigma = c(log(20),1))
 
 iterated.fit.lgcp <- iterate.cgeneric.fit.lgcp(data = out.lgcp$animal_obs, smesh = mesh_obs, tmesh = mesh_time,
@@ -34,7 +34,7 @@ iterated.fit.lgcp <- iterate.cgeneric.fit.lgcp(data = out.lgcp$animal_obs, smesh
                                                stop.crit = 0.01,
                                                initial.linpoint = NULL, initial.growth = 0.8,
                                                initial.carry.cap = log(nrow(out.lgcp$animal_obs[out.lgcp$animal_obs$time == 4,])),
-                                               verbose = F)
+                                               verbose = T)
 iterated.fit.lgcp$data <- out.lgcp
 saveRDS(iterated.fit.lgcp, "LogGrowth/cgeneric.RData")
 pred.pixels <- fm_pixels(mesh_obs, mask = bnd, format = "sf")
