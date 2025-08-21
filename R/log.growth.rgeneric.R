@@ -45,9 +45,9 @@ log.growth.rgeneric =  function(
   }
   interpret.theta = function() {
     return(list(growth = theta[1L],
-                carry.cap = exp(theta[2L]),
-                move.const = theta[3L], 
-                sigma = exp(theta[4L])))
+                carry.cap = initial.carry.cap, #exp(theta[2L]),
+                move.const = theta[2L], 
+                sigma = exp(theta[3L])))
   }
   
   graph = function() {
@@ -100,17 +100,18 @@ log.growth.rgeneric =  function(
     #print(par)
     if(!is.null(priors)) warning("Parameters missing for priors")
     val = dnorm(theta[1L], mean = priors$growth[1], sd = priors$growth[2], log = T)+
-      dnorm(theta[2L], mean = priors$cc[1], sd = priors$cc[2], log = T)+
-      dnorm(theta[3L],mean = priors$move[1], sd = priors$move[2], log = T)+ 
-      dnorm(theta[4L], mean = priors$sigma[1], sd = priors$sigma[2], log = T)
+      #dnorm(theta[2L], mean = priors$cc[1], sd = priors$cc[2], log = T)+
+      dnorm(theta[2L],mean = priors$move[1], sd = priors$move[2], log = T)+ 
+      dnorm(theta[3L], mean = priors$sigma[1], sd = priors$sigma[2], log = T)
     return(val)
   }
   initial = function(){#can change params to make user specified
     if(is.null(initial.growth)) initial.growth = 1
-    if(is.null(initial.carry.cap)) initial.carry.cap = 100
+    #if(is.null(initial.carry.cap)) initial.carry.cap = 100
     if(is.null(initial.move.const)) initial.move.const = 1
     if(is.null(initial.log.sigma)) initial.log.sigma = log(5)
-    return(c(initial.growth, initial.carry.cap, initial.move.const, initial.log.sigma))
+    return(c(initial.growth, #initial.carry.cap, 
+             initial.move.const, initial.log.sigma))
   }
   quit = function() {
     return(invisible())
