@@ -196,18 +196,45 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         // for j=i, ...
         // G_ij =
         // and M is the total length while N is the dimension
-        ret = calloc(2 + N * (N + 1), sizeof(double));
+        int M = ns * ns * (3 * nt - 1);
+        ret = calloc(2 + 2*M, sizeof(double));
         assert(ret);
         ret[0] = N; /* dimension */
-        ret[1] = N * (N + 1) / 2; /* number of (i <= j) */
+        ret[1] = M; /* number of (i <= j) */
         int idx = 2; // Start after N and M
-        for (int i = 0; i < N; i++) {
-            for (int j = i; j < N; j++) {
-                ret[idx] = i; /* ii */
-                ret[N*(N+1)/2 + idx] = j; /* jj */
+        //first year only has two blocks
+        for (int i = 0; i < ns;i++) {
+            for (int j = 0; j < ns, j++) {
+				ret[idx] = i; /* ii */
+				ret[M + idx] = j; /* jj */
                 idx++;
             }
         }
+		//middle years have three blocks
+        for (int k = 1; k < nt-1; k++) {
+            for(int i = k*ns; i < (k+1)*ns; i++) {
+                for(int j = (k-1)*ns; j < (k+1)*ns; j++) {
+                    ret[idx] = i; /* ii */
+                    ret[M + idx] = j; /* jj */
+					idx++;
+                }
+			}
+        }
+		//final year only has two blocks
+        for (int i = (nt - 1) * ns; i < nt * ns; i++) {
+            for (int j = (nt - 2) * ns; j < nt * ns; j++) {
+                ret[idx] = i; /* ii */
+                ret[M + idx] = j; /* jj */
+                idx++;
+            }
+        }
+        //for (int i = 0; i < N; i++) {
+        //    for (int j = i; j < N; j++) {
+        //        ret[idx] = i; /* ii */
+        //        ret[N*(N+1)/2 + idx] = j; /* jj */
+        //        idx++;
+        //    }
+        //}
     }
     break;
     case INLA_CGENERIC_Q:
@@ -314,10 +341,30 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 
         ret[0] = -1; /* REQUIRED! */
         ret[1] = M; 
-        // Fill in ret with upper triangular part of out
-        int idx = 2; // Start after -1 and M
-        for (int i = 0; i < N; i++) {
-            for (int j = i; j < N; j++) {
+
+		//fill in ret with non zero parts of out (as defined in INLA_CGENERIC_GRAPH)
+
+
+		int idx = 2; // Start after -1 and M
+		//first year only has two blocks
+        for (int i = 0; i < ns; i++) {
+            for (int j = 0; j < ns; j++) {
+                ret[idx++] = out[j * N + i];
+            }
+        }
+
+        for (int k = 1; k < nt - 1; k++) {
+            for (int i = k * ns; i < (k + 1) * ns; i++) {
+                for (int j = (k - 1) * ns; j < (k + 1) * ns; j++) {
+                    ret[idx++] = out[j * N + i];
+                }
+            }
+        }
+
+        //final block
+        
+        for (int i = (nt - 1) * ns; i < nt * ns; i++) {
+            for (int j = (nt - 2) * ns; j < nt * ns; j++) {
                 ret[idx++] = out[j * N + i];
             }
         }
