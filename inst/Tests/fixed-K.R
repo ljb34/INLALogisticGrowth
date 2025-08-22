@@ -2,7 +2,7 @@
 # Set up ------------------------------------------------------------------
 library(INLA)
 library(inlabru)
-library(MAtrix)
+library(Matrix)
 library(sf)
 library(dplyr)
 logit.growth <- function(x,r,k){
@@ -26,6 +26,54 @@ logit.nest <- function(x0,r,k,n){
                            time = rep(i, length(x0))))
   }
   return(df)
+}
+gradient_of_linpoint <- function(linpoint,smesh, tmesh){
+  ns = smesh$n; nt = tmesh$n
+  coords <- smesh$loc[,c(1,2)]
+  distances <- as.matrix(dist(coords, upper = T))
+  near.neighbours <- apply(distances, 2, order)[2:(min(10,ns)),]
+  grad <- matrix(nrow = ns*nt, ncol = 2)
+  for(i in 1:ns){
+    diffmat <- matrix(c(coords[near.neighbours[1,i],1]- coords[i,1], 
+                        coords[near.neighbours[1,i],2]- coords[i,2],
+                        coords[near.neighbours[2,i],1]- coords[i,1], 
+                        coords[near.neighbours[2,i],2]- coords[i,2]),
+                      byrow = T, nrow = 2)
+    diffmat[which(abs(diffmat) < .Machine$double.eps, arr.ind = T)] <- 0
+    if(abs(Matrix::det(diffmat))<=.Machine$double.eps){ # if both nearest neighbours are exactly horizontal or both vertical from point, then go to 
+      #1st and 3rd near neighbours
+      j <-3
+      while(abs(det(matrix(c(1,1,1,
+                             coords[near.neighbours[1,i],1], coords[near.neighbours[j,i],1], coords[i,1],
+                             coords[near.neighbours[1,i],2], coords[near.neighbours[j,i],2], coords[i,2]), nrow = 3, byrow = T))) < .Machine$double.eps){
+        j <- j+1
+        if(j == 9){
+          warning(paste("Mesh behaving strangely. All nearest points to point", i, "lie on a straight line."))
+          browser()
+          break
+        }
+      }
+      diffmat2 <- matrix(c(coords[near.neighbours[1,i],1]- coords[i,1], 
+                           coords[near.neighbours[1,i],2]- coords[i,2],
+                           coords[near.neighbours[j,i],1]- coords[i,1], 
+                           coords[near.neighbours[j,i],2]- coords[i,2]),
+                         byrow = T, nrow = 2)
+      diffmat2[which(abs(diffmat2) < .Machine$double.eps, arr.ind = T)] <- 0
+      for(t in 0:(nt-1)){
+        grad[t*ns+i,] <- solve(diffmat2,
+                               c(linpoint[near.neighbours[1,i]+t*ns] - linpoint[i + t*ns],
+                                 linpoint[near.neighbours[j,i]+t*ns]- linpoint[i + t*ns]))
+      }
+    }else{
+      for(t in 0:(nt-1)){
+        grad[t*ns+i,] <- solve(diffmat,
+                               c(linpoint[near.neighbours[1,i]+t*ns] - linpoint[i + t*ns],
+                                 linpoint[near.neighbours[2,i]+t*ns]- linpoint[i + t*ns]))
+      }
+    }
+    
+  }
+  return(grad)
 }
 
 # rgeneric model ----------------------------------------------------------
@@ -68,8 +116,8 @@ log.growth.rgeneric =  function(
     return(growth*exp(linpoint)*(linpoint-1)/carry.cap+ growth - move.const*mag.grad.sq )
   }
   interpret.theta = function() {
-    return(list(growth = theta[1L],
-                carry.cap = initial.carry.cap, #exp(theta[2L]),
+    return(list(growth = exp(theta[1L]),
+                #carry.cap = initial.carry.cap, #exp(theta[2L]),
                 move.const = theta[2L], 
                 sigma = exp(theta[3L])))
   }
@@ -81,7 +129,7 @@ log.growth.rgeneric =  function(
     #print("Calcualting Q")
     par = interpret.theta()
     #print(par)
-    Lmat = L.matrix(par$growth, par$carry.cap, par$move.const,step.size, linpoint, smesh, tmesh)
+    Lmat = L.matrix(par$growth, initial.carry.cap, par$move.const,step.size, linpoint, smesh, tmesh)
     noiseonly = Matrix::Diagonal(smesh$n*(tmesh$n-1), (par$sigma*step.size)**2)
     noise.variance = Matrix::bdiag(list(prior.variance, noiseonly))
     output = Matrix::crossprod(Lmat, solve(noise.variance, Lmat))
@@ -96,8 +144,8 @@ log.growth.rgeneric =  function(
     #}
     par = interpret.theta()
     #print(par)
-    Lmat = L.matrix(par$growth, par$carry.cap, par$move.const, step.size, linpoint, smesh, tmesh)
-    r = c(prior.mean, r.vector(par$growth, par$carry.cap, par$move.const, linpoint, grad)[-(1:smesh$n)])
+    Lmat = L.matrix(par$growth, initial.carry.cap, par$move.const, step.size, linpoint, smesh, tmesh)
+    r = c(prior.mean, r.vector(par$growth, initial.carry.cap, par$move.const, linpoint, grad)[-(1:smesh$n)])
     #print(det(Lmat))
     if(!is.nan(det(Lmat))) {
       if(abs(det(Lmat)) <= .Machine$double.eps|(is.infinite(det(Lmat)) & !is.infinite(det(crossprod(Lmat,Lmat))))){ #if close to singular use
@@ -241,9 +289,9 @@ iterate.fit.lgcp <- function(data, smesh, tmesh, samplers,prior.mean,
                                              prior.mean = prior.mean,
                                              prior.variance = prior.variance, priors = priors,
                                              initial.growth = fit$summary.hyperpar$mean[1], 
-                                             initial.carry.cap = fit$summary.hyperpar$mean[2],
-                                             initial.move.const = fit$summary.hyperpar$mean[3],
-                                             initial.log.sigma = fit$summary.hyperpar$mean[4])
+                                             initial.carry.cap = initial.carry.cap,
+                                             initial.move.const = fit$summary.hyperpar$mean[2],
+                                             initial.log.sigma = fit$summary.hyperpar$mean[3])
     print("Defined new model")
     fit <- bru(geometry + time ~ loggrow(list(space = geometry, time = time), 
                                          model = log_growth_model, 
@@ -298,9 +346,9 @@ iterate.fit.lgcp <- function(data, smesh, tmesh, samplers,prior.mean,
                                            prior.mean = prior.mean,
                                            prior.variance = prior.variance, priors = priors,
                                            initial.growth = fit$summary.hyperpar$mean[1], 
-                                           initial.carry.cap = fit$summary.hyperpar$mean[2],
-                                           initial.move.const = fit$summary.hyperpar$mean[3],
-                                           initial.log.sigma = fit$summary.hyperpar$mean[4])
+                                           initial.carry.cap = initial.carry.cap,
+                                           initial.move.const = fit$summary.hyperpar$mean[2],
+                                           initial.log.sigma = fit$summary.hyperpar$mean[3])
   print("Defined final model")
   final.fit <- bru(geometry + time ~ loggrow(list(space = geometry, time = time), 
                                              model = log_growth_model, 
@@ -324,7 +372,7 @@ simulate_loggrowth<- function(growth, k, movement, sigma,
   corners <- c(boundaries[1] - movement, boundaries[2]+movement)
   bnd_extended <- inlabru::spoly(data.frame(easting = c(corners[1], corners[2],corners[2],corners[1]), 
                                             northing = c(corners[1], corners[1],corners[2],corners[2])))
-  mesh_extended <- fmesher::fm_mesh_2d_inla(boundary = bnd_extended, max.edge = 0.05)
+  mesh_extended <- fmesher::fm_mesh_2d_inla(boundary = bnd_extended, max.edge = (corners[2]-corners[1])/50)
   mesh_time <- fmesher::fm_mesh_1d(loc = 1:timesteps)
   #animal initial field
   matern_extended <-
@@ -386,16 +434,19 @@ simulate_loggrowth<- function(growth, k, movement, sigma,
 
 
 
+# Actual fitting ----------------------------------------------------------
 
-out.lgcp <- simulate_loggrowth(growth = 0.8, k = 500, movement = 1, sigma = 20,
-                               initial = 250,timesteps = 4,sample.type = "LGCP")
+
+
+out.lgcp <- simulate_loggrowth(growth = 0.8, k = 50, movement = 1, sigma = 1,
+                               initial = 25,timesteps = 5,sample.type = "LGCP", boundaries = c(0,5))
 
 #fit initial year
-bnd <- spoly(data.frame(easting = c(0,1,1,0), northing = c(0,0,1,1)))
+bnd <- spoly(data.frame(easting = c(0,5,5,0), northing = c(0,0,5,5)))
 mesh_obs <- fm_mesh_2d(boundary = bnd,
-                       max.edge = c(0.1,1), offset = c(-0.1,1))
+                       max.edge = c(0.5,1), offset = c(-0.1,1))
 bnd <- st_as_sf(bnd)
-mesh_time <- fm_mesh_1d(loc = 1:4)
+mesh_time <- fm_mesh_1d(loc = 1:5)
 matern <- inla.spde2.pcmatern(mesh_obs,
                               prior.sigma = c(0.1, 0.1),
                               prior.range = c(0.1, 0.1))
@@ -407,26 +458,60 @@ fit0 <- bru(cmp, out.lgcp$animal_obs[out.lgcp$animal_obs$time == 1,],domain = li
 #Find fitted values on mesh points
 library(stringr)
 index <- min(which(str_sub(rownames(fit0$summary.fitted.values),8,8)!= "A"))
+n.nodes <- fit0$misc$configs$nconfig
+nodes <- data.frame(log.prob=rep(NA,n.nodes))
+mat_list <- list()
 
-initial.variance <- Diagonal(mesh_obs$n, (fit0$summary.fixed$sd**2)+(fit0$summary.fitted.values$sd[index-1 +1:mesh_obs$n]**2))
+for(i in 1:n.nodes){
+  nodes[i,]<- fit0$misc$configs$config[[i]]$log.posterior
+  mat_list[[i]] <- fit0$misc$configs$config[[i]]$Qinv[1:mesh_obs$n,1:mesh_obs$n]
+}
+nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
+  dplyr::mutate(weight.prob = weight/sum(weight))
+Q <- Reduce("+", Map(function(m,w) w*m, mat_list,nodes$weight.prob))
+
+initial.variance <- Diagonal(mesh_obs$n,
+                             (fit0$summary.fixed$sd**2)+(fit0$summary.fitted.values$sd[index-1 +1:mesh_obs$n]**2))#+Q
 #fit other years
-priors <- list(cc = c(log(nrow(out.lgcp$animal_obs[out.lgcp$animal_obs$time == 4,])),1),
-               growth = c(0.8,1),move = c(1,1),sigma = c(log(20),1))
+priors <- list(#cc = c(log(nrow(out.lgcp$animal_obs[out.lgcp$animal_obs$time == 4,])),1),
+               growth = c(log(0.8),1),move = c(1,1),sigma = c(log(1),1))
 
-iterated.fit.lgcp <- iterate.cgeneric.fit.lgcp(data = out.lgcp$animal_obs, smesh = mesh_obs, tmesh = mesh_time,
+iterated.fit.lgcp <- iterate.fit.lgcp(data = out.lgcp$animal_obs, smesh = mesh_obs, tmesh = mesh_time,
                                                samplers = bnd,prior.mean = fit0$summary.fixed$mean +fit0$summary.fitted.values$mean[index-1 +1:mesh_obs$n],
                                                prior.variance = initial.variance, priors = priors,
                                                max.iter = 100,gamma = 0.5,
                                                stop.crit = 0.01,
-                                               initial.linpoint = NULL, initial.growth = 0.8,
-                                               initial.carry.cap = 500,
+                                               initial.linpoint = NULL, initial.growth = log(0.8),
+                                               initial.carry.cap = 50,
                                                verbose = T)
 iterated.fit.lgcp$data <- out.lgcp
-saveRDS(iterated.fit.lgcp, "LogGrowth/fixK.RData")
+#saveRDS(iterated.fit.lgcp, "LogGrowth/fixK.RData")
 pred.pixels <- fm_pixels(mesh_obs, mask = bnd, format = "sf")
-pred.pixels.time <- fm_cprod(pred.pixels, data.frame(time = c(1:4)))
+pred.pixels.time <- fm_cprod(pred.pixels, data.frame(time = c(1:5)))
 preds <- predict(iterated.fit.lgcp$fit, pred.pixels.time,
-                 ~data.frame(time = 1:4, loglambda = loggrow,
+                 ~data.frame(loglambda = loggrow,
                              lambda = exp(loggrow)),
                  n.samples = 100)
-saveRDS(preds, "LogGrowth/fixK.RData")
+#saveRDS(preds, "LogGrowth/fixK.RData")
+
+
+library(ggplot2)
+ggplot()+
+  gg(preds$lambda[preds$lambda$time !=5,], aes(fill = median), geom = "tile")+
+  facet_wrap(~time)+scale_fill_gradientn(
+    colours = rev(RColorBrewer::brewer.pal(11, "RdYlBu")))
+origdata <- st_filter(out.lgcp$animal,bnd)
+ggplot()+
+  gg(origdata, aes(fill = field), geom = "tile")+
+  facet_wrap(~time)+
+  scale_fill_gradientn(colours = rev(RColorBrewer::brewer.pal(11, "RdYlBu")))
+
+iterated.fit.lgcp$fit$summary.hyperpar
+exp(iterated.fit.lgcp$fit$summary.hyperpar[c(1,3),])
+
+out.lgcp$animal_obs%>%group_by(time)%>%summarise(n = n())
+truth <- logit.nest(284,0.8,500,4)
+ggplot()+
+  geom_point(data = out.lgcp$animal_obs%>%group_by(time)%>%summarise(n = n()), 
+             aes(x = time, y = n))+
+  geom_line(data = truth, aes(x = time, y = x))
