@@ -55,12 +55,17 @@ log.growth.rgeneric =  function(
   }
   Q = function(){
     #print("Calcualting Q")
+    #browser()
     par = interpret.theta()
     #print(par)
     Lmat = L.matrix(par$growth, par$carry.cap, par$move.const,step.size, linpoint, smesh, tmesh)
     noiseonly = Matrix::Diagonal(smesh$n*(tmesh$n-1), (par$sigma*step.size)**2)
     noise.variance = Matrix::bdiag(list(prior.variance, noiseonly))
     output = Matrix::crossprod(Lmat, solve(noise.variance, Lmat))
+    #print(class(output))
+    #print(str(output))
+    output <- drop0(output, 1e-100)
+    print(str(output))
     #print(output[smesh$n:(smesh$n +10),smesh$n:(smesh$n +10)])
     return(output)
   }

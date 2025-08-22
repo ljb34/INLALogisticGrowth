@@ -80,7 +80,7 @@ simulate_loggrowth<- function(growth, k, movement, sigma,
   if(sample.type == "LGCP"){
     animal_field$field[animal_field$field <0] <- 0.00001
     simulate_obs <- function(i){
-      samp_animal <- sample.lgcp(mesh_extended, 
+      samp_animal <- inlabru::sample.lgcp(mesh_extended, 
                                  loglambda = log(animal_field$field[animal_field$time == i]),
                                  samplers = bnd_inner)
       samp_animal <- sf::st_as_sf(samp_animal, coords = c("x","y"))
