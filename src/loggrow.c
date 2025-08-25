@@ -196,7 +196,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         // for j=i, ...
         // G_ij =
         // and M is the total length while N is the dimension
-        int M = ns * (2*ns + 1 +(nt-2)*(ns + (ns+1)/2);
+        int M = ns * (2*ns + 1 +(nt-2)*(ns + (ns+1)/2));
         ret = calloc(2 + 2*M, sizeof(double));
         assert(ret);
         ret[0] = N; /* dimension */
@@ -248,7 +248,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         if (debug > 0) {
             printf("INLA_CGENERIC_Q\n");
         }
-        int M = ns * (2 * ns + 1 + (nt - 2) * (ns + (ns + 1) / 2);
+        int M = ns * (2 * ns + 1 + (nt - 2) * (ns + (ns + 1) / 2));
         ret = Calloc(2 +M, double);
 
         inla_cgeneric_mat_tp* L_mat = malloc(sizeof(inla_cgeneric_mat_tp));
