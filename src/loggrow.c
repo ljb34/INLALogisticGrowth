@@ -196,7 +196,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         // for j=i, ...
         // G_ij =
         // and M is the total length while N is the dimension
-        int M = ns * ns * (3 * nt - 2);
+        int M = ns * (2*ns + 1 +(nt-2)*(ns + (ns+1)/2);
         ret = calloc(2 + 2*M, sizeof(double));
         assert(ret);
         ret[0] = N; /* dimension */
@@ -204,7 +204,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         int idx = 2; // Start after N and M
         //first year only has two blocks
         for (int i = 0; i < ns;i++) {
-            for (int j = 0; j < 2*ns; j++) {
+            for (int j = i; j < 2*ns; j++) {
 				ret[idx] = i; /* ii */
 				ret[M + idx] = j; /* jj */
                 idx++;
@@ -213,7 +213,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 		//middle years have three blocks
         for (int k = 1; k < nt-1; k++) {
             for(int i = k*ns; i < (k+1)*ns; i++) {
-                for(int j = (k-1)*ns; j < (k+2)*ns; j++) {
+                for(int j = i; j < (k+2)*ns; j++) {
                     ret[idx] = i; /* ii */
                     ret[M + idx] = j; /* jj */
 					idx++;
@@ -222,7 +222,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         }
 		//final year only has two blocks
         for (int i = (nt - 1) * ns; i < nt * ns; i++) {
-            for (int j = (nt - 2) * ns; j < nt * ns; j++) {
+            for (int j = i; j < nt * ns; j++) {
                 ret[idx] = i; /* ii */
                 ret[M + idx] = j; /* jj */
                 idx++;
@@ -248,7 +248,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         if (debug > 0) {
             printf("INLA_CGENERIC_Q\n");
         }
-        int M = ns * ns * (3 * nt - 2);
+        int M = ns * (2 * ns + 1 + (nt - 2) * (ns + (ns + 1) / 2);
         ret = Calloc(2 +M, double);
 
         inla_cgeneric_mat_tp* L_mat = malloc(sizeof(inla_cgeneric_mat_tp));
@@ -353,14 +353,14 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 		int idx = 2; // Start after -1 and M
 		//first year only has two blocks
         for (int i = 0; i < ns; i++) {
-            for (int j = 0; j < 2*ns; j++) {
+            for (int j = i; j < 2*ns; j++) {
                 ret[idx++] = out[j * N + i];
             }
         }
 
         for (int k = 1; k < nt - 1; k++) {
             for (int i = k * ns; i < (k + 1) * ns; i++) {
-                for (int j = (k - 1) * ns; j < (k + 2) * ns; j++) {
+                for (int j = i; j < (k + 2) * ns; j++) {
                     ret[idx++] = out[j * N + i];
                 }
             }
@@ -369,7 +369,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         //final block
         
         for (int i = (nt - 1) * ns; i < nt * ns; i++) {
-            for (int j = (nt - 2) * ns; j < nt * ns; j++) {
+            for (int j = i; j < nt * ns; j++) {
                 ret[idx++] = out[j * N + i];
             }
         }
