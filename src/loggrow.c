@@ -243,8 +243,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         if (debug > 0) {
             printf("INLA_CGENERIC_Q\n");
         }
-        int M = N * (N + 1) / 2;
-        ret = Calloc(2 + N * (N+1)/2, double);
+        int M = ns * ns * (3 * nt - 2);
+        ret = Calloc(2 +M, double);
 
         inla_cgeneric_mat_tp* L_mat = malloc(sizeof(inla_cgeneric_mat_tp));
         L_mat->x = calloc(N * N, sizeof(double));
