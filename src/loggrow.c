@@ -235,6 +235,11 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         //        idx++;
         //    }
         //}
+        if (idx - 2 != M) {
+            fprintf(stderr, "GRAPH produced %d pairs, expected %d\n", idx - 2, M);
+            abort();
+        }
+
     }
     break;
     case INLA_CGENERIC_Q:
@@ -348,7 +353,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 		int idx = 2; // Start after -1 and M
 		//first year only has two blocks
         for (int i = 0; i < ns; i++) {
-            for (int j = 0; j < ns; j++) {
+            for (int j = 0; j < 2*ns; j++) {
                 ret[idx++] = out[j * N + i];
             }
         }
@@ -367,6 +372,10 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             for (int j = (nt - 2) * ns; j < nt * ns; j++) {
                 ret[idx++] = out[j * N + i];
             }
+        }
+        if (idx - 2 != M) {
+            fprintf(stderr, "Q filled %d values, expected %d\n", idx - 2, M);
+            abort();
         }
     }
     break;
