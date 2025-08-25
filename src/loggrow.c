@@ -204,7 +204,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         int idx = 2; // Start after N and M
         //first year only has two blocks
         for (int i = 0; i < ns;i++) {
-            for (int j = 0; j < ns, j++) {
+            for (int j = 0; j < ns; j++) {
 				ret[idx] = i; /* ii */
 				ret[M + idx] = j; /* jj */
                 idx++;
