@@ -213,7 +213,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 		//middle years have three blocks
         for (int k = 1; k < nt-1; k++) {
             for(int i = k*ns; i < (k+1)*ns; i++) {
-                for(int j = (k-1)*ns; j < (k+1)*ns; j++) {
+                for(int j = (k-1)*ns; j < (k+2)*ns; j++) {
                     ret[idx] = i; /* ii */
                     ret[M + idx] = j; /* jj */
 					idx++;
@@ -355,7 +355,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 
         for (int k = 1; k < nt - 1; k++) {
             for (int i = k * ns; i < (k + 1) * ns; i++) {
-                for (int j = (k - 1) * ns; j < (k + 1) * ns; j++) {
+                for (int j = (k - 1) * ns; j < (k + 2) * ns; j++) {
                     ret[idx++] = out[j * N + i];
                 }
             }
