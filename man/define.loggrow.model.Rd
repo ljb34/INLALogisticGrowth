@@ -28,7 +28,7 @@ define.loggrow.model(
   tmesh,
   step.size,
   prior.mean,
-  prior.variance,
+  prior.precision,
   priors = NULL,
   grad = NULL,
   initial.growth = NULL,
@@ -55,6 +55,8 @@ Each is a two element vector containing the mean and variance for each parameter
 
 \item{initial.growth, initial.carry.cap, initial.move.const, initial.log.sigma}{Starting values for the growth, 
 \emph{log} carrying capacity, movement constant and \emph{log} standard deviation}
+
+\item{prior.precision}{uncertainty for estimated mean of first year of data. Helper function for calculating coming soon}
 }
 \value{
 INLA cgeneric model packageCheck
