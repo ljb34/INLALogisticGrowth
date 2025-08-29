@@ -6,7 +6,7 @@
 #'
 #'@export
 
-log.growth.rgeneric =  function(
+log_growth_rgeneric =  function(
     cmd = c("graph", "Q", "mu", "initial", "log.norm.const",
             "log.prior", "quit"),
     theta = NULL){ 
@@ -59,9 +59,9 @@ log.growth.rgeneric =  function(
     par = interpret.theta()
     #print(par)
     Lmat = L.matrix(par$growth, par$carry.cap, par$move.const,step.size, linpoint, smesh, tmesh)
-    noiseonly = Matrix::Diagonal(smesh$n*(tmesh$n-1), (par$sigma*step.size)**2)
-    noise.variance = Matrix::bdiag(list(prior.variance, noiseonly))
-    output = Matrix::crossprod(Lmat, solve(noise.variance, Lmat))
+    noiseonly = Matrix::Diagonal(smesh$n*(tmesh$n-1), 1/(par$sigma*step.size)**2)
+    noise.precision = Matrix::bdiag(list(prior.precision, noiseonly))
+    output = Matrix::crossprod(Lmat, noise.precision %*% Lmat)
     #print(class(output))
     #print(str(output))
     output <- drop0(output, 1e-100)
