@@ -27,7 +27,7 @@
 #'
 #'@export
 
-simulate_loggrowth3 <- function(growth, carry.cap, movement, sigma, 
+simulate_loggrowth <- function(growth, carry.cap, movement, sigma, 
                                 initial, timesteps, npoints = NULL, obs.sd=NULL, 
                                 sample.type = "LGCP", ncores = 1,
                                 boundaries = c(0,1)){
