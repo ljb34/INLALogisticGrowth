@@ -90,8 +90,8 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     Lmat = L.matrix(par$growth, par$carry.cap, par$move.const, step.size, linpoint, smesh, tmesh)
     r = c(prior.mean, r.vector(par$growth, par$carry.cap, par$move.const, linpoint, grad)[-(1:smesh$n)])
     #print(det(Lmat))
-    if(!is.nan(det(Lmat))) {
-      if(abs(det(Lmat)) <= .Machine$double.eps|(is.infinite(det(Lmat)) & !is.infinite(det(crossprod(Lmat,Lmat))))){ #if close to singular use
+    if(!is.nan(Matrix::det(Lmat))) {
+      if(abs(Matrix::det(Lmat)) <= .Machine$double.eps|(is.infinite(Matrix::det(Lmat)) & !is.infinite(Matrix::det(crossprod(Lmat,Lmat))))){ #if close to singular use
         #print(det(crossprod(Lmat,Lmat)))
         mu = Matrix::solve(crossprod(Lmat,Lmat),crossprod(Lmat,r)) #more stable form of solve(lmat,r)
         mu= as.vector(mu)
