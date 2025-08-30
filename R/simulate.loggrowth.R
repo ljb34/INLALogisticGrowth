@@ -52,7 +52,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     subdiag <- Matrix::kronecker(Matrix::bandSparse(nt, k = -1, diagonals = list(rep(1, nt - 1))),
                                  Matrix::Diagonal(ns, -1/(step.size)))
     fem.matrices <- fmesher::fm_fem(smesh)
-    CinvG <- solve(fem.matrices$c1, fem.matrices$g1)
+    CinvG <- Matrix::solve(fem.matrices$c1, fem.matrices$g1)
     main.diag <- Matrix::kronecker(Matrix::Diagonal(nt, c(0,rep(1, nt-1))), 
                                    Matrix::Diagonal(ns, 1/(step.size))+ move.const*CinvG)
     #print(diag(main.diag + subdiag + a.mat))
