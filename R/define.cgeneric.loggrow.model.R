@@ -7,7 +7,7 @@
 #' @param tmesh mesh over equally spaced time pointes created with fm_mesh_1d
 #'@param step.size difference between each of the time points
 #'@param prior.mean estimated mean for first year of data. Helper function for calculating coming soon
-#'@param prior.variance uncertainty for estimated mean of first year of data. Helper function for calculating coming soon
+#'@param prior.precision uncertainty for estimated mean of first year of data. Helper function for calculating coming soon
 #'@param priors named list of prior parameters, named \code{cc} (carrying capacity), \code{growth}, \code{move}, \code{sigma}. 
 #' Each is a two element vector containing the mean and variance for each parameter. 
 #' @param initial.growth,initial.carry.cap,initial.move.const,initial.log.sigma Starting values for the growth, 
@@ -17,7 +17,7 @@
 #'@importFrom INLAtools packageCheck
 #'@export
 define.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.size,
-                                 prior.mean, prior.variance,
+                                 prior.mean, prior.precision,
                                  priors = NULL, grad = NULL,
                                  initial.growth = NULL, initial.carry.cap = NULL, 
                                  initial.move.const = NULL, initial.log.sigma = NULL, debug = NULL){
@@ -84,7 +84,7 @@ define.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.size,
                               pmove = as.double(priors$move),
                               psigma = as.double(priors$sigma),
                               CinvG = CinvG,
-                              prior_variance = Matrix::Matrix(prior.variance)
+                              prior_precision = Matrix::Matrix(prior.precision, sparse = T)
                               )))
   
   class(the_model) <- c("log_growth_model", class(the_model))

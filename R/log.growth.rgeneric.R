@@ -37,7 +37,7 @@ log_growth_rgeneric =  function(
     main.diag <- Matrix::kronecker(Matrix::Diagonal(nt, c(0,rep(1, nt-1))), 
                            Matrix::Diagonal(ns, 1/(step.size))+ move.const*CinvG)
     #print(diag(main.diag + subdiag + a.mat))
-    return(main.diag + subdiag + a.mat)
+    return(drop0(main.diag + subdiag + a.mat, tol = 1e-100))
   }
   r.vector <- function(growth,carry.cap,move.const,linpoint,grad){
     mag.grad.sq <- rowSums(grad*grad) #magnitude squared
@@ -65,8 +65,6 @@ log_growth_rgeneric =  function(
     #print(class(output))
     #print(str(output))
     output <- drop0(output, 1e-100)
-    print(str(output))
-    #print(output[smesh$n:(smesh$n +10),smesh$n:(smesh$n +10)])
     return(output)
   }
   mu = function(){
@@ -81,7 +79,7 @@ log_growth_rgeneric =  function(
     r = c(prior.mean, r.vector(par$growth, par$carry.cap, par$move.const, linpoint, grad)[-(1:smesh$n)])
     #print(det(Lmat))
     if(!is.nan(det(Lmat))) {
-      if(abs(det(Lmat)) <= .Machine$double.eps|(is.infinite(det(Lmat)) & !is.infinite(det(crossprod(Lmat,Lmat))))){ #if close to singular use
+      if(abs(det(Lmat)) <= .Machine$double.eps){ #if close to singular use
         #print(det(crossprod(Lmat,Lmat)))
         mu = Matrix::solve(crossprod(Lmat,Lmat),crossprod(Lmat,r)) #more stable form of solve(lmat,r)
         mu= as.vector(mu)

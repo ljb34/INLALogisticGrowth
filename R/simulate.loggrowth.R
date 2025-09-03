@@ -30,7 +30,7 @@
 simulate_loggrowth <- function(growth, carry.cap, movement, sigma, 
                                 initial, timesteps, npoints = NULL, obs.sd=NULL, 
                                 sample.type = "LGCP", ncores = 1,
-                                boundaries = c(0,1)){
+                                boundaries = c(0,1), debug = F){
   #browser()
   #functions needed
   a.func <- function(growth,carry.cap, linpoint){
@@ -56,7 +56,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     main.diag <- Matrix::kronecker(Matrix::Diagonal(nt, c(0,rep(1, nt-1))), 
                                    Matrix::Diagonal(ns, 1/(step.size))+ move.const*CinvG)
     #print(diag(main.diag + subdiag + a.mat))
-    return(main.diag + subdiag + a.mat)
+    return(Matrix::drop0(main.diag + subdiag + a.mat, tol = 1e-100))
   }
   r.vector <- function(growth,carry.cap,move.const,linpoint,grad){
     mag.grad.sq <- rowSums(grad*grad) #magnitude squared
@@ -69,6 +69,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
                 sigma = exp(theta[4L])))
   }
   Q = function(){
+    #browser()
     #print("Calcualting Q")
     par = interpret.theta()
     #print(par)
@@ -77,10 +78,10 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     noise.precision = Matrix::bdiag(list(prior.precision, noiseonly))
     output = Matrix::crossprod(Lmat, noise.precision %*% Lmat)
     #print(output[smesh$n:(smesh$n +10),smesh$n:(smesh$n +10)])
-    return(output)
+    return(drop0(output, 1e-100))
   }
   mu = function(){
-    #browser()
+    browser()
     #print("Calcualting mu")
     #if(class(theta)!="numeric"){
     #  theta <- initial()
@@ -89,9 +90,9 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     #print(par)
     Lmat = L.matrix(par$growth, par$carry.cap, par$move.const, step.size, linpoint, smesh, tmesh)
     r = c(prior.mean, r.vector(par$growth, par$carry.cap, par$move.const, linpoint, grad)[-(1:smesh$n)])
-    #print(det(Lmat))
-    if(!is.nan(Matrix::det(Lmat))) {
-      if(abs(Matrix::det(Lmat)) <= .Machine$double.eps|(is.infinite(Matrix::det(Lmat)) & !is.infinite(Matrix::det(crossprod(Lmat,Lmat))))){ #if close to singular use
+    Lmat_det <- Matrix::det(Lmat)
+    if(!is.nan(Lmat_det)) {
+      if(abs(Lmat_det) <= .Machine$double.eps){ #if close to singular use
         #print(det(crossprod(Lmat,Lmat)))
         mu = Matrix::solve(crossprod(Lmat,Lmat),crossprod(Lmat,r)) #more stable form of solve(lmat,r)
         mu= as.vector(mu)
@@ -114,7 +115,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   smesh <- fmesher::fm_mesh_2d_inla(boundary = bnd_extended, max.edge = diff(corners)/25)
   tmesh <- fmesher::fm_mesh_1d(loc = 1:timesteps)
   step.size <- 1
-  print("set up finished, calculating mean and precision")
+  if(debug) print("set up finished, generating first year")
   matern <-
     inla.spde2.pcmatern(smesh,
                         prior.sigma = c(0.1, 0.1),
@@ -122,6 +123,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   initial_Q <- inla.spde.precision(matern,
                                    theta = log(c(movement, log(1 + (sigma/initial)**2)))) #b/c log normal
   prior.mean <- inla.qsample(1, initial_Q, mu = rep(log(initial), nrow(initial_Q)))[,1]
+  if(debug) print("Defining model")
   #components needed for model
   initial.growth <- growth
   initial.carry.cap <- log(carry.cap)
@@ -131,11 +133,14 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   linpoint <- log(logit.nest(exp(prior.mean), growth, carry.cap, tmesh$n)$x)
   grad <- gradient_of_linpoint(linpoint, smesh, tmesh)#
   prior.precision <- initial_Q
+  if(debug) print("Calculating precision")
   Q_mat <-Q()
+  if(debug) print("Calculating mean")
   mu_mat <- mu()
   
   
   #generate field
+  if(debug) print("generating field")
   field <- data.frame(field = inla.qsample(1, Q_mat, mu = mu_mat)[, 1])
   field$time <- rep(1:timesteps, each = smesh$n)
   expand_for_plot <- function(i){
@@ -154,7 +159,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   animal <- do.call(rbind, expanded)
   bnd_inner <- sf::st_as_sf(inlabru::spoly(data.frame(easting = c(boundaries[1],boundaries[2],boundaries[2],boundaries[1]), 
                                                       northing = c(boundaries[1], boundaries[1], boundaries[2], boundaries[2]))))
-  print("Sampling")
+  if(debug) print("Sampling")
   if(sample.type == "Normal"){
     points.to.sample <- sample(unique(sf::st_filter(animal,bnd_inner)$geometry),
                                npoints)

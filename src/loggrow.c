@@ -175,9 +175,9 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     inla_cgeneric_smat_tp* CinvG = data->smats[0];
     assert(CinvG->nrow == ns);
 
-    assert(!strcasecmp(data->smats[1]->name, "prior_variance"));
-    inla_cgeneric_smat_tp* prior_variance = data->smats[1];
-    assert(prior_variance->nrow == ns); 
+    assert(!strcasecmp(data->smats[1]->name, "prior_precision"));
+    inla_cgeneric_smat_tp* prior_precision = data->smats[1];
+    assert(prior_precision->nrow == ns); 
 
     //different outputs for the commands supplied
     switch (cmd) { 
@@ -197,7 +197,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         // G_ij =
         // and M is the total length while N is the dimension
         int M =  2* ns * ns + ns  +(nt-2)*(ns * ns + ns * (ns+1)/2);
-		printf("M: %d\n", M);
+		//printf("M: %d\n", M);
         ret = calloc(2 + 2*M, sizeof(double));
         assert(ret);
         ret[0] = N; /* dimension */
@@ -250,7 +250,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             printf("INLA_CGENERIC_Q\n");
         }
         int M = 2 * ns * ns + ns + (nt - 2) * (ns * ns + ns * (ns + 1) / 2);
-        printf("M: %d\n", M);
+        //printf("M: %d\n", M);
         ret = Calloc(2 +M, double);
 
         inla_cgeneric_mat_tp* L_mat = malloc(sizeof(inla_cgeneric_mat_tp));
@@ -275,22 +275,22 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         noise->nrow = N;
         noise->ncol = N;
         //initial year variance
-        if(prior_variance->n != ns*ns){
-            for(int idx = 0; idx < prior_variance->n; idx++) {
-				noise->x[prior_variance->i[idx] * N + prior_variance->j[idx]] = prior_variance->x[idx];
+        if(prior_precision->n != ns*ns){
+            for(int idx = 0; idx < prior_precision->n; idx++) {
+				noise->x[prior_precision->i[idx] * N + prior_precision->j[idx]] = prior_precision->x[idx];
 			}
         }
         else {
             for (int i = 0; i < ns; i++) {
                 for (int j = i; j < ns; j++) {
-                    noise->x[i * N + j] = prior_variance->x[i * N + j];
+                    noise->x[i * N + j] = prior_precision->x[i * N + j];
                 }
             }
         }
 
         //Other years, noise on diagonal
         for (int i = ns; i < ns * nt; i++) {
-            noise->x[i * N + i] = (sigma * step_size) * (sigma * step_size);
+            noise->x[i * N + i] = 1/(sigma * step_size) * (sigma * step_size);
         }
 
         /*for (int ii = 0; ii < N; ii++) {
@@ -315,8 +315,17 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 B[col * N + row] = L_mat->x[row * N + col];
             }
         }
-        //Compute Noise^-1 * L
-        dgesv_(&N, &nrhs, A, &lda, ipiv, B, &ldb, &info);
+        
+        //Compute Noise * L
+        // Set up parameters for dgemm_
+        char transA = 'N'; // No transpose
+        char transB = 'N'; // No transpose
+        double alpha = 1.0;
+        double beta = 0.0;
+
+        // A: N x N, B: N x nrhs, C: N x nrhs
+        // Output will be stored in B (or allocate a new array for the result if needed)
+        dgemm_(&transA, &transB, &N, &nrhs, &N, &alpha, A, &lda, B, &ldb, &beta, B, &N);
         if (info != 0) {
             fprintf(stderr, "dgesv failed, info = %d\n", info);
             free(A); free(B); free(ipiv);
@@ -331,10 +340,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             }
             printf("\n");
         }*/
-        //Compute L^T*Noise^-1 * L
+        //Compute L^T*Noise * L
         double* out = calloc(N * N, sizeof(double));
-        char transA = 'N';  // Don't Transpose A b/c in row major order
-        char transB = 'N';  // No transpose B
         double one = 1, zero = 0;
 
         dgemm_(&transA, &transB,
