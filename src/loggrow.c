@@ -32,7 +32,7 @@ void a_func(double growth, double carry_cap,
 	}
 }
 
-void Lmat(double growth, double carry_cap, double move_const, double step_size,
+void Lmat(double growth, double carry_cap, double move_const, double timestep,
 	double* linpoint, int ns, int nt, inla_cgeneric_smat_tp* CinvG, double* result) { /* result is nsnt x nsnt double matrix in inla_cgeneric_mat_tp form*/
 	//identity sub matrix in first block
 	int ntotal = ns * nt;
@@ -45,12 +45,12 @@ void Lmat(double growth, double carry_cap, double move_const, double step_size,
 	a_func(growth, carry_cap,
 		linpoint, ns, nt, a_array);
 	for (int i = ns; i < ntotal; i++) {
-		result[i * ntotal + i] = 1 / (step_size)+a_array[i];
+		result[i * ntotal + i] = 1 / (timestep)+a_array[i];
 	}
 
 	//subdiagonal
 	for (int i = 0; i < ns * (nt - 1); i++) {
-		result[(ns + i) * ntotal + i] = -1 / (step_size);
+		result[(ns + i) * ntotal + i] = -1 / (timestep);
 	}
 
 	//CinvG part
@@ -114,9 +114,9 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     assert(nt > 0);
 
     //Pre calculated information
-    assert(!strcasecmp(data->doubles[0]->name, "step_size"));
-    double step_size = data->doubles[0]->doubles[0];
-    assert(step_size > 0);
+    assert(!strcasecmp(data->doubles[0]->name, "timestep"));
+    double timestep = data->doubles[0]->doubles[0];
+    assert(timestep > 0);
 
     assert(!strcasecmp(data->doubles[1]->name, "linpoint"));
     inla_cgeneric_vec_tp* linpoint = data->doubles[1];
@@ -257,7 +257,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         L_mat->x = calloc(N * N, sizeof(double));
         L_mat->nrow = N;
         L_mat->ncol = N;
-        Lmat(growth, carry_cap, move_const, step_size, linpoint->doubles, ns, nt, CinvG, L_mat->x);
+        Lmat(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, L_mat->x);
         /*if(debug) {
             printf("L_mat:\n");
             for (int ii = 0; ii < N; ii++) {
@@ -290,7 +290,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 
         //Other years, noise on diagonal
         for (int i = ns; i < ns * nt; i++) {
-            noise->x[i * N + i] = 1/(sigma * step_size) * (sigma * step_size);
+            noise->x[i * N + i] = 1/(sigma * timestep) * (sigma * timestep);
         }
 
         /*for (int ii = 0; ii < N; ii++) {
@@ -402,7 +402,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         L_mat->x = calloc(N * N, sizeof(double));
         L_mat->nrow = N;
         L_mat->ncol = N;
-        Lmat(growth, carry_cap, move_const, step_size, linpoint->doubles, ns, nt, CinvG, L_mat->x);
+        Lmat(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, L_mat->x);
 
         inla_cgeneric_vec_tp* rvector = malloc(sizeof(inla_cgeneric_vec_tp));
         rvector->doubles = calloc(N, sizeof(double));
