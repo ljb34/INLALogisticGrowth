@@ -81,7 +81,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     return(drop0(output, 1e-100))
   }
   mu = function(){
-    browser()
+    #browser()
     #print("Calcualting mu")
     #if(class(theta)!="numeric"){
     #  theta <- initial()
