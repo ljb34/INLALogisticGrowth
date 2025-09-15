@@ -275,22 +275,26 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         noise->nrow = N;
         noise->ncol = N;
         //initial year variance
-        if(prior_precision->n != ns*ns){
-            for(int idx = 0; idx < prior_precision->n; idx++) {
-				noise->x[prior_precision->i[idx] * N + prior_precision->j[idx]] = prior_precision->x[idx];
-			}
+        if (prior_precision->n != ns * ns) {
+            // Sparse case: fill symmetric entries
+            for (int k = 0; k < prior_precision->n; k++) {
+                int ii = prior_precision->i[k];
+                int jj = prior_precision->j[k];
+                double vx = prior_precision->x[k];
+                noise->x[ii + jj * N] = prior_precision->x[k];   // (ii,jj)
+            }
         }
         else {
             for (int i = 0; i < ns; i++) {
                 for (int j = i; j < ns; j++) {
-                    noise->x[i * N + j] = prior_precision->x[i * N + j];
+                    noise->x[i + N * j] = prior_precision->x[i * ns + j];
                 }
             }
         }
 
         //Other years, noise on diagonal
         for (int i = ns; i < ns * nt; i++) {
-            noise->x[i * N + i] = 1/(sigma * timestep) * (sigma * timestep);
+            noise->x[i * N + i] = 1/((sigma * timestep) * (sigma * timestep));
         }
 
         /*for (int ii = 0; ii < N; ii++) {
@@ -327,8 +331,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         // Output will be stored in B (or allocate a new array for the result if needed)
         dgemm_(&transA, &transB, &N, &nrhs, &N, &alpha, A, &lda, B, &ldb, &beta, B, &N);
         if (info != 0) {
-            fprintf(stderr, "dgesv failed, info = %d\n", info);
-            free(A); free(B); free(ipiv);
+            fprintf(stderr, "dgemm failed, info = %d\n", info);
+            free(A); free(B);
             free(L_mat->x); free(L_mat);
             free(noise->x); free(noise);
             return NULL;
@@ -343,8 +347,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         //Compute L^T*Noise * L
         double* out = calloc(N * N, sizeof(double));
         double one = 1, zero = 0;
-
-        dgemm_(&transA, &transB,
+		char transL = 'T';
+        dgemm_(&transL, &transB,
             &N, &N, &N,
             &one, L_mat->x, &lda,
             B, &ldb,
