@@ -122,7 +122,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
                         prior.range = c(0.1, 0.1))
   initial_Q <- inla.spde.precision(matern,
                                    theta = log(c(movement, log(1 + (sigma/initial)**2)))) #b/c log normal
-  prior.mean <- inla.qsample(1, initial_Q, mu = rep(log(initial), nrow(initial_Q)))[,1]
+  prior.mean <- log(initial)+inla.qsample(1, initial_Q)[,1]
   if(debug) print("Defining model")
   #components needed for model
   initial.growth <- growth
@@ -167,7 +167,6 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
       dplyr::mutate(obs = rnorm(npoints*(timesteps), field, obs.sd))
   }
   if(sample.type == "LGCP"){
-    field$field[field$field <0] <- 0.00001
     simulate_obs <- function(i){
       samp_animal <- sample.lgcp(smesh, 
                                  loglambda = field$field[field$time == i],
