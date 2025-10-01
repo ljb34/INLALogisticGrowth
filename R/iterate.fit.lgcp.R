@@ -81,7 +81,6 @@ iterate.fit.lgcp <- function(data, smesh, tmesh, samplers,prior.mean,
                                              initial.carry.cap = initial.carry.cap,
                                              initial.move.const = initial.move.const,
                                              initial.log.sigma = initial.log.sigma)
-
     print("Defined new model")
     fit <- bru(geometry + time ~ loggrow(list(space = geometry, time = time), 
                                          model = log_growth_model, 

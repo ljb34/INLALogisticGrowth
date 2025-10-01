@@ -36,7 +36,6 @@ log.growth.rgeneric =  function(
                                    Matrix::Diagonal(ns, 1/(step.size))+ move.const*CinvG)
     #print(diag(main.diag + subdiag + a.mat))
     return(drop0(main.diag + subdiag + a.mat, 1e-100))
-
   }
   r.vector <- function(growth,carry.cap,move.const,linpoint,grad){
     mag.grad.sq <- rowSums(grad*grad) #magnitude squared

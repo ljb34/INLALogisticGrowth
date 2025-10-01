@@ -4,6 +4,25 @@
 \alias{define.loggrow.model}
 \title{Define logistic growth model}
 \usage{
+<<<<<<< Updated upstream
+=======
+define.cgeneric.loggrow.model(
+  linpoint,
+  smesh,
+  tmesh,
+  step.size,
+  prior.mean,
+  prior.precision,
+  priors = NULL,
+  grad = NULL,
+  initial.growth = NULL,
+  initial.carry.cap = NULL,
+  initial.move.const = NULL,
+  initial.log.sigma = NULL,
+  debug = NULL
+)
+
+>>>>>>> Stashed changes
 define.loggrow.model(
   linpoint,
   smesh,

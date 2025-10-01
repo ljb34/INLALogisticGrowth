@@ -146,7 +146,6 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   if(debug) print("generating field")
   field <- data.frame(field = inla.qsample(1, Q_mat, mu = mu_mat)[, 1])
   field$time <- rep(0:timesteps, each = smesh$n)
-
   expand_for_plot <- function(i){
     animal_tempsf <- expand.grid(
       easting = seq(corners[1],corners[2], by = 0.01),
@@ -171,7 +170,6 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   }
   if(sample.type == "LGCP"){
     field$field[field$field <0] <- 0.00001
-
     simulate_obs <- function(i){
       samp_animal <- sample.lgcp(mesh_extended, 
                                  loglambda = log(animal_field$field[animal_field$time == i]),
@@ -185,9 +183,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     #remove edge effects
     #animal_obs <- st_as_sf(animal_obs, coords = c("x","y"))
   }
-
   return(list(animal = animal[animal$time !=0,],field = field[field$time != 0,],
               animal_obs = animal_obs[animal_obs$time != 0,]))
-
 }
 
