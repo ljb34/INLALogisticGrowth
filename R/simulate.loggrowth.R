@@ -150,10 +150,10 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     animal_tempsf <- expand.grid(
       easting = seq(corners[1],corners[2], by = 0.01),
       northing = seq(corners[1],corners[2], by = 0.01))
-    animal_tempsf <- mutate(sf::st_as_sf(animal_tempsf, coords = c("easting", "northing")),
+    animal_tempsf <- dplyr::mutate(sf::st_as_sf(animal_tempsf, coords = c("easting", "northing")),
                             time = i)
     animal_tempsf$field <- fmesher::fm_evaluate(
-      mesh_extended,
+      smesh,
       loc = animal_tempsf,
       field = animal_field$field[animal_field$time == i])
     return(animal_tempsf)
