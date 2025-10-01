@@ -4,25 +4,6 @@
 \alias{define.loggrow.model}
 \title{Define logistic growth model}
 \usage{
-<<<<<<< Updated upstream
-=======
-define.cgeneric.loggrow.model(
-  linpoint,
-  smesh,
-  tmesh,
-  step.size,
-  prior.mean,
-  prior.precision,
-  priors = NULL,
-  grad = NULL,
-  initial.growth = NULL,
-  initial.carry.cap = NULL,
-  initial.move.const = NULL,
-  initial.log.sigma = NULL,
-  debug = NULL
-)
-
->>>>>>> Stashed changes
 define.loggrow.model(
   linpoint,
   smesh,
@@ -31,6 +12,7 @@ define.loggrow.model(
   prior.mean,
   prior.precision,
   priors = NULL,
+  grad = NULL,
   initial.growth = NULL,
   initial.carry.cap = NULL,
   initial.move.const = NULL,
@@ -48,13 +30,13 @@ define.loggrow.model(
 
 \item{prior.mean}{estimated mean for first year of data. Helper function for calculating coming soon}
 
-\item{prior.precision}{uncertainty for estimated mean of first year of data. Helper function for calculating coming soon}
-
 \item{priors}{named list of prior parameters, named \code{cc} (carrying capacity), \code{growth}, \code{move}, \code{sigma}. 
 Each is a two element vector containing the mean and variance for each parameter.}
 
 \item{initial.growth, initial.carry.cap, initial.move.const, initial.log.sigma}{Starting values for the growth, 
 \emph{log} carrying capacity, movement constant and \emph{log} standard deviation}
+
+\item{prior.variance}{uncertainty for estimated mean of first year of data. Helper function for calculating coming soon}
 }
 \value{
 INLA rgeneric model

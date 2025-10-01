@@ -1,0 +1,37 @@
+Warning in bru_log_warn(paste0("iinla: Problem in inla:\n", result)) :
+  iinla: Problem in inla:
+Error in inla.core.safe(formula = formula, family = family, contrasts = contrasts,  : 
+  The inla-program exited with an error. Unless you interupted it yourself, please rerun with verbose=TRUE and check the output carefully.
+  If this does not help, please contact the developers at <help@r-inla.org>.
+The inla program failed and the maximum number of tries has been reached.
+iinla: Problem in inla:
+1: iterate.cgeneric.fit.lgcp(data = out.lgcp$animal_obs, smesh = mesh_obs, tm [...]
+2: bru(geometry + time ~ loggrow(list(space = geometry, time = time), model = [...]
+3: iinla(model = info[["model"]], lhoods = info[["lhoods"]], inputs = info[[" [...]
+4: fm_try_callstack(...)
+5: do.call(INLA::inla, inla.options.merged, envir = environment(model$effects))
+6: (function (formula = NULL, family = "gaussian", contrasts = NULL, data = N [...]
+7: inla.core.safe(formula = formula, family = family, contrasts = contrasts,  [...]
+8: stop(paste0(r$message, "\n", "The inla program  [... truncated]
+G3;iinla: Giving up and returning last successfully obtained result for diagnostic purposes.
+gError in rep(NA, n.nodes) : invalid 'times' argument
+Warning message:
+In sink() : no sink to remove
+Warning in bru_log_warn(paste0("iinla: Problem in inla:\n", result)) :
+  iinla: Problem in inla:
+Error in inla.core.safe(formula = formula, family = family, contrasts = contrasts,  : 
+  The inla-program exited with an error. Unless you interupted it yourself, please rerun with verbose=TRUE and check the output carefully.
+  If this does not help, please contact the developers at <help@r-inla.org>.
+The inla program failed and the maximum number of tries has been reached.
+iinla: Problem in inla:
+1: capture.output(iterated.fit.lgcp <- iterate.cgeneric.fit.lgcp(data = out.l [...]
+2: withVisible(...elt(i))
+3: iterate.cgeneric.fit.lgcp(data = out.lgcp$animal_obs, smesh = mesh_obs, tm [...]
+4: bru(geometry + time ~ loggrow(list(space = geometry, time = time), model = [...]
+5: iinla(model = info[["model"]], lhoods = info[["lhoods"]], inputs = info[[" [...]
+6: fm_try_callstack(...)
+7: do.call(INLA::inla, inla.options.merged, envir = environment(model$effects))
+8: (function (formula = NULL, family = "gaussian", contrasts = NULL, data = N [...]
+9: inla.core.safe(formul [... truncated]
+G3;iinla: Giving up and returning last successfully obtained result for diagnostic purposes.
+gError in rep(NA, n.nodes) : invalid 'times' argument
