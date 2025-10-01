@@ -151,17 +151,18 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
       easting = seq(corners[1],corners[2], by = 0.01),
       northing = seq(corners[1],corners[2], by = 0.01))
     animal_tempsf <- dplyr::mutate(sf::st_as_sf(animal_tempsf, coords = c("easting", "northing")),
-                            time = i)
+                                   time = i)
     animal_tempsf$field <- fmesher::fm_evaluate(
       smesh,
       loc = animal_tempsf,
-      field = animal_field$field[animal_field$time == i])
+      field = field$field[field$time == i])
     return(animal_tempsf)
   }
   expanded <- parallel::mclapply(0:timesteps, expand_for_plot,  mc.cores = ncores)
   animal <- do.call(rbind, expanded)
   bnd_inner <- sf::st_as_sf(inlabru::spoly(data.frame(easting = c(boundaries[1],boundaries[2],boundaries[2],boundaries[1]), 
-                                         northing = c(boundaries[1], boundaries[1], boundaries[2], boundaries[2]))))
+                                                      northing = c(boundaries[1], boundaries[1], boundaries[2], boundaries[2]))))
+  if(debug) print("Sampling")
   if(sample.type == "Normal"){
     points.to.sample <- sample(unique(sf::st_filter(animal,bnd_inner)$geometry),
                                npoints)
@@ -172,7 +173,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     field$field[field$field <0] <- 0.00001
     simulate_obs <- function(i){
       samp_animal <- sample.lgcp(smesh, 
-                                 loglambda = log(animal_field$field[animal_field$time == i]),
+                                 loglambda = field$field[field$time == i],
                                  samplers = bnd_inner)
       samp_animal <- sf::st_as_sf(samp_animal, coords = c("x","y"))
       samp_animal_df <- dplyr::mutate(samp_animal, time = i)
@@ -186,4 +187,3 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   return(list(animal = animal[animal$time !=0,],field = field[field$time != 0,],
               animal_obs = animal_obs[animal_obs$time != 0,]))
 }
-

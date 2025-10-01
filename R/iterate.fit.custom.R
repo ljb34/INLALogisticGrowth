@@ -15,7 +15,7 @@
 #' @param tmesh mesh over equally spaced time pointes created with fm_mesh_1d
 #' @param samplers sampling area for supplying to inlabru
 #' @param prior.mean estimated mean for first year of data. Helper function for calculating coming soon
-#' @param prior.variance uncertainty for estimated mean of first year of data. Helper function for calculating coming soon
+#' @param prior.precision uncertainty for estimated mean of first year of data. Helper function for calculating coming soon
 #' @param max.iter maximum iterations to attempt
 #' @param gamma dampening parameter for update rule
 #' @param stop.crit stopping criteria for linearisation point update rule. Stop updating if mean(abs(new_linearisation_point-old_linearisation_point))<=stop.crit
@@ -29,7 +29,7 @@
 #' @returns list containing final model fit, number of iterations \code{n}, matrix of all past linearisation points and list of all past model fits.  
 #'@export
 iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prior.mean,
-                        prior.variance, max.iter = 100,gamma = 0.5,stop.crit = 0.05,
+                        prior.precision, max.iter = 100,gamma = 0.5,stop.crit = 0.05,
                         priors = NULL, initial.linpoint = NULL, initial.growth=1, 
                         initial.inv.carry.cap=0.05, initial.move.const = 1, initial.log.sigma = log(1.5),
                         verbose = F){
@@ -44,7 +44,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
   log_growth_model <- define.loggrow.model(linpoint = initial.linpoint, 
                                            smesh = smesh,tmesh = tmesh, step.size = step.size, 
                                            prior.mean = prior.mean,
-                                           prior.variance = prior.variance, priors = priors,
+                                           prior.precision = prior.precision, priors = priors,
                                            initial.growth = initial.growth, 
                                            initial.inv.carry.cap = initial.inv.carry.cap,
                                            initial.move.const = initial.move.const,
@@ -79,7 +79,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
     log_growth_model <- define.loggrow.model(linpoint = as.vector(new.linpoint), 
                                              smesh = smesh,tmesh = tmesh, step.size = step.size, 
                                              prior.mean = prior.mean,
-                                             prior.variance = prior.variance, priors = priors,
+                                             prior.precision = prior.precision, priors = priors,
                                              initial.growth = fit$summary.hyperpar$mean[1], 
                                              initial.inv.carry.cap = fit$summary.hyperpar$mean[2],
                                              initial.move.const = fit$summary.hyperpar$mean[3],
@@ -88,9 +88,6 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
                                     model = log_growth_model, 
                                     n = smesh$n*tmesh$n)
     print("Defined new model")
-    new.cmp <- formula[2] ~ loggrow(list(space = geometry, time = time), 
-                                    model = log_growth_model, 
-                                    n = smesh$n*tmesh$n)
     
     fit <- bru(update(formula, new.cmp),
                data = data, domain = list(geometry = smesh,time = tmesh),
@@ -134,7 +131,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
   log_growth_model <- define.loggrow.model(linpoint = as.vector(new.linpoint), 
                                            smesh = smesh,tmesh = tmesh, step.size = step.size, 
                                            prior.mean = prior.mean,
-                                           prior.variance = prior.variance, priors = priors,
+                                           prior.precision = prior.precision, priors = priors,
                                            initial.growth = fit$summary.hyperpar$mean[1], 
                                            initial.inv.carry.cap = fit$summary.hyperpar$mean[2],
                                            initial.move.const = fit$summary.hyperpar$mean[3],
