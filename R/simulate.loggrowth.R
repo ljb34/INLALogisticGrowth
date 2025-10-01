@@ -171,11 +171,11 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   if(sample.type == "LGCP"){
     field$field[field$field <0] <- 0.00001
     simulate_obs <- function(i){
-      samp_animal <- sample.lgcp(mesh_extended, 
+      samp_animal <- sample.lgcp(smesh, 
                                  loglambda = log(animal_field$field[animal_field$time == i]),
                                  samplers = bnd_inner)
       samp_animal <- sf::st_as_sf(samp_animal, coords = c("x","y"))
-      samp_animal_df <- mutate(samp_animal, time = i)
+      samp_animal_df <- dplyr::mutate(samp_animal, time = i)
       return(samp_animal_df)
     }
     observations <- parallel::mclapply(0:timesteps, simulate_obs,  mc.cores =  ncores)
