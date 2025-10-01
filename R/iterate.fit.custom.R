@@ -23,20 +23,20 @@
 #' cc is a two element vector containing the shape and rate parameter for gamma prior of the inverse carrying capacity. 
 #' The others are two element vectors containing the mean and variance for the other parameters. 
 #' @param initial.linpoint Optional. Starting guess for the linearisation point. If NULL, will be estimated within function
-#' @param initial.growth,initial.inv.carry.cap,initial.move.const,initial.log.sigma Starting values for the growth, 
+#' @param initial.growth,initial.carry.cap,initial.move.const,initial.log.sigma Starting values for the growth, 
 #' inverse carrying capacity, movement constant and \emph{log} standard deviation
 #' @param verbose logical supplied to INLA
 #' @returns list containing final model fit, number of iterations \code{n}, matrix of all past linearisation points and list of all past model fits.  
 #'@export
 iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prior.mean,
                         prior.precision, max.iter = 100,gamma = 0.5,stop.crit = 0.05,
-                        priors = NULL, initial.linpoint = NULL, initial.growth=1, 
-                        initial.inv.carry.cap=0.05, initial.move.const = 1, initial.log.sigma = log(1.5),
+                        priors = NULL, initial.linpoint = NULL, initial.growth=0.5, 
+                        initial.carry.cap=1000, initial.move.const = 0.5, initial.log.sigma = log(1.5),
                         verbose = F){
   #browser()
   step.size = (tmesh$interval[2]-tmesh$interval[1])/(tmesh$n-1) #calculate step size. -1 in denom due to fence post problem 
   if(is.null(initial.linpoint)){
-    initial.linpoint <- log(logit.nest(exp(prior.mean), initial.growth, 1/exp(initial.inv.carry.cap), tmesh$n - 1)$x)
+    initial.linpoint <- log(logit.nest(exp(prior.mean), initial.growth, exp(initial.carry.cap), tmesh$n - 1)$x)
   }
   if(!is.matrix(initial.linpoint)) initial.linpoint <- as.matrix(initial.linpoint, ncol = 1)
   fit.list <- list()
@@ -46,7 +46,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
                                            prior.mean = prior.mean,
                                            prior.precision = prior.precision, priors = priors,
                                            initial.growth = initial.growth, 
-                                           initial.inv.carry.cap = initial.inv.carry.cap,
+                                           initial.carry.cap = initial.carry.cap,
                                            initial.move.const = initial.move.const,
                                            initial.log.sigma = initial.log.sigma)
   new.cmp <- formula[2] ~ loggrow(list(space = geometry, time = time), 
@@ -81,7 +81,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
                                              prior.mean = prior.mean,
                                              prior.precision = prior.precision, priors = priors,
                                              initial.growth = fit$summary.hyperpar$mean[1], 
-                                             initial.inv.carry.cap = fit$summary.hyperpar$mean[2],
+                                             initial.carry.cap = fit$summary.hyperpar$mean[2],
                                              initial.move.const = fit$summary.hyperpar$mean[3],
                                              initial.log.sigma = fit$summary.hyperpar$mean[4])
     new.cmp <- formula[2] ~ loggrow(list(space = geometry, time = time), 
@@ -133,7 +133,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
                                            prior.mean = prior.mean,
                                            prior.precision = prior.precision, priors = priors,
                                            initial.growth = fit$summary.hyperpar$mean[1], 
-                                           initial.inv.carry.cap = fit$summary.hyperpar$mean[2],
+                                           initial.carry.cap = fit$summary.hyperpar$mean[2],
                                            initial.move.const = fit$summary.hyperpar$mean[3],
                                            initial.log.sigma = fit$summary.hyperpar$mean[4])
   print("Defined final model")

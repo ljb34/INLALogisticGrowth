@@ -170,7 +170,6 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
       dplyr::mutate(obs = rnorm(npoints*(tmesh$n), field, obs.sd))
   }
   if(sample.type == "LGCP"){
-    field$field[field$field <0] <- 0.00001
     simulate_obs <- function(i){
       samp_animal <- sample.lgcp(smesh, 
                                  loglambda = field$field[field$time == i],
