@@ -15,8 +15,8 @@
 #'@returns INLA rgeneric model
 #'@export
 define.loggrow.model <- function(linpoint, smesh, tmesh, step.size,
-                                 prior.mean, prior.variance,
-                                priors = NULL, grad = NULL,
+                                 prior.mean, prior.precision,
+                                 priors = NULL, grad = NULL,
                                  initial.growth = NULL, initial.carry.cap = NULL, 
                                  initial.move.const = NULL, initial.log.sigma = NULL){
   if(is.null(grad)){
@@ -48,3 +48,4 @@ bru_get_mapper.log_growth_model <- function(model, ...) {
     time = inlabru::bru_mapper(model[["tmesh"]], indexed = TRUE)
   ))
 }
+

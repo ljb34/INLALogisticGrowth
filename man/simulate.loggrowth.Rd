@@ -9,19 +9,20 @@
   k,
   movement,
   sigma,
-  initial,
+  initial.pop,
+  initial.range,
+  initial.sigma,
   timesteps,
   npoints = NULL,
   obs.sd = NULL,
   sample.type = "LGCP",
   ncores = 1,
-  boundaries = c(0, 1)
+  boundaries = c(0, 1),
+  debug = F
 )
 }
 \arguments{
 \item{growth, k, movement, sigma}{parameters for spatial logistic growth model}
-
-\item{initial}{starting population size}
 
 \item{timesteps}{Number of years to simulate}
 
@@ -34,6 +35,8 @@
 \item{ncores}{Optional. Number of cores to use if running in parallel.}
 
 \item{boundaries}{Lower and upper limit of each side of the square. Defaults to sides of length 1}
+
+\item{initial}{starting population size}
 }
 \value{
 List containing underlying field (animal), observations (animal_obs), and 
