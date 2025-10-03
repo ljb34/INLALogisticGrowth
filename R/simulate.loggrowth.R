@@ -28,7 +28,8 @@
 #'@export
 simulate_loggrowth <- function(growth, carry.cap, movement, sigma, 
                                initial.pop,initial.range, initial.sigma, 
-                               timesteps, npoints = NULL, obs.sd=NULL, 
+                               timesteps, npoints = NULL, obs.sd=NULL,
+                               obs.prob = NULL,
                                sample.type = "LGCP", ncores = 1,
                                boundaries = c(0,1), debug = F){
   #browser()
@@ -110,7 +111,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   corners <- c(boundaries[1] - 2*initial.range, boundaries[2]+2*initial.range)
   bnd_extended <- inlabru::spoly(data.frame(easting = c(corners[1], corners[2],corners[2],corners[1]), 
                                             northing = c(corners[1], corners[1],corners[2],corners[2])))
-  smesh <- fmesher::fm_mesh_2d_inla(boundary = bnd_extended, max.edge = diff(corners)/25)
+  smesh <- fmesher::fm_mesh_2d_inla(boundary = bnd_extended, max.edge = diff(corners)/100)
   tmesh <- fmesher::fm_mesh_1d(loc = 0:timesteps)
   step.size <- 1
   if(debug) print("set up finished, generating first year")
@@ -182,6 +183,12 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     animal_obs <- do.call(rbind, observations)
     #remove edge effects
     #animal_obs <- st_as_sf(animal_obs, coords = c("x","y"))
+  }
+  if(sample.type == "Bernoulli"){
+    points.to.sample <- sample(unique(sf::st_filter(animal,bnd_inner)$geometry),
+                               npoints)
+    animal_obs <- filter(animal, geometry %in% points.to.sample) %>% 
+      dplyr::mutate(obs = rbinom(npoints*(tmesh$n), 1, plogis(obs.prob*exp(field))))
   }
   return(list(animal = animal[animal$time !=0,],field = field[field$time != 0,],
               animal_obs = animal_obs[animal_obs$time != 0,]))
