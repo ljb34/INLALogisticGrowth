@@ -15,6 +15,7 @@ simulate_loggrowth(
   timesteps,
   npoints = NULL,
   obs.sd = NULL,
+  obs.prob = NULL,
   sample.type = "LGCP",
   ncores = 1,
   boundaries = c(0, 1),

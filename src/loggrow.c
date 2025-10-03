@@ -95,7 +95,7 @@ double normal_pdf_log(double x, double mean, double stddev) {
 
 double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inla_cgeneric_data_tp* data) {
     // this reimplement `inla.rgeneric.iid.model` using cgeneric
-    double* ret = NULL, growth = (theta ? theta[0] : NAN), carry_cap = (theta ? exp(theta[1]) : NAN), move_const = (theta ? theta[2] : NAN), sigma = (theta ? exp(theta[3]) : NAN); //interpret.theta equivalent
+    double* ret = NULL, growth = (theta ? exp(theta[0]) : NAN), carry_cap = (theta ? exp(theta[1]) : NAN), move_const = (theta ? theta[2] : NAN), sigma = (theta ? exp(theta[3]) : NAN); //interpret.theta equivalent
     assert(!strcasecmp(data->ints[0]->name, "n")); // this will always be the case
     int N = data->ints[0]->ints[0]; // this will always be the case
     assert(N > 0);
@@ -488,7 +488,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         }
 
         if (iszero(initial_sigma)) {
-            ret[4] = log(5);
+            ret[4] = log(1);
         }
         else {
             ret[4] = initial_sigma;

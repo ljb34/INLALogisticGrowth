@@ -2,7 +2,7 @@ Package: INLAloggrowth
 Type: Package
 Title: Spatial Logistic Growth in INLA
 Version: 0.0.1.0
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Imports: 
     dplyr,
     fmesher,
