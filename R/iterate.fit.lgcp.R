@@ -22,7 +22,7 @@ iterate.fit.lgcp <- function(data, smesh, tmesh, samplers,prior.mean,
                              prior.variance, max.iter = 100,gamma = 0.5,stop.crit = 0.05,
                              priors = NULL, initial.linpoint = NULL, initial.growth=1, 
                              initial.carry.cap=100, initial.move.const = 1, initial.log.sigma = log(1.5),
-                             verbose = F){
+                             verbose = F, saveall = T){
   #browser()
   step.size = (tmesh$interval[2]-tmesh$interval[1])/(tmesh$n-1) #calculate step size. -1 in denom due to fence post problem 
   if(is.null(initial.linpoint)){
@@ -45,7 +45,11 @@ iterate.fit.lgcp <- function(data, smesh, tmesh, samplers,prior.mean,
              data = data, domain = list(geometry = smesh,time = tmesh),
              samplers = samplers,
              family = "cp", options = list(verbose = verbose, control.inla = list(control.vb=list(emergency=30))))
-  fit.list[[1]]<-fit
+  if(saveall){
+    fit.list[[1]]<-fit
+  }else{
+    fit.list <- fit
+  }
   print("First fitting finished")
   n.nodes <- fit$misc$configs$nconfig
   nodes <- data.frame(log.prob=rep(NA,n.nodes))
@@ -89,7 +93,11 @@ iterate.fit.lgcp <- function(data, smesh, tmesh, samplers,prior.mean,
                samplers = samplers,
                family = "cp", options = list(verbose = verbose, control.inla = list(control.vb=list(emergency=30))))
     print(paste("Fitted new model", n))
-    fit.list[[n]]<-fit
+    if(saveall){
+      fit.list[[n]]<-fit
+    }else{
+      fit.list <- fit
+    }
     n.nodes <- fit$misc$configs$nconfig
     if(!is.numeric(n.nodes)){
       print("Failed to fit, trying again")
@@ -104,7 +112,11 @@ iterate.fit.lgcp <- function(data, smesh, tmesh, samplers,prior.mean,
         print("Failed again, returning model output")
         return(list(new.linpoint = new.linpoint,fit = fit, past.linpoints = lp.mat, fit.list = fit.list))
       }
-      fit.list[[n]]<-fit
+      if(saveall){
+        fit.list[[n]]<-fit
+      }else{
+        fit.list <- fit
+      }
     }
     nodes <- data.frame(log.prob=rep(NA,n.nodes))
     #mat_list <- list()
