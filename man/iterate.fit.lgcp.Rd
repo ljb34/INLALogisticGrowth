@@ -20,7 +20,8 @@ iterate.fit.lgcp(
   initial.carry.cap = 100,
   initial.move.const = 1,
   initial.log.sigma = log(1.5),
-  verbose = F
+  verbose = F,
+  saveall = T
 )
 }
 \arguments{

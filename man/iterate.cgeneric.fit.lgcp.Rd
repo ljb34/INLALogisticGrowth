@@ -21,7 +21,8 @@ iterate.cgeneric.fit.lgcp(
   initial.move.const = 1,
   initial.log.sigma = log(1.5),
   verbose = F,
-  debug = NULL
+  debug = NULL,
+  saveall = T
 )
 }
 \arguments{
