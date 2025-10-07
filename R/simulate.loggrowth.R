@@ -134,14 +134,14 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   initial.log.sigma <- log(sigma)
   theta <- c(initial.growth, initial.carry.cap, initial.move.const, initial.log.sigma)
   linpoint <- log(logit.nest(exp(prior.mean), growth, carry.cap, tmesh$n)$x)
-  plot(exp(linpoint))
+  #plot(exp(linpoint))
   grad <- gradient_of_linpoint(linpoint, smesh, tmesh)#
   prior.precision <- initial_Q
   if(debug) print("Calculating precision")
   Q_mat <-Q()
   if(debug) print("Calculating mean")
   mu_mat <- mu()
-  if(debug) plot(exp(mu_mat))
+  #if(debug) plot(exp(mu_mat))
   
   #generate field
   if(debug) print("generating field")
