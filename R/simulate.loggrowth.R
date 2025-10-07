@@ -31,7 +31,8 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
                                timesteps, npoints = NULL, obs.sd=NULL,
                                obs.prob = NULL,
                                sample.type = "LGCP", ncores = 1,
-                               boundaries = c(0,1), debug = F){
+                               boundaries = c(0,1), debug = F,
+                               max.edge = 0.05){
   browser()
   #functions needed
   a.func <- function(growth,carry.cap, linpoint){
@@ -111,7 +112,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   corners <- c(boundaries[1] - 2*initial.range, boundaries[2]+2*initial.range)
   bnd_extended <- inlabru::spoly(data.frame(easting = c(corners[1], corners[2],corners[2],corners[1]), 
                                             northing = c(corners[1], corners[1],corners[2],corners[2])))
-  smesh <- fmesher::fm_mesh_2d_inla(boundary = bnd_extended, max.edge = diff(corners)/50)
+  smesh <- fmesher::fm_mesh_2d_inla(boundary = bnd_extended, max.edge = max.edge)
   tmesh <- fmesher::fm_mesh_1d(loc = 0:timesteps)
   step.size <- 1
   if(debug) print("set up finished, generating first year")
@@ -124,7 +125,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   prior.mean <- log(initial.pop) + inla.qsample(1, initial_Q)[,1]
   
   if(debug){
-    plot(exp(prior.mean))
+    #summary(exp(prior.mean))
     print("Defining model")
   }
   #components needed for model

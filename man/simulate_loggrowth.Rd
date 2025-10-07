@@ -19,7 +19,8 @@ simulate_loggrowth(
   sample.type = "LGCP",
   ncores = 1,
   boundaries = c(0, 1),
-  debug = F
+  debug = F,
+  max.edge = 0.05
 )
 }
 \arguments{
