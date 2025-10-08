@@ -258,16 +258,6 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         L_mat->nrow = N;
         L_mat->ncol = N;
         Lmat(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, L_mat->x);
-        /*if(debug) {
-            printf("L_mat:\n");
-            for (int ii = 0; ii < N; ii++) {
-                for (int jj = 0; jj < N; jj++) {
-                    printf("%f \t", L_mat->x[ii * N + jj]);
-                }
-                printf("\n");
-            }
-		}*/
-     
 
         //Noise matrix
         inla_cgeneric_mat_tp* noise = malloc(sizeof(inla_cgeneric_mat_tp));
@@ -312,13 +302,6 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         double* A = malloc(N * N * sizeof(double));
         double* B = malloc(N * N * sizeof(double));
         memcpy(A, noise->x, N * N * sizeof(double));
-        // memcpy(B, L_mat->x, N * N * sizeof(double));
-         // Convert L_mat->x (row-major) to B (column-major)
-        for (int row = 0; row < N; row++) {
-            for (int col = 0; col < N; col++) {
-                B[col * N + row] = L_mat->x[row * N + col];
-            }
-        }
         
         //Compute Noise * L
         // Set up parameters for dgemm_
@@ -327,32 +310,30 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         double alpha = 1.0;
         double beta = 0.0;
 
-        // A: N x N, B: N x nrhs, C: N x nrhs
-        // Output will be stored in B (or allocate a new array for the result if needed)
-        dgemm_(&transA, &transB, &N, &nrhs, &N, &alpha, A, &lda, B, &ldb, &beta, B, &N);
-        if (info != 0) {
-            fprintf(stderr, "dgemm failed, info = %d\n", info);
-            free(A); free(B);
-            free(L_mat->x); free(L_mat);
-            free(noise->x); free(noise);
-            return NULL;
-        }
-        //B is in column-major order now, print it
-        /*for (int ii = 0; ii < N; ii++) {
-            for (int jj = 0; jj < N; jj++) {
-                printf("%f \t", B[jj * N + ii]);
-            }
-            printf("\n");
-        }*/
+        
         //Compute L^T*Noise * L
         double* out = calloc(N * N, sizeof(double));
         double one = 1, zero = 0;
-		char transL = 'T';
-        dgemm_(&transL, &transB,
-            &N, &N, &N,
-            &one, L_mat->x, &lda,
-            B, &ldb,
-            &zero, out, &N);
+        /* Convert L (row-major in L_mat->x) to column-major L_col */
+        double* L_col = malloc(N * N * sizeof(double));
+        for (int row = 0; row < N; row++) {
+            for (int col = 0; col < N; col++) {
+                L_col[col * N + row] = L_mat->x[row * N + col];
+            }
+        }
+
+        /* Compute B = Noise (A) * L_col  (A is already column-major in A) */
+        /* reuse your A,B buffers but ensure B was initialised properly: */
+        memcpy(B, L_col, N * N * sizeof(double));  /* B contains L_col as column-major */
+        dgemm_(&transA, &transB, &N, &nrhs, &N, &alpha, A, &lda, B, &ldb, &beta, B, &N);
+
+        /* Now compute out = L_col^T * B */
+        char transL = 'T';
+        dgemm_(&transL, &transB, &N, &N, &N, &one, L_col, &lda, B, &ldb, &zero, out, &N);
+
+        free(L_mat);
+        free(L_col);
+        free(noise);
         free(A);
         free(B);
         free(ipiv);
@@ -386,6 +367,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 ret[idx++] = out[j * N + i];
             }
         }
+		free(out);
+
         if (idx - 2 != M) {
             fprintf(stderr, "Q filled %d values, expected %d\n", idx - 2, M);
             abort();
