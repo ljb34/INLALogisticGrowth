@@ -22,7 +22,7 @@ define.loggrow.model <- function(linpoint, smesh, tmesh, step.size,
   if(is.null(grad)){
     grad <- gradient_of_linpoint(linpoint, smesh, tmesh)
   }
-  the_model <- inla.rgeneric.define(log.growth.rgeneric, 
+  the_model <- inla.rgeneric.define(log_growth_rgeneric, 
                                     linpoint = linpoint, 
                                     smesh = smesh,tmesh = tmesh, step.size = step.size, 
                                     prior.mean = prior.mean, priors = priors,

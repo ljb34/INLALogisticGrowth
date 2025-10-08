@@ -5,12 +5,12 @@
 #'  @param k numeric or vector carrying capacity
 #'  @returns population after 1 time step of logistic growth
 #'  @export
-
 logit.growth <- function(x,r,k){
   x[x<0]<-0
   xnew <- x*exp(r*(1-(x/k)))
   return(xnew)
 }
+
 #'Nested logistic growth
 #'Deterministic function for calculating population size over multiple time steps of growth
 #'  @param x0 numeric or vector starting population
