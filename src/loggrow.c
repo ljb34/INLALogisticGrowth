@@ -59,7 +59,7 @@ void Lmat(double growth, double carry_cap, double move_const, double timestep,
             int i = CinvG->i[idx];
             int j = CinvG->j[idx];
             for (int t = 1; t < nt; t++) {
-                result[(ns * t + i) * ntotal + t * ns + j] += move_const * CinvG->x[idx];
+                result[(ns * t + j) * ntotal + t * ns + i] += move_const * CinvG->x[idx];
             }
 		}
     }
@@ -67,11 +67,13 @@ void Lmat(double growth, double carry_cap, double move_const, double timestep,
         for (int t = 1; t < nt; t++) {
             for (int j = 0; j < ns; j++) {
                 for (int i = 0; i < ns; i++) {
-                    result[(ns * t + i) * ntotal + t * ns + j] += move_const * CinvG->x[i * ns + j];
+                    result[(ns * t + j) * ntotal + t * ns + i] += move_const * CinvG->x[i * ns + j];
                 }
             }
         }
     }
+	free(a_array);
+
 }
 
 void r_vector(double growth, double carry_cap, double move_const,
@@ -259,82 +261,64 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         L_mat->ncol = N;
         Lmat(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, L_mat->x);
 
-        //Noise matrix
-        inla_cgeneric_mat_tp* noise = malloc(sizeof(inla_cgeneric_mat_tp));
-        noise->x = calloc(N * N, sizeof(double));
-        noise->nrow = N;
-        noise->ncol = N;
-        //initial year variance
-        if (prior_precision->n != ns * ns) {
-            // Sparse case: fill symmetric entries
-            for (int k = 0; k < prior_precision->n; k++) {
-                int ii = prior_precision->i[k];
-                int jj = prior_precision->j[k];
-                double vx = prior_precision->x[k];
-                noise->x[ii + jj * N] = prior_precision->x[k];   // (ii,jj)
-            }
-        }
-        else {
-            for (int i = 0; i < ns; i++) {
-                for (int j = i; j < ns; j++) {
-                    noise->x[i + N * j] = prior_precision->x[i * ns + j];
-                }
-            }
-        }
-
-        //Other years, noise on diagonal
-        for (int i = ns; i < ns * nt; i++) {
-            noise->x[i * N + i] = 1/((sigma * timestep) * (sigma * timestep));
-        }
-
-        /*for (int ii = 0; ii < N; ii++) {
-            for (int jj = 0; jj < N; jj++) {
-                printf("%f \t", noise->x[ii * N + jj]);
-            }
-            printf("\n");
-        }*/ //noise checked 15/8, comes out fine
         int* ipiv = malloc(ns * nt * sizeof(int));
         int lda = N;
         int ldb = N;
         int nrhs = N;
         int info;
 
-        double* A = malloc(N * N * sizeof(double));
         double* B = malloc(N * N * sizeof(double));
-        memcpy(A, noise->x, N * N * sizeof(double));
-        
+        memcpy(B, L_mat->x, N * N * sizeof(double));
         //Compute Noise * L
-        // Set up parameters for dgemm_
-        char transA = 'N'; // No transpose
-        char transB = 'N'; // No transpose
-        double alpha = 1.0;
-        double beta = 0.0;
+        //scale rows by diagonal noise* 
+		double scale = 1 / (sigma * sigma*timestep);
+            for (int i = 0; i < N; i++) {
+                // multiply row i in B: every column's element at B[col*N + i] //
+                for (int col = 0; col < N; col++) {
+                    B[col * N + i] *= scale;
+                }
+            }
 
-        
-        //Compute L^T*Noise * L
-        double* out = calloc(N * N, sizeof(double));
-        double one = 1, zero = 0;
-        /* Convert L (row-major in L_mat->x) to column-major L_col */
-        double* L_col = malloc(N * N * sizeof(double));
-        for (int row = 0; row < N; row++) {
+        //initial ns x ns dense prior_precision block 
+        if (prior_precision->n != ns * ns) {
+            // sparse prior_precision: apply its nonzeros 
+            for (int k = 0; k < prior_precision->n; ++k) {
+                int ii = prior_precision->i[k]; /* row */
+                int jj = prior_precision->j[k]; /* col */
+                double pv = prior_precision->x[k];
+                /* add pv x corresponding row jj of L to row ii of B only for columns
+                   that touch the first block (depends on bandwidth). Simpler: for all col */
+                for (int col = 0; col < N; col++) {
+                    B[col * N + ii] += pv * L_mat->x[col * N + jj];
+                }
+            }
+        }
+        else {
+            /* dense ns x ns prior_precision: do small matrix multiply
+               For each column col, compute B_col[0:ns-1] += prior_precision_ns * L_mat->x[ col*N + 0:ns-1 ] */
             for (int col = 0; col < N; col++) {
-                L_col[col * N + row] = L_mat->x[row * N + col];
+                /* multiply small ns x ns */
+                for (int i = 0; i < ns; i++) {
+                    double add = 0;
+                    for (int j = 0; j < ns; j++) {
+                        add += prior_precision->x[i * ns + j] * L_mat->x[col * N + j];
+                    }
+                    B[col * N + i] += add;
+                }
             }
         }
 
-        /* Compute B = Noise (A) * L_col  (A is already column-major in A) */
-        /* reuse your A,B buffers but ensure B was initialised properly: */
-        memcpy(B, L_col, N * N * sizeof(double));  /* B contains L_col as column-major */
-        dgemm_(&transA, &transB, &N, &nrhs, &N, &alpha, A, &lda, B, &ldb, &beta, B, &N);
 
-        /* Now compute out = L_col^T * B */
+        double* out = calloc(N * N, sizeof(double));
+        double one = 1, zero = 0;
+
+        /* Now compute out = L_mat^T * B */
         char transL = 'T';
-        dgemm_(&transL, &transB, &N, &N, &N, &one, L_col, &lda, B, &ldb, &zero, out, &N);
+		char transB = 'N';
+        dgemm_(&transL, &transB, &N, &N, &N, &one, L_mat->x, &lda, B, &ldb, &zero, out, &N);
 
+        free(L_mat->x);
         free(L_mat);
-        free(L_col);
-        free(noise);
-        free(A);
         free(B);
         free(ipiv);
 
@@ -407,14 +391,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         int info;
         double* A = malloc(N * N * sizeof(double));
         double* B = malloc(N * sizeof(double));
-
-        //convert L_mat->x (row-major) to A (column-major)
-        for (int row = 0; row < N; row++) {
-            for (int col = 0; col < N; col++) {
-                A[col * N + row] = L_mat->x[row * N + col];
-            }
-        }
-
+		memcpy(A, L_mat->x, N* N * sizeof(double));
         memcpy(B, rvector->doubles, N * sizeof(double));
 
         dgesv_(&N, &nrhs, A, &lda, ipiv, B, &ldb, &info);
