@@ -45,7 +45,8 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
                                        n = smesh$n*tmesh$n) -1,
              data = data, domain = list(geometry = smesh,time = tmesh),
              samplers = samplers,
-             family = "cp", options = list(verbose = verbose))
+             family = "cp", options = list(verbose = verbose, 
+                                           control.inla = list(control.vb=list(enable=FALSE))))
   if(saveall){
     fit.list[[1]]<-fit
   }else{
@@ -93,7 +94,8 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
                                          n = smesh$n*tmesh$n) -1,
                data = data, domain = list(geometry = smesh,time = tmesh),
                samplers = samplers,
-               family = "cp", options = list(verbose = verbose))
+               family = "cp", options = list(verbose = verbose, 
+                                             control.inla = list(control.vb=list(enable=FALSE))))
     print(paste("Fitted new model", n))
     if(saveall){
       fit.list[[n]]<-fit
@@ -108,7 +110,8 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
                                            n = smesh$n*tmesh$n) -1,
                  data = data, domain = list(geometry = smesh,time = tmesh),
                  samplers = samplers,
-                 family = "cp", options = list(verbose = verbose))
+                 family = "cp", options = list(verbose = verbose, 
+                                               control.inla = list(control.vb=list(enable=FALSE))))
       n.nodes <- fit$misc$configs$nconfig
       if(!is.numeric(fit$misc$configs$nconfig)){
         print("Failed again, returning model output")
@@ -159,6 +162,7 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
                                              n = smesh$n*tmesh$n) -1,
                    data = data, domain = list(geometry = smesh,time = tmesh),
                    samplers = samplers,
-                   family = "cp", options = list(verbose = verbose))
+                   family = "cp", options = list(verbose = verbose, 
+                                                 control.inla = list(control.vb=list(enable=FALSE))))
   return(list(fit = final.fit, n = n, linpoints = lp.mat, fit_list = fit.list))
 }
