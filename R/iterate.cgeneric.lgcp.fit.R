@@ -18,12 +18,12 @@
 #' \emph{log} carrying capacity, movement constant and \emph{log} standard deviation
 #' @param verbose logical supplied to INLA
 #' @returns list containing final model fit, number of iterations \code{n}, matrix of all past linearisation points and list of all past model fits.  
-#'@export
+#'@exports
 iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
                                    prior.precision, max.iter = 100,gamma = 0.5,stop.crit = 0.05,
                                    priors = NULL, initial.linpoint = NULL, initial.growth=1, 
                                    initial.carry.cap=100, initial.move.const = 1, initial.log.sigma = log(1.5),
-                                   verbose = F, debug = NULL, saveall = T){
+                                   verbose = F, debug = NULL, saveall = T, control.vb = list(enable = T, emergency =25)){
   #browser()
   step.size = (tmesh$interval[2]-tmesh$interval[1])/(tmesh$n-1) #calculate step size. -1 in denom due to fence post problem 
   if(is.null(initial.linpoint)){
@@ -46,7 +46,7 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
              data = data, domain = list(geometry = smesh,time = tmesh),
              samplers = samplers,
              family = "cp", options = list(verbose = verbose, 
-                                           control.inla = list(control.vb=list(enable=FALSE))))
+                                           control.inla = list(control.vb=control.vb)))
   if(saveall){
     fit.list[[1]]<-fit
   }else{
@@ -95,7 +95,7 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
                data = data, domain = list(geometry = smesh,time = tmesh),
                samplers = samplers,
                family = "cp", options = list(verbose = verbose, 
-                                             control.inla = list(control.vb=list(enable=FALSE))))
+                                             control.inla = list(control.vb=control.vb)))
     print(paste("Fitted new model", n))
     if(saveall){
       fit.list[[n]]<-fit
@@ -111,7 +111,7 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
                  data = data, domain = list(geometry = smesh,time = tmesh),
                  samplers = samplers,
                  family = "cp", options = list(verbose = verbose, 
-                                               control.inla = list(control.vb=list(enable=FALSE))))
+                                               control.inla = list(control.vb=control.vb)))
       n.nodes <- fit$misc$configs$nconfig
       if(!is.numeric(fit$misc$configs$nconfig)){
         print("Failed again, returning model output")
@@ -163,6 +163,6 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
                    data = data, domain = list(geometry = smesh,time = tmesh),
                    samplers = samplers,
                    family = "cp", options = list(verbose = verbose, 
-                                                 control.inla = list(control.vb=list(enable=FALSE))))
+                                                 control.inla = list(control.vb=control.vb)))
   return(list(fit = final.fit, n = n, linpoints = lp.mat, fit_list = fit.list))
 }
