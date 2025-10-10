@@ -27,7 +27,7 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
   #browser()
   step.size = (tmesh$interval[2]-tmesh$interval[1])/(tmesh$n-1) #calculate step size. -1 in denom due to fence post problem 
   if(is.null(initial.linpoint)){
-    initial.linpoint <- log(logit.nest(exp(prior.mean), initial.growth, exp(initial.carry.cap), tmesh$n)$x)
+    initial.linpoint <- log(logit.nest(exp(prior.mean), exp(initial.growth), exp(initial.carry.cap), tmesh$n)$x)
   }
   if(!is.matrix(initial.linpoint)) initial.linpoint <- as.matrix(initial.linpoint, ncol = 1)
   #Set up initial model
@@ -83,10 +83,14 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
                                              smesh = smesh,tmesh = tmesh, step.size = step.size, 
                                              prior.mean = prior.mean,
                                              prior.precision = prior.precision, priors = priors,
-                                             initial.growth = fit$summary.hyperpar$mean[1], 
-                                             initial.carry.cap = fit$summary.hyperpar$mean[2],
-                                             initial.move.const = fit$summary.hyperpar$mean[3],
-                                             initial.log.sigma = fit$summary.hyperpar$mean[4],
+                                             initial.growth = initial.growth, 
+                                             initial.carry.cap = initial.carry.cap,
+                                             initial.move.const = initial.move.const,
+                                             initial.log.sigma = initial.log.sigma,
+                                             #initial.growth = fit$summary.hyperpar$mean[1], 
+                                             #initial.carry.cap = fit$summary.hyperpar$mean[2],
+                                             #initial.move.const = fit$summary.hyperpar$mean[3],
+                                             #initial.log.sigma = fit$summary.hyperpar$mean[4],
                                              debug = debug)
     print("Defined new model")
     fit <- bru(geometry + time ~ loggrow(list(space = geometry, time = time), 
@@ -151,10 +155,14 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
                                            smesh = smesh,tmesh = tmesh, step.size = step.size, 
                                            prior.mean = prior.mean,
                                            prior.precision = prior.precision, priors = priors,
-                                           initial.growth = fit$summary.hyperpar$mean[1], 
-                                           initial.carry.cap = fit$summary.hyperpar$mean[2],
-                                           initial.move.const = fit$summary.hyperpar$mean[3],
-                                           initial.log.sigma = fit$summary.hyperpar$mean[4],
+                                           initial.growth = initial.growth, 
+                                           initial.carry.cap = initial.carry.cap,
+                                           initial.move.const = initial.move.const,
+                                           initial.log.sigma = initial.log.sigma,
+                                           #initial.growth = fit$summary.hyperpar$mean[1], 
+                                           #initial.carry.cap = fit$summary.hyperpar$mean[2],
+                                           #initial.move.const = fit$summary.hyperpar$mean[3],
+                                           #initial.log.sigma = fit$summary.hyperpar$mean[4],
                                            debug = debug)
   print("Defined final model")
   final.fit <- bru(geometry + time ~ loggrow(list(space = geometry, time = time), 
