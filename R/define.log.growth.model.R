@@ -7,7 +7,7 @@
 #' @param tmesh mesh over equally spaced time pointes created with fm_mesh_1d
 #'@param step.size difference between each of the time points
 #'@param prior.mean estimated mean for first year of data. Helper function for calculating coming soon
-#'@param prior.variance uncertainty for estimated mean of first year of data. Helper function for calculating coming soon
+#'@param prior.precision uncertainty for estimated mean of first year of data. Helper function for calculating coming soon
 #'@param priors named list of prior parameters, named \code{cc} (carrying capacity), \code{growth}, \code{move}, \code{sigma}. 
 #' Each is a two element vector containing the mean and variance for each parameter. 
 #' @param initial.growth,initial.carry.cap,initial.move.const,initial.log.sigma Starting values for the growth, 
@@ -26,7 +26,7 @@ define.loggrow.model <- function(linpoint, smesh, tmesh, step.size,
                                     linpoint = linpoint, 
                                     smesh = smesh,tmesh = tmesh, step.size = step.size, 
                                     prior.mean = prior.mean, priors = priors,
-                                    prior.variance = prior.variance, 
+                                    prior.precision = prior.precision, 
                                     grad = grad,
                                     initial.growth = initial.growth, 
                                     initial.carry.cap = initial.carry.cap, 
