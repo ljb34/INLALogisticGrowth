@@ -10,6 +10,7 @@ log_growth_rgeneric =  function(
     cmd = c("graph", "Q", "mu", "initial", "log.norm.const",
             "log.prior", "quit"),
     theta = NULL){ 
+  #browser()
   envir = parent.env(environment()) #gets extra parameters (linpoint etc.) from definition data
 
   library(Matrix)
@@ -103,7 +104,7 @@ log_growth_rgeneric =  function(
       dnorm(par$sigma, mean = priors$sigma[1], sd = priors$sigma[2], log = T)
     return(val)
   }
-  initial = function(){#can change params to make user specified
+  initial = function(){
     if(is.null(initial.growth)) initial.growth = log(0.5)
     if(is.null(initial.carry.cap)) initial.carry.cap = log(1000)
     if(is.null(initial.move.const)) initial.move.const = 1

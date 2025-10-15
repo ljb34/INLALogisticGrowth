@@ -33,7 +33,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
                                sample.type = "LGCP", ncores = 1,
                                boundaries = c(0,1), debug = F,
                                max.edge = 0.05){
-  browser()
+  #browser()
   #functions needed
   a.func <- function(growth,carry.cap, linpoint){
     #print("Calcualting a")
