@@ -115,8 +115,8 @@ log_growth_rgeneric =  function(
   quit = function() {
     return(invisible())
   }
-  #if (is.null(theta)) theta = initial()
-  #if (length(theta) == 0) theta = initial()
+  if (is.null(theta)) theta = initial()
+  if (length(theta) == 0) theta = initial()
   val = do.call(match.arg(cmd), args = list())
   return(val)
 }
