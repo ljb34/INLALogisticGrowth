@@ -134,7 +134,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   initial.move.const <- movement
   initial.log.sigma <- log(sigma)
   theta <- c(initial.growth, initial.carry.cap, initial.move.const, initial.log.sigma)
-  linpoint <- log(logit.nest(exp(prior.mean), growth, exp(carry.cap), tmesh$n)$x)
+  linpoint <- log(logit.nest(exp(prior.mean), growth, carry.cap, tmesh$n)$x)
   #plot(exp(linpoint))
   grad <- gradient_of_linpoint(linpoint, smesh, tmesh)#
   prior.precision <- initial_Q
