@@ -42,12 +42,12 @@ iterate.fit.gaussian(
 
 \item{stop.crit}{stopping criteria for linearisation point update rule. Stop updating if mean(abs(new_linearisation_point-old_linearisation_point))<=stop.crit}
 
-\item{priors}{named list of prior parameters, named \code{cc} (carrying capacity), \code{growth}, \code{move}, \code{sigma}. 
+\item{priors}{named list of prior parameters, named \code{cc} (carrying capacity), \code{growth}, \code{move}, \code{sigma}.
 Each is a two element vector containing the mean and variance for parameter.}
 
 \item{initial.linpoint}{Optional. Starting guess for the linearisation point. If NULL, will be estimated within function}
 
-\item{initial.growth, initial.carry.cap, initial.move.const, initial.log.sigma}{Starting values for the growth, 
+\item{initial.growth, initial.carry.cap, initial.move.const, initial.log.sigma}{Starting values for the growth,
 \emph{log} carrying capacity, movement constant and \emph{log} standard deviation}
 
 \item{verbose}{logical supplied to INLA}

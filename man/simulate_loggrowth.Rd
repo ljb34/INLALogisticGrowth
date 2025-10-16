@@ -41,7 +41,7 @@ simulate_loggrowth(
 \item{initial}{starting population size}
 }
 \value{
-List containing underlying field (animal), observations (animal_obs), and 
+List containing underlying field (animal), observations (animal_obs), and
 field defined on mesh nodes for debugging purposes (animal_field).
 }
 \description{

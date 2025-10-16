@@ -18,7 +18,7 @@
 #' \emph{log} carrying capacity, movement constant and \emph{log} standard deviation
 #' @param verbose logical supplied to INLA
 #' @returns list containing final model fit, number of iterations \code{n}, matrix of all past linearisation points and list of all past model fits.  
-#'@exports
+#'@export
 iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
                                    prior.precision, max.iter = 100,gamma = 0.5,stop.crit = 0.05,
                                    priors = NULL, initial.linpoint = NULL, initial.growth=1, 

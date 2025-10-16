@@ -27,13 +27,13 @@ iterate.fit.custom(
 }
 \arguments{
 \item{formula}{an \code{inlabru} style specification of the latent components.
-Should contain all elements of the linear predictor 
-except the spatial logistic growth term, which is added internally. 
+Should contain all elements of the linear predictor
+except the spatial logistic growth term, which is added internally.
 By default includes an intercept term, include -1 to remove the intercept. See also \code{\link{inlabru::bru_component()}}}
 
 \item{data}{spatial dataframe of gaussian observations, with column y = log(observed value)}
 
-\item{family}{model family to use for observation process. 
+\item{family}{model family to use for observation process.
 Common options are "cp" for LGCP, "poisson" and "nbinomial". Run \code{inla.list.models()} for all options}
 
 \item{smesh}{spatial mesh created with fm_mesh_2d_inla}
@@ -52,13 +52,13 @@ Common options are "cp" for LGCP, "poisson" and "nbinomial". Run \code{inla.list
 
 \item{stop.crit}{stopping criteria for linearisation point update rule. Stop updating if mean(abs(new_linearisation_point-old_linearisation_point))<=stop.crit}
 
-\item{priors}{named list of prior parameters, named \code{cc} (carrying capacity), \code{growth}, \code{move}, \code{sigma}. 
-cc is a two element vector containing the shape and rate parameter for gamma prior of the inverse carrying capacity. 
+\item{priors}{named list of prior parameters, named \code{cc} (carrying capacity), \code{growth}, \code{move}, \code{sigma}.
+cc is a two element vector containing the shape and rate parameter for gamma prior of the inverse carrying capacity.
 The others are two element vectors containing the mean and variance for the other parameters.}
 
 \item{initial.linpoint}{Optional. Starting guess for the linearisation point. If NULL, will be estimated within function}
 
-\item{initial.growth, initial.carry.cap, initial.move.const, initial.log.sigma}{Starting values for the growth, 
+\item{initial.growth, initial.carry.cap, initial.move.const, initial.log.sigma}{Starting values for the growth,
 inverse carrying capacity, movement constant and \emph{log} standard deviation}
 
 \item{verbose}{logical supplied to INLA}
@@ -67,6 +67,6 @@ inverse carrying capacity, movement constant and \emph{log} standard deviation}
 list containing final model fit, number of iterations \code{n}, matrix of all past linearisation points and list of all past model fits.
 }
 \description{
-Fits the spatial logistic growth model with any likelihood observation process 
+Fits the spatial logistic growth model with any likelihood observation process
 (of those supported by INLA) and a user defined formula.
 }

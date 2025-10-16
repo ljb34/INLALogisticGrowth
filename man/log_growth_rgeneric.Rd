@@ -10,6 +10,6 @@ log_growth_rgeneric(
 )
 }
 \description{
-The rgeneric function implementing the 2D spatial logistic growth function. 
+The rgeneric function implementing the 2D spatial logistic growth function.
 For use within INLA only. See inla.doc('rgeneric') for more
 }

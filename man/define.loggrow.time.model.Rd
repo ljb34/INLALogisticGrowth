@@ -27,10 +27,10 @@ define.loggrow.time.model(
 
 \item{prior.precision}{uncertainty for estimated mean of first year of data. Helper function for calculating coming soon}
 
-\item{priors}{named list of prior parameters, named \code{cc} (carrying capacity), \code{growth}, \code{sigma}. 
+\item{priors}{named list of prior parameters, named \code{cc} (carrying capacity), \code{growth}, \code{sigma}.
 Each is a two element vector containing the mean and variance for each parameter.}
 
-\item{initial.growth, initial.carry.cap, initial.log.sigma}{Starting values for the \emph{log} growth, 
+\item{initial.growth, initial.carry.cap, initial.log.sigma}{Starting values for the \emph{log} growth,
 \emph{log} carrying capacity and \emph{log} standard deviation}
 }
 \value{
