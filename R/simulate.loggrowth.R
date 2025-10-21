@@ -125,7 +125,6 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   prior.mean <- log(initial.pop) + inla.qsample(1, initial_Q)[,1]
   
   if(debug){
-    #summary(exp(prior.mean))
     print("Defining model")
   }
   #components needed for model
@@ -135,14 +134,12 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   initial.log.sigma <- log(sigma)
   theta <- c(initial.growth, initial.carry.cap, initial.move.const, initial.log.sigma)
   linpoint <- log(logit.nest(exp(prior.mean), growth, carry.cap, tmesh$n)$x)
-  #plot(exp(linpoint))
   grad <- gradient_of_linpoint(linpoint, smesh, tmesh)#
   prior.precision <- initial_Q
   if(debug) print("Calculating precision")
   Q_mat <-Q()
   if(debug) print("Calculating mean")
   mu_mat <- mu()
-  #if(debug) plot(exp(mu_mat))
   
   #generate field
   if(debug) print("generating field")
@@ -171,7 +168,14 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     animal_obs <- filter(animal, geometry %in% points.to.sample) %>% 
       dplyr::mutate(obs = rnorm(npoints*(tmesh$n), field, obs.sd))
   }
+  if(sample.type == "Bernoulli"){
+    points.to.sample <- sample(unique(sf::st_filter(animal,bnd_inner)$geometry),
+                               npoints)
+    animal_obs <- filter(animal, geometry %in% points.to.sample) %>% 
+      dplyr::mutate(obs = rbinom(npoints*(tmesh$n), 1, plogis(obs.prob*exp(field))))
+  }
   if(sample.type == "LGCP"){
+    field$field[field$field <0] <- 0
     simulate_obs <- function(i){
       samp_animal <- sample.lgcp(smesh, 
                                  loglambda = field$field[field$time == i],
@@ -184,12 +188,6 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     animal_obs <- do.call(rbind, observations)
     #remove edge effects
     #animal_obs <- st_as_sf(animal_obs, coords = c("x","y"))
-  }
-  if(sample.type == "Bernoulli"){
-    points.to.sample <- sample(unique(sf::st_filter(animal,bnd_inner)$geometry),
-                               npoints)
-    animal_obs <- filter(animal, geometry %in% points.to.sample) %>% 
-      dplyr::mutate(obs = rbinom(npoints*(tmesh$n), 1, plogis(obs.prob*exp(field))))
   }
   return(list(animal = animal[animal$time !=0,],field = field[field$time != 0,],
               animal_obs = animal_obs[animal_obs$time != 0,]))
