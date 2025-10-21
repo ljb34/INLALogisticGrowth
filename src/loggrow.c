@@ -45,12 +45,12 @@ void Lmat(double growth, double carry_cap, double move_const, double timestep,
 	a_func(growth, carry_cap,
 		linpoint, ns, nt, a_array);
 	for (int i = ns; i < ntotal; i++) {
-		result[i * ntotal + i] = 1 / (timestep)+a_array[i];
+		result[i * ntotal + i] = a_array[i] + (1 /timestep);
 	}
 
 	//subdiagonal
 	for (int i = 0; i < ns * (nt - 1); i++) {
-		result[(ns + i) * ntotal + i] = -1 / (timestep);
+		result[(ns + i) * ntotal + i] = -1 / timestep;
 	}
 
 	//CinvG part
@@ -67,7 +67,7 @@ void Lmat(double growth, double carry_cap, double move_const, double timestep,
         for (int t = 1; t < nt; t++) {
             for (int j = 0; j < ns; j++) {
                 for (int i = 0; i < ns; i++) {
-                    result[(ns * t + j) * ntotal + t * ns + i] += move_const * CinvG->x[i * ns + j];
+                    result[(ns * t + j) * ntotal + t * ns + i] += move_const * CinvG->x[j * ns + i];
                 }
             }
         }
@@ -286,8 +286,6 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 int ii = prior_precision->i[k]; /* row */
                 int jj = prior_precision->j[k]; /* col */
                 double pv = prior_precision->x[k];
-                /* add pv x corresponding row jj of L to row ii of B only for columns
-                   that touch the first block (depends on bandwidth). Simpler: for all col */
                 for (int col = 0; col < N; col++) {
                     B[col * N + ii] += pv * L_mat->x[col * N + jj];
                 }
@@ -325,7 +323,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         ret[0] = -1; /* REQUIRED! */
         ret[1] = M; 
 
-		//fill in ret with non zero parts of out (as defined in INLA_CGENERIC_GRAPH)
+		//fill in ret with non zero parts of out 
 
 
 		int idx = 2; // Start after -1 and M
