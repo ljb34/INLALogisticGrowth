@@ -272,14 +272,14 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         //Compute Noise * L
         //scale rows by diagonal noise* 
 		double scale = 1 / (sigma * sigma*timestep);
-            for (int i = 0; i < N; i++) {
+            for (int i = ns; i < N; i++) {
                 // multiply row i in B: every column's element at B[col*N + i] //
-                for (int col = 0; col < N; col++) {
+                for (int col = ns; col < N; col++) {
                     B[col * N + i] *= scale;
                 }
             }
 
-        //initial ns x ns dense prior_precision block 
+        //initial ns x ns prior_precision block 
         if (prior_precision->n != ns * ns) {
             // sparse prior_precision: apply its nonzeros 
             for (int k = 0; k < prior_precision->n; ++k) {
@@ -333,7 +333,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 ret[idx++] = out[j * N + i];
             }
         }
-
+		//middle years have three blocks
         for (int k = 1; k < nt - 1; k++) {
             for (int i = k * ns; i < (k + 1) * ns; i++) {
                 for (int j = i; j < (k + 2) * ns; j++) {
@@ -342,7 +342,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             }
         }
 
-        //final block
+        //final year has two blocks
         
         for (int i = (nt - 1) * ns; i < nt * ns; i++) {
             for (int j = i; j < nt * ns; j++) {
