@@ -27,8 +27,8 @@ define.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.size,
   mag_grad_sq <- rowSums(grad*grad)
   
   if(is.null(priors)){
-    priors <- list(growth = c(0,2), cc = c(log(100), 10), #fairly flat prior
-                   move = c(0,10), sigma = c(0,3))
+    priors <- list(growth = c(0,1), cc = c(log(500), 10), #fairly flat prior
+                   move = c(0,1), sigma = c(0,1))
   }
   
   fem.matrices <- fmesher::fm_fem(smesh)

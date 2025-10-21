@@ -90,7 +90,7 @@ void r_vector(double growth, double carry_cap, double move_const,
 
 double normal_pdf_log(double x, double mean, double stddev) {
     double coefficient = 1.0 / (stddev * sqrt(2.0 * M_PI));
-    double exponent = -pow(x - mean, 2.0) / (2.0 * stddev * stddev);
+    double exponent = -(x - mean)*(x - mean)/ (2 * stddev * stddev);
     return log(coefficient * exp(exponent));
 }
 
@@ -463,7 +463,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         }
         ret = Calloc(1, double);
 
-        ret[0] = normal_pdf_log(growth, pgrowth->doubles[0], pgrowth->doubles[1]) +
+        ret[0] = normal_pdf_log(theta[0], pgrowth->doubles[0], pgrowth->doubles[1]) +
             normal_pdf_log(theta[1], pcc->doubles[0], pcc->doubles[1]) + 
             normal_pdf_log(move_const, pmove->doubles[0], pmove->doubles[1]) + 
             normal_pdf_log(theta[3], psigma->doubles[0],psigma->doubles[1]);
