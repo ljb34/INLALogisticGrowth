@@ -299,7 +299,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 for (int i = 0; i < ns; i++) {
                     double add = 0;
                     for (int j = 0; j < ns; j++) {
-                        add += prior_precision->x[i * ns + j] * L_mat->x[col * N + j];
+                        add += prior_precision->x[j * ns + i] * L_mat->x[col * N + j];
                     }
                     B[col * N + i] += add;
                 }
