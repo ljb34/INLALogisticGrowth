@@ -44,7 +44,8 @@ iterate.fit.lgcp <- function(data, smesh, tmesh, samplers,prior.mean,
                                        n = smesh$n*tmesh$n) -1,
              data = data, domain = list(geometry = smesh,time = tmesh),
              samplers = samplers,
-             family = "cp", options = list(verbose = verbose, control.inla = list(control.vb=list(emergency=30))))
+             family = "cp", options = list(verbose = verbose, control.inla = list(control.vb=list(emergency=30)),
+             int.strategy = 'eb', num.threads = 4))
   if(saveall){
     fit.list[[1]]<-fit
   }else{
@@ -91,7 +92,8 @@ iterate.fit.lgcp <- function(data, smesh, tmesh, samplers,prior.mean,
                                          n = smesh$n*tmesh$n) -1,
                data = data, domain = list(geometry = smesh,time = tmesh),
                samplers = samplers,
-               family = "cp", options = list(verbose = verbose, control.inla = list(control.vb=list(emergency=30))))
+               family = "cp", options = list(verbose = verbose, control.inla = list(control.vb=list(emergency=30)),
+               int.strategy = 'eb', num.threads = 4))
     print(paste("Fitted new model", n))
     if(saveall){
       fit.list[[n]]<-fit
@@ -156,6 +158,7 @@ iterate.fit.lgcp <- function(data, smesh, tmesh, samplers,prior.mean,
                                              n = smesh$n*tmesh$n) -1,
                    data = data, domain = list(geometry = smesh,time = tmesh),
                    samplers = samplers,
-                   family = "cp", options = list(verbose = verbose))
+                   family = "cp", options = list(verbose = verbose,
+                                                 int.strategy = 'eb', num.threads = 4))
   return(list(fit = final.fit, n = n, linpoints = lp.mat, fit_list = fit.list))
 }
