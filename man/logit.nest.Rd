@@ -3,23 +3,23 @@
 \name{logit.nest}
 \alias{logit.nest}
 \title{Nested logistic growth
-Deterministic function for calculating population size over multiple time steps of growth
-@param x0 numeric or vector starting population
-@param r numeric or vector growth rate
-@param k numeric or vector carrying capacity
-@param n number of time steps to compute
-@returns dataframe of population size and time
-@export}
+Deterministic function for calculating population size over multiple time steps of growth}
 \usage{
 logit.nest(x0, r, k, n)
+}
+\arguments{
+\item{x0}{numeric or vector starting population}
+
+\item{r}{numeric or vector growth rate}
+
+\item{k}{numeric or vector carrying capacity}
+
+\item{n}{number of time steps to compute}
+}
+\value{
+dataframe of population size and time
 }
 \description{
 Nested logistic growth
 Deterministic function for calculating population size over multiple time steps of growth
-@param x0 numeric or vector starting population
-@param r numeric or vector growth rate
-@param k numeric or vector carrying capacity
-@param n number of time steps to compute
-@returns dataframe of population size and time
-@export
 }

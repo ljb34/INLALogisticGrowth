@@ -3,21 +3,21 @@
 \name{logit.growth}
 \alias{logit.growth}
 \title{Non spatial 1 year logistic growth function
-Deterministic function for calculating population size after 1 time step of logistic growth
-@param x numeric or vector starting population
-@param r numeric or vector growth rate
-@param k numeric or vector carrying capacity
-@returns population after 1 time step of logistic growth
-@export}
+Deterministic function for calculating population size after 1 time step of logistic growth}
 \usage{
 logit.growth(x, r, k)
+}
+\arguments{
+\item{x}{numeric or vector starting population}
+
+\item{r}{numeric or vector growth rate}
+
+\item{k}{numeric or vector carrying capacity}
+}
+\value{
+population after 1 time step of logistic growth
 }
 \description{
 Non spatial 1 year logistic growth function
 Deterministic function for calculating population size after 1 time step of logistic growth
-@param x numeric or vector starting population
-@param r numeric or vector growth rate
-@param k numeric or vector carrying capacity
-@returns population after 1 time step of logistic growth
-@export
 }
