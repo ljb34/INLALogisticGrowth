@@ -271,7 +271,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         memcpy(B, L_mat->x, N * N * sizeof(double));
         //Compute Noise * L
         //scale rows by diagonal noise* 
-		double scale = 1 / (sigma * sigma*timestep);
+		double scale = timestep / (sigma * sigma);
             for (int i = ns; i < N; i++) {
                 // multiply row i in B: every column's element at B[col*N + i] //
                 for (int col = ns; col < N; col++) {
@@ -279,29 +279,21 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 }
             }
 
-        //initial ns x ns prior_precision block 
+		//initial ns x ns prior_precision block - prior precision * identity so can just copy prior_precision to B
+		//if sparse prior_precision
         if (prior_precision->n != ns * ns) {
             // sparse prior_precision: apply its nonzeros 
-            for (int k = 0; k < prior_precision->n; ++k) {
-                int ii = prior_precision->i[k]; /* row */
-                int jj = prior_precision->j[k]; /* col */
+            for (int k = 0; k < prior_precision->n; k++) {
+                int ii = prior_precision->i[k]; 
+                int jj = prior_precision->j[k]; 
                 double pv = prior_precision->x[k];
-                for (int col = 0; col < N; col++) {
-                    B[col * N + ii] += pv * L_mat->x[col * N + jj];
-                }
+				B[jj * N + ii] += pv;
             }
         }
-        else {
-            /* dense ns x ns prior_precision: do small matrix multiply
-               For each column col, compute B_col[0:ns-1] += prior_precision_ns * L_mat->x[ col*N + 0:ns-1 ] */
-            for (int col = 0; col < N; col++) {
-                /* multiply small ns x ns */
-                for (int i = 0; i < ns; i++) {
-                    double add = 0;
-                    for (int j = 0; j < ns; j++) {
-                        add += prior_precision->x[j * ns + i] * L_mat->x[col * N + j];
-                    }
-                    B[col * N + i] += add;
+        else { //if dense prior precision
+            for (int i = 0; i < ns; i++) {
+                for (int j = 0; j < ns; j++) {
+                    B[j * N + i] += prior_precision->x[j * ns + i];
                 }
             }
         }
