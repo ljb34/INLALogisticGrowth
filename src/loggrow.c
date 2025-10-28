@@ -50,7 +50,7 @@ void Lmat(double growth, double carry_cap, double move_const, double timestep,
 
 	//subdiagonal
 	for (int i = 0; i < ns * (nt - 1); i++) {
-		result[i * ntotal + ns + i] = -1 / timestep;
+		result[(ns + i) * ntotal + i] = -1 / timestep;
 	}
 
 	//CinvG part
