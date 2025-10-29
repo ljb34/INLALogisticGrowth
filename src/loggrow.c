@@ -50,7 +50,7 @@ void Lmat(double growth, double carry_cap, double move_const, double timestep,
 
 	//subdiagonal
 	for (int i = 0; i < ns * (nt - 1); i++) {
-		result[(ns + i) * ntotal + i] = -1 / timestep;
+		result[i * ntotal + i + ns] = -1 / timestep;
 	}
 
 	//CinvG part
@@ -273,9 +273,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         //scale rows by diagonal noise* 
 		double scale = timestep / (sigma * sigma);
             for (int i = ns; i < N; i++) {
-                // multiply row i in B: every column's element at B[col*N + i] //
-                for (int col = ns; col < N; col++) {
-                    B[col * N + i] *= scale;
+                for (int j = ns; j < N; j++) {
+                    B[j * N + i] *= scale;
                 }
             }
 
