@@ -67,7 +67,7 @@ void Lmat(double growth, double carry_cap, double move_const, double timestep,
         for (int t = 1; t < nt; t++) {
             for (int j = 0; j < ns; j++) {
                 for (int i = 0; i < ns; i++) {
-                    result[(ns * t + j) * ntotal + t * ns + i] += move_const * CinvG->x[j * ns + i];
+					result[(ns * t + j) * ntotal + t * ns + i] += move_const * CinvG->x[i * ns + j]; //Lmat is col-major but CinvG is row-major
                 }
             }
         }
@@ -292,7 +292,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         else { //if dense prior precision
             for (int i = 0; i < ns; i++) {
                 for (int j = 0; j < ns; j++) {
-                    B[j * N + i] += prior_precision->x[j * ns + i];
+					B[j * N + i] += prior_precision->x[i * ns + j]; //B is col-major but prior_precision is row-major
                 }
             }
         }
