@@ -60,11 +60,11 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
                                                       initial.move.const = initial.move.const,
                                                       initial.log.sigma = initial.log.sigma, debug = debug)
   }
-  new.cmp <- formula[2] ~ loggrow(list(space = geometry, time = time), 
-                                  model = log_growth_model, 
-                                  n = smesh$n*tmesh$n)
+  new.cmp <- update(formula, . ~ . + loggrow(list(space = geometry, time = time),
+                                             model = log_growth_model, n = smesh$n * tmesh$n))
+  environment(new.cmp) <- environment()
   
-  fit <- bru(update(formula, new.cmp),
+  fit <- bru(new.cmp,
              data = data, domain = list(geometry = smesh,time = tmesh),
              samplers = samplers,
              family = family, options = options)
@@ -110,12 +110,12 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
                                                         initial.move.const = initial.move.const,
                                                         initial.log.sigma = initial.log.sigma, debug = debug)
     }
-    new.cmp <- formula[2] ~ loggrow(list(space = geometry, time = time), 
-                                    model = log_growth_model, 
-                                    n = smesh$n*tmesh$n)
-    print("Defined new model")
     
-    fit <- bru(update(formula, new.cmp),
+    print("Defined new model")
+    new.cmp <- update(formula, . ~ . + loggrow(list(space = geometry, time = time),
+                                               model = log_growth_model, n = smesh$n * tmesh$n))
+    environment(new.cmp) <- environment()
+    fit <- bru(new.cmp,
                data = data, domain = list(geometry = smesh,time = tmesh),
                samplers = samplers,
                family = family, options = options)
@@ -128,7 +128,10 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
     n.nodes <- fit$misc$configs$nconfig
     if(!is.numeric(n.nodes)){
       print("Failed to fit, trying again")
-      fit <- bru(update(formula, new.cmp),
+      new.cmp <- update(formula, . ~ . + loggrow(list(space = geometry, time = time),
+                                                 model = log_growth_model, n = smesh$n * tmesh$n))
+      environment(new.cmp) <- environment()
+      fit <- bru(new.cmp,
                  data = data, domain = list(geometry = smesh,time = tmesh),
                  samplers = samplers,
                  family = family, options = options)
@@ -182,10 +185,10 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
                                                       initial.log.sigma = initial.log.sigma, debug = debug)
   }
   print("Defined final model")
-  new.cmp <- formula[2] ~ loggrow(list(space = geometry, time = time), 
-                                  model = log_growth_model, 
-                                  n = smesh$n*tmesh$n)
-  fit <- bru(update(formula, new.cmp),
+  new.cmp <- update(formula, . ~ . + loggrow(list(space = geometry, time = time),
+                                             model = log_growth_model, n = smesh$n * tmesh$n))
+  environment(new.cmp) <- environment()
+  fit <- bru(new.cmp,
              data = data, domain = list(geometry = smesh,time = tmesh),
              samplers = samplers,
              family = family, options = options)
