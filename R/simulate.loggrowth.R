@@ -32,7 +32,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
                                obs.prob = NULL,
                                sample.type = "LGCP", ncores = 1,
                                boundaries = c(0,1), debug = F,
-                               max.edge = 0.05){
+                               max.edge = 0.05, nsurv = 3){
   #browser()
   #functions needed
   a.func <- function(growth,carry.cap, linpoint){
@@ -172,7 +172,14 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     points.to.sample <- sample(unique(sf::st_filter(animal,bnd_inner)$geometry),
                                npoints)
     animal_obs <- filter(animal, geometry %in% points.to.sample) %>% 
-      dplyr::mutate(obs = rbinom(npoints*(tmesh$n), 1, plogis(obs.prob*exp(field))))
+      dplyr::mutate(obs = rbinom(npoints*(tmesh$n), 1, plogis(obs.prob*exp(field))), 
+                    survey = rep(1, npoints*tmesh$n))
+    for(i in 2:nsurv){
+      animal_obs <- rbind(animal_obs, 
+                          filter(animal, geometry %in% points.to.sample) %>% 
+                            dplyr::mutate(obs = rbinom(npoints*(tmesh$n), 1, plogis(obs.prob*exp(field))), 
+                                          survey = rep(i, npoints*tmesh$n)))
+    }
   }
   if(sample.type == "LGCP"){
     field$field[field$field <0] <- 0

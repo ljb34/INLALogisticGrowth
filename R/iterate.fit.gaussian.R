@@ -7,7 +7,7 @@
 #' @param tmesh mesh over equally spaced time pointes created with fm_mesh_1d
 #' @param samplers sampling area for supplying to inlabru
 #' @param prior.mean estimated mean for first year of data. Helper function for calculating coming soon
-#' @param prior.variance uncertainty for estimated mean of first year of data. Helper function for calculating coming soon
+#' @param prior.precision uncertainty for estimated mean of first year of data. Helper function for calculating coming soon
 #' @param max.iter maximum iterations to attempt
 #' @param gamma dampening parameter for update rule
 #' @param stop.crit stopping criteria for linearisation point update rule. Stop updating if mean(abs(new_linearisation_point-old_linearisation_point))<=stop.crit
@@ -23,7 +23,7 @@
 
 
 iterate.fit.gaussian <- function(data, smesh, tmesh, samplers,prior.mean,
-                                 prior.variance, max.iter = 100,gamma = 0.75,stop.crit = 0.05,
+                                 prior.precision, max.iter = 100,gamma = 0.75,stop.crit = 0.05,
                                  priors = NULL,initial.linpoint = NULL, initial.growth=1, 
                                  initial.carry.cap=0.05, initial.move.const = 1, initial.log.sigma = log(1.5),
                                  options = list(verbose = F, 
@@ -40,7 +40,7 @@ iterate.fit.gaussian <- function(data, smesh, tmesh, samplers,prior.mean,
   log_growth_model <- define.loggrow.model(linpoint = initial.linpoint, 
                                            smesh = smesh,tmesh = tmesh, step.size = step.size, 
                                            prior.mean = prior.mean,
-                                           prior.variance = prior.variance, priors = priors,
+                                           prior.precision = prior.precision, priors = priors,
                                            initial.growth = initial.growth, 
                                            initial.carry.cap = initial.carry.cap,
                                            initial.move.const = initial.move.const,
@@ -89,7 +89,7 @@ iterate.fit.gaussian <- function(data, smesh, tmesh, samplers,prior.mean,
     log_growth_model <- define.loggrow.model(linpoint = as.vector(new.linpoint), 
                                              smesh = smesh,tmesh = tmesh, step.size = step.size, 
                                              prior.mean = prior.mean,
-                                             prior.variance = prior.variance, priors = priors,
+                                             prior.precision = prior.precision, priors = priors,
                                              initial.growth = fit$summary.hyperpar$mean[2], 
                                              initial.carry.cap = fit$summary.hyperpar$mean[3],
                                              initial.move.const = fit$summary.hyperpar$mean[4],
@@ -154,7 +154,7 @@ iterate.fit.gaussian <- function(data, smesh, tmesh, samplers,prior.mean,
   log_growth_model <- define.loggrow.model(linpoint = as.vector(new.linpoint), 
                                            smesh = smesh,tmesh = tmesh, step.size = step.size, 
                                            prior.mean = prior.mean,
-                                           prior.variance = prior.variance, priors = priors,
+                                           prior.precision = prior.precision, priors = priors,
                                            initial.growth = fit$summary.hyperpar$mean[2], 
                                            initial.carry.cap = fit$summary.hyperpar$mean[3],
                                            initial.move.const = fit$summary.hyperpar$mean[4],
