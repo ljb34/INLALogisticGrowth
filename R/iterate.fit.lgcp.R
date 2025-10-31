@@ -23,7 +23,7 @@ iterate.fit.lgcp <- function(data, smesh, tmesh, samplers,prior.mean,
                              priors = NULL, initial.linpoint = NULL, initial.growth=NULL, 
                              initial.carry.cap=NULL, initial.move.const =NULL, initial.log.sigma =NULL,
                              options = list(verbose = F, 
-                                            control.inla = list(control.vb=list(emergency=30),int.strategy = 'eb'),
+                                            control.inla = list(control.vb=list(emergency=30),int.strategy = 'eb')),
                                             saveall = T){
   #browser()
   step.size = (tmesh$interval[2]-tmesh$interval[1])/(tmesh$n-1) #calculate step size. -1 in denom due to fence post problem 
