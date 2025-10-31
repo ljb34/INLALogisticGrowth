@@ -22,7 +22,9 @@ iterate.fit.lgcp <- function(data, smesh, tmesh, samplers,prior.mean,
                              prior.precision, max.iter = 100,gamma = 0.5,stop.crit = 0.05,
                              priors = NULL, initial.linpoint = NULL, initial.growth=NULL, 
                              initial.carry.cap=NULL, initial.move.const =NULL, initial.log.sigma =NULL,
-                             verbose = F, saveall = T){
+                             options = list(verbose = F, 
+                                            control.inla = list(control.vb=list(emergency=30),int.strategy = 'eb'),
+                                            saveall = T){
   #browser()
   step.size = (tmesh$interval[2]-tmesh$interval[1])/(tmesh$n-1) #calculate step size. -1 in denom due to fence post problem 
   if(is.null(initial.linpoint)){
@@ -44,8 +46,7 @@ iterate.fit.lgcp <- function(data, smesh, tmesh, samplers,prior.mean,
                                        n = smesh$n*tmesh$n) -1,
              data = data, domain = list(geometry = smesh,time = tmesh),
              samplers = samplers,
-             family = "cp", options = list(verbose = verbose, control.inla = list(control.vb=list(emergency=30),
-             int.strategy = 'eb', num.threads = 4)))
+             family = "cp", options = options)
   if(saveall){
     fit.list[[1]]<-fit
   }else{
@@ -92,8 +93,7 @@ iterate.fit.lgcp <- function(data, smesh, tmesh, samplers,prior.mean,
                                          n = smesh$n*tmesh$n) -1,
                data = data, domain = list(geometry = smesh,time = tmesh),
                samplers = samplers,
-               family = "cp", options = list(verbose = verbose, control.inla = list(control.vb=list(emergency=30),
-                                                                                    int.strategy = 'eb', num.threads = 4)))
+               family = "cp", options = options)
     print(paste("Fitted new model", n))
     if(saveall){
       fit.list[[n]]<-fit
@@ -108,8 +108,7 @@ iterate.fit.lgcp <- function(data, smesh, tmesh, samplers,prior.mean,
                                            n = smesh$n*tmesh$n) -1,
                  data = data, domain = list(geometry = smesh,time = tmesh),
                  samplers = samplers,
-                 family = "cp", options = list(verbose = verbose, control.inla = list(control.vb=list(emergency=30),
-                                                                                      int.strategy = 'eb', num.threads = 4)))
+                 family = "cp", options = options)
       n.nodes <- fit$misc$configs$nconfig
       if(!is.numeric(fit$misc$configs$nconfig)){
         print("Failed again, returning model output")
@@ -159,8 +158,6 @@ iterate.fit.lgcp <- function(data, smesh, tmesh, samplers,prior.mean,
                                              n = smesh$n*tmesh$n) -1,
                    data = data, domain = list(geometry = smesh,time = tmesh),
                    samplers = samplers,
-                   family = "cp", options = list(verbose = verbose,
-                                                 control.inla = list(control.vb=list(emergency=30),
-                                                                     int.strategy = 'eb', num.threads = 4)))
+                   family = "cp", options = options)
   return(list(fit = final.fit, n = n, linpoints = lp.mat, fit_list = fit.list))
 }

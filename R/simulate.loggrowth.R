@@ -96,7 +96,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
         #print(det(crossprod(Lmat,Lmat)))
         mu = Matrix::solve(crossprod(Lmat,Lmat),crossprod(Lmat,r)) #more stable form of solve(lmat,r)
         mu= as.vector(mu)
-        #print("Trick version")
+        print("Trick version")
       }else{
         mu = Matrix::solve(Lmat,r)
         #print("Default Solve")
@@ -177,7 +177,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   if(sample.type == "LGCP"){
     field$field[field$field <0] <- 0
     simulate_obs <- function(i){
-      samp_animal <- sample.lgcp(smesh, 
+      samp_animal <- inlabru::sample.lgcp(smesh, 
                                  loglambda = field$field[field$time == i],
                                  samplers = bnd_inner)
       samp_animal <- sf::st_as_sf(samp_animal, coords = c("x","y"))
@@ -192,3 +192,4 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   return(list(animal = animal[animal$time !=0,],field = field[field$time != 0,],
               animal_obs = animal_obs[animal_obs$time != 0,]))
 }
+

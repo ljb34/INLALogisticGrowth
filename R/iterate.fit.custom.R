@@ -32,7 +32,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
                         prior.precision, max.iter = 100,gamma = 0.5,stop.crit = 0.05,
                         priors = NULL, initial.linpoint = NULL, initial.growth=0.5, 
                         initial.carry.cap=1000, initial.move.const = 0.5, initial.log.sigma = log(1.5),
-                        verbose = F){
+                        verbose = F, method = "cgeneric"){
   #browser()
   step.size = (tmesh$interval[2]-tmesh$interval[1])/(tmesh$n-1) #calculate step size. -1 in denom due to fence post problem 
   if(is.null(initial.linpoint)){
@@ -41,14 +41,25 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
   if(!is.matrix(initial.linpoint)) initial.linpoint <- as.matrix(initial.linpoint, ncol = 1)
   fit.list <- list()
   #Set up initial model
-  log_growth_model <- define.loggrow.model(linpoint = initial.linpoint, 
-                                           smesh = smesh,tmesh = tmesh, step.size = step.size, 
-                                           prior.mean = prior.mean,
-                                           prior.precision = prior.precision, priors = priors,
-                                           initial.growth = initial.growth, 
-                                           initial.carry.cap = initial.carry.cap,
-                                           initial.move.const = initial.move.const,
-                                           initial.log.sigma = initial.log.sigma)
+  if(method == "rgeneric"){
+    log_growth_model <- define.loggrow.model(linpoint = initial.linpoint, 
+                                             smesh = smesh,tmesh = tmesh, step.size = step.size, 
+                                             prior.mean = prior.mean,
+                                             prior.precision = prior.precision, priors = priors,
+                                             initial.growth = initial.growth, 
+                                             initial.carry.cap = initial.carry.cap,
+                                             initial.move.const = initial.move.const,
+                                             initial.log.sigma = initial.log.sigma)
+  }else{
+    log_growth_model <- define.cgeneric.loggrow.model(linpoint = initial.linpoint, 
+                                                      smesh = smesh,tmesh = tmesh, step.size = step.size, 
+                                                      prior.mean = prior.mean,
+                                                      prior.precision = prior.precision, priors = priors,
+                                                      initial.growth = initial.growth, 
+                                                      initial.carry.cap = initial.carry.cap,
+                                                      initial.move.const = initial.move.const,
+                                                      initial.log.sigma = initial.log.sigma, debug = debug)
+  }
   new.cmp <- formula[2] ~ loggrow(list(space = geometry, time = time), 
                                   model = log_growth_model, 
                                   n = smesh$n*tmesh$n)
@@ -56,8 +67,12 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
   fit <- bru(update(formula, new.cmp),
              data = data, domain = list(geometry = smesh,time = tmesh),
              samplers = samplers,
-             family = family, options = list(verbose = verbose))
-  fit.list[[1]]<-fit
+             family = family, options = options)
+  if(saveall){
+    fit.list[[1]]<-fit
+  }else{
+    fit.list <- fit
+  }
   n.nodes <- fit$misc$configs$nconfig
   nodes <- data.frame(log.prob=rep(NA,n.nodes))
   for(i in 1:n.nodes){
@@ -76,14 +91,25 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
   n <- 2
   #print(fit$summary.hyperpar$mean)
   while(n < max.iter & mean(abs(lp.mat[,n]-lp.mat[,n-1]))>stop.crit){
-    log_growth_model <- define.loggrow.model(linpoint = as.vector(new.linpoint), 
-                                             smesh = smesh,tmesh = tmesh, step.size = step.size, 
-                                             prior.mean = prior.mean,
-                                             prior.precision = prior.precision, priors = priors,
-                                             initial.growth = fit$summary.hyperpar$mean[1], 
-                                             initial.carry.cap = fit$summary.hyperpar$mean[2],
-                                             initial.move.const = fit$summary.hyperpar$mean[3],
-                                             initial.log.sigma = fit$summary.hyperpar$mean[4])
+    if(method == "rgeneric"){
+      log_growth_model <- define.loggrow.model(linpoint = as.vector(new.linpoint), 
+                                               smesh = smesh,tmesh = tmesh, step.size = step.size, 
+                                               prior.mean = prior.mean,
+                                               prior.precision = prior.precision, priors = priors,
+                                               initial.growth = initial.growth, 
+                                               initial.carry.cap = initial.carry.cap,
+                                               initial.move.const = initial.move.const,
+                                               initial.log.sigma = initial.log.sigma)
+    }else{
+      log_growth_model <- define.cgeneric.loggrow.model(linpoint = as.vector(new.linpoint), 
+                                                        smesh = smesh,tmesh = tmesh, step.size = step.size, 
+                                                        prior.mean = prior.mean,
+                                                        prior.precision = prior.precision, priors = priors,
+                                                        initial.growth = initial.growth, 
+                                                        initial.carry.cap = initial.carry.cap,
+                                                        initial.move.const = initial.move.const,
+                                                        initial.log.sigma = initial.log.sigma, debug = debug)
+    }
     new.cmp <- formula[2] ~ loggrow(list(space = geometry, time = time), 
                                     model = log_growth_model, 
                                     n = smesh$n*tmesh$n)
@@ -92,22 +118,30 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
     fit <- bru(update(formula, new.cmp),
                data = data, domain = list(geometry = smesh,time = tmesh),
                samplers = samplers,
-               family = family, options = list(verbose = verbose))
+               family = family, options = options)
     print(paste("Fitted new model", n))
-    fit.list[[n]]<-fit
+    if(saveall){
+      fit.list[[n]]<-fit
+    }else{
+      fit.list <- fit
+    }
     n.nodes <- fit$misc$configs$nconfig
     if(!is.numeric(n.nodes)){
       print("Failed to fit, trying again")
       fit <- bru(update(formula, new.cmp),
                  data = data, domain = list(geometry = smesh,time = tmesh),
                  samplers = samplers,
-                 family = family, options = list(verbose = verbose))
+                 family = family, options = options)
       n.nodes <- fit$misc$configs$nconfig
       if(!is.numeric(fit$misc$configs$nconfig)){
         print("Failed again, returning model output")
         return(list(new.linpoint = new.linpoint,fit = fit, past.linpoints = lp.mat, fit.list = fit.list))
       }
-      fit.list[[n]]<-fit
+      if(saveall){
+        fit.list[[n]]<-fit
+      }else{
+        fit.list <- fit
+      }
     }
     nodes <- data.frame(log.prob=rep(NA,n.nodes))
     for(i in 1:n.nodes){
@@ -128,14 +162,25 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
     print("Updated linpoint")
     n <- n+1
   }
-  log_growth_model <- define.loggrow.model(linpoint = as.vector(new.linpoint), 
-                                           smesh = smesh,tmesh = tmesh, step.size = step.size, 
-                                           prior.mean = prior.mean,
-                                           prior.precision = prior.precision, priors = priors,
-                                           initial.growth = fit$summary.hyperpar$mean[1], 
-                                           initial.carry.cap = fit$summary.hyperpar$mean[2],
-                                           initial.move.const = fit$summary.hyperpar$mean[3],
-                                           initial.log.sigma = fit$summary.hyperpar$mean[4])
+  if(method == "rgeneric"){
+    log_growth_model <- define.loggrow.model(linpoint = as.vector(new.linpoint), 
+                                             smesh = smesh,tmesh = tmesh, step.size = step.size, 
+                                             prior.mean = prior.mean,
+                                             prior.precision = prior.precision, priors = priors,
+                                             initial.growth = initial.growth, 
+                                             initial.carry.cap = initial.carry.cap,
+                                             initial.move.const = initial.move.const,
+                                             initial.log.sigma = initial.log.sigma)
+  }else{
+    log_growth_model <- define.cgeneric.loggrow.model(linpoint = as.vector(new.linpoint), 
+                                                      smesh = smesh,tmesh = tmesh, step.size = step.size, 
+                                                      prior.mean = prior.mean,
+                                                      prior.precision = prior.precision, priors = priors,
+                                                      initial.growth = initial.growth, 
+                                                      initial.carry.cap = initial.carry.cap,
+                                                      initial.move.const = initial.move.const,
+                                                      initial.log.sigma = initial.log.sigma, debug = debug)
+  }
   print("Defined final model")
   new.cmp <- formula[2] ~ loggrow(list(space = geometry, time = time), 
                                   model = log_growth_model, 
@@ -143,6 +188,6 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
   fit <- bru(update(formula, new.cmp),
              data = data, domain = list(geometry = smesh,time = tmesh),
              samplers = samplers,
-             family = family, options = list(verbose = verbose))
+             family = family, options = options)
   return(list(final.fit = fit, n = n, linpoints = lp.mat))
 }

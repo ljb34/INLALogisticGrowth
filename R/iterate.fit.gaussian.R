@@ -26,7 +26,9 @@ iterate.fit.gaussian <- function(data, smesh, tmesh, samplers,prior.mean,
                                  prior.variance, max.iter = 100,gamma = 0.75,stop.crit = 0.05,
                                  priors = NULL,initial.linpoint = NULL, initial.growth=1, 
                                  initial.carry.cap=0.05, initial.move.const = 1, initial.log.sigma = log(1.5),
-                                 verbose = F){
+                                 options = list(verbose = F, 
+                                                control.inla = list(control.vb=list(emergency=30),int.strategy = 'eb'),
+                                                saveall = T){
   #browser()
   step.size = (tmesh$interval[2]-tmesh$interval[1])/(tmesh$n-1) #calculate step size. -1 in denom due to fence post problem 
   if(is.null(initial.linpoint)){
@@ -48,8 +50,12 @@ iterate.fit.gaussian <- function(data, smesh, tmesh, samplers,prior.mean,
                          n = smesh$n*tmesh$n)-1,
              data = data, domain = list(geometry = smesh,time = tmesh),
              samplers = samplers,
-             family = "gaussian", options = list(verbose = verbose))
-  fit.list[[1]]<-fit
+             family = "gaussian", options = options)
+  if(saveall){
+    fit.list[[1]]<-fit
+  }else{
+    fit.list <- fit
+  }
   print("First fitting finished")
   n.nodes <- fit$misc$configs$nconfig
   nodes <- data.frame(log.prob=rep(NA,n.nodes))
@@ -98,7 +104,7 @@ iterate.fit.gaussian <- function(data, smesh, tmesh, samplers,prior.mean,
                            n = smesh$n*tmesh$n)-1,
                data = data, domain = list(geometry = smesh,time = tmesh),
                samplers = samplers,
-               family = "gaussian", options = list(verbose = verbose))
+               family = "gaussian", options = options)
     print(paste("Fitted new model", n))
     n.nodes <- fit$misc$configs$nconfig
     if(!is.numeric(n.nodes)){
@@ -108,14 +114,18 @@ iterate.fit.gaussian <- function(data, smesh, tmesh, samplers,prior.mean,
                              n = smesh$n*tmesh$n)-1,
                  data = data, domain = list(geometry = smesh,time = tmesh),
                  samplers = samplers,
-                 family = "gaussian", options = list(verbose = verbose))
+                 family = "gaussian", options = options)
       if(!is.numeric(fit$misc$configs$nconfig)){
         print("Failed again, returning model output")
         return(list(new.linpoint = new.linpoint,fit = fit, past.linpoints = lp.mat, fit.list = fit.list))
       }
       n.nodes <- fit$misc$configs$nconfig
     }
-    fit.list[[n]]<-fit
+    if(saveall){
+      fit.list[[n]]<-fit
+    }else{
+      fit.list <- fit
+    }
     nodes <- data.frame(log.prob=rep(NA,n.nodes))
     #mat_list <- list()
     mean_list <- list()
@@ -159,6 +169,6 @@ iterate.fit.gaussian <- function(data, smesh, tmesh, samplers,prior.mean,
                          n = smesh$n*tmesh$n)-1,
              data = data, domain = list(geometry = smesh,time = tmesh),
              samplers = samplers,
-             family = "gaussian", options = list(verbose = verbose))
+             family = "gaussian", options = options)
   return(list(fit = final.fit, n = n, linpoints = lp.mat, fit.list = fit.list))
 }
