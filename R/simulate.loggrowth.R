@@ -172,12 +172,12 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     points.to.sample <- sample(unique(sf::st_filter(animal,bnd_inner)$geometry),
                                npoints)
     animal_obs <- filter(animal, geometry %in% points.to.sample) %>% 
-      dplyr::mutate(obs = rbinom(npoints*(tmesh$n), 1, plogis(obs.prob*exp(field))), 
+      dplyr::mutate(obs = rbinom(npoints*(tmesh$n), 1, plogis(obs.prob + field)), 
                     survey = rep(1, npoints*tmesh$n))
     for(i in 2:nsurv){
       animal_obs <- rbind(animal_obs, 
                           filter(animal, geometry %in% points.to.sample) %>% 
-                            dplyr::mutate(obs = rbinom(npoints*(tmesh$n), 1, plogis(obs.prob*exp(field))), 
+                            dplyr::mutate(obs = rbinom(npoints*(tmesh$n), 1, plogis(obs.prob+field)), 
                                           survey = rep(i, npoints*tmesh$n)))
     }
   }
