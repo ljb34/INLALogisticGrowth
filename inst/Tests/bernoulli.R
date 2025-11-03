@@ -10,13 +10,11 @@ library(Matrix)
 library(sf)
 library(dplyr)
 library(INLAloggrowth)
-bernoulli.obs <- simulate.loggrowth(growth = 0.8, carry.cap = 10, movement = 0.25, sigma = 0.1,
+bernoulli.obs <- simulate_loggrowth(growth = 0.8, carry.cap = 10, movement = 0.25, sigma = 0.1,
                                     initial.pop = 1, initial.range = 0.3, initial.sigma=0.01, 
                                     timesteps = 4,sample.type = "Bernoulli", npoints = 100, obs.prob = 0.075,
                                     boundaries = c(0,1),max.edge = 0.1, nsurv = 1, debug = T)
-ggplot()+
-  gg(bernoulli.obs$animal_obs, aes(colour = as.factor(obs)))+
-  facet_wrap(~time)
+
 #fit initial year
 bnd <- spoly(data.frame(easting = c(0,1,1,0), northing = c(0,0,1,1)))
 mesh_obs <- fm_mesh_2d(boundary = bnd,

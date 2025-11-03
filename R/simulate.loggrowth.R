@@ -174,11 +174,13 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     animal_obs <- filter(animal, geometry %in% points.to.sample) %>% 
       dplyr::mutate(obs = rbinom(npoints*(tmesh$n), 1, plogis(obs.prob + field)), 
                     survey = rep(1, npoints*tmesh$n))
-    for(i in 2:nsurv){
-      animal_obs <- rbind(animal_obs, 
-                          filter(animal, geometry %in% points.to.sample) %>% 
-                            dplyr::mutate(obs = rbinom(npoints*(tmesh$n), 1, plogis(obs.prob+field)), 
-                                          survey = rep(i, npoints*tmesh$n)))
+    if(nsurv>1){
+      for(i in 2:nsurv){
+        animal_obs <- rbind(animal_obs, 
+                            filter(animal, geometry %in% points.to.sample) %>% 
+                              dplyr::mutate(obs = rbinom(npoints*(tmesh$n), 1, plogis(obs.prob+field)), 
+                                            survey = rep(i, npoints*tmesh$n)))
+      }
     }
   }
   if(sample.type == "LGCP"){
