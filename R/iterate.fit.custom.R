@@ -76,18 +76,24 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
   n.nodes <- fit$misc$configs$nconfig
   nodes <- data.frame(log.prob=rep(NA,n.nodes))
   for(i in 1:n.nodes){
-    nodes[i,]<-fit$misc$configs$config[[i]]$log.posterior
+    nodes[i,]<- fit$misc$configs$config[[i]]$log.posterior
+    #mat_list[[i]] <- fit$misc$configs$config[[i]]$Q[1:(smesh$n*tmesh$n),1:(smesh$n*tmesh$n)]
+    mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean[1:(smesh$n*tmesh$n)]
   }
   nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
     dplyr::mutate(weight.prob = weight/sum(weight))
+  #P <- Reduce("+", Map(function(m, w) m * w, mat_list, nodes$weight.prob))
+  #weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
+  #b <- Reduce("+", Map(function(m,w) m%*%w, mat_list,weighted.means))
+  #new.linpoint <- (1-gamma)*lp.mat[,n] +gamma*solve(P,b)
   
   #New update rule
   weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
   new.mean <- Reduce("+", weighted.means)
   new.linpoint <- (1-gamma)*initial.linpoint +gamma*new.mean
   
-  print("Calcualted new linpoint")
-  lp.mat <- cbind(initial.linpoint,new.linpoint)
+  lp.mat <- cbind(lp.mat,new.linpoint)
+  print("Updated linpoint")
   n <- 2
   #print(fit$summary.hyperpar$mean)
   while(n < max.iter & mean(abs(lp.mat[,n]-lp.mat[,n-1]))>stop.crit){
@@ -149,18 +155,17 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
     nodes <- data.frame(log.prob=rep(NA,n.nodes))
     for(i in 1:n.nodes){
       nodes[i,]<- fit$misc$configs$config[[i]]$log.posterior
+      mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean[1:(smesh$n*tmesh$n)]
     }
     nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
       dplyr::mutate(weight.prob = weight/sum(weight))
-    #P <- Reduce("+", Map(function(m, w) m * w, mat_list, nodes$weight.prob))
-    #weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
-    #b <- Reduce("+", Map(function(m,w) m%*%w, mat_list,weighted.means))
-    #new.linpoint <- (1-gamma)*lp.mat[,n] +gamma*solve(P,b)
+
     
     #New update rule
     weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
     new.mean <- Reduce("+", weighted.means)
     new.linpoint <- (1-gamma)*lp.mat[,n-1] +gamma*new.mean
+    
     lp.mat <- cbind(lp.mat,new.linpoint)
     print("Updated linpoint")
     n <- n+1
