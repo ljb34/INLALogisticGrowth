@@ -14,7 +14,7 @@ out.lgcp <- simulate_loggrowth(growth = 0.8, carry.cap = 500, movement = 0.25, s
                                initial.pop = 250, initial.range = 0.3, initial.sigma=0.01, 
                                timesteps = 4,sample.type = "LGCP", boundaries = c(0,1), debug = T,
                                max.edge = 0.1)
-saveRDS(out.lgcp, "/mnt/shared/scratch/lblackma/cgensmalldata.RData")
+saveRDS(out.lgcp, "cgensmalldata.RData")
 #out.lgcp <- readRDS("/mnt/shared/scratch/lblackma/cgensmalldata.RData")
 #fit initial year
 if(nrow(out.lgcp$animal_obs) <= 200){

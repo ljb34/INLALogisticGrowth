@@ -378,11 +378,12 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 
         inla_cgeneric_smat_tp* L_mat = malloc(sizeof(inla_cgeneric_smat_tp));
         L_mat->x = malloc((ns*ns + 2*ns*ns*(nt-1))*sizeof(double));
+        L_mat->n = ns * ns + 2 * ns * ns * (nt - 1); //number of nonzeros in L
         L_mat->nrow = N;
         L_mat->ncol = N;
         L_mat->i = malloc(L_mat->n * sizeof(int));
         L_mat->j = malloc(L_mat->n * sizeof(int));
-		L_mat->n = ns * ns + 2 * ns * ns * (nt - 1); //number of nonzeros in L
+		
         Lmat_block(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, L_mat);
 
 		//Make copy of L_mat
@@ -559,11 +560,12 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 		int idx = 1;
         inla_cgeneric_smat_tp* L_mat = malloc(sizeof(inla_cgeneric_smat_tp));
         L_mat->x = malloc((ns * ns + 2 * ns * ns * (nt - 1))*sizeof(double));
+        L_mat->n = ns * ns + 2 * ns * ns * (nt - 1); //number of nonzeros in L
         L_mat->nrow = N;
         L_mat->ncol = N;
         L_mat->i = malloc(L_mat->n * sizeof(int));
         L_mat->j = malloc(L_mat->n * sizeof(int));
-        L_mat->n = ns * ns + 2 * ns * ns * (nt - 1); //number of nonzeros in L
+        
         Lmat_block(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, L_mat);
 
         inla_cgeneric_vec_tp* rvector = malloc(sizeof(inla_cgeneric_vec_tp));
