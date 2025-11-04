@@ -415,7 +415,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                     //find corresponding entry in B
                     int found = 0;
                     for (int idx = 0; idx < ns * ns; idx++) {
-                        if (B->i[idx] == jj && B->j[idx] == ii) { //B is col-major but prior_precision is row-major
+                        if (B->i[idx] == ii && B->j[idx] == jj) { 
                             B->x[idx] += prior_precision->x[k];
                             found = 1;
                             break;
@@ -431,7 +431,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             // dense prior_precision
             for (int i = 0; i < ns; i++) {
 				for (int j = 0; j < ns; j++) {
-					B->x[i * ns + j] += prior_precision->x[j * ns + i]; //B is col-major but prior_precision is row-major
+					B->x[i * ns + j] += prior_precision->x[j * ns + i]; //B is col-major but prior_precision is row-major - shouldn't matter bacause symmetric, but good practice
                     }
             }
 		}
