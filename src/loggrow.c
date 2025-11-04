@@ -147,7 +147,7 @@ void Lmat_block(double growth, double carry_cap, double move_const, double times
     }
 
     //subdiagonal
-    for (int t = 1; t < nt; t++) {
+    for (int t = 1; t < nt - 1; t++) {
         for (int i = (t - 1) * ns; i < t * ns; i++) {
             for (int j = t * ns; j < (t + 1) * ns; j++) {
                 if (i + ns == j) {
@@ -474,7 +474,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         const double alpha = 1.0;
         const double beta = 0.0;
 
-        
+		int diag_start = ns * ns + (nt - 1) * ns * ns; //start of diagonal blocks in B
         for (int t = 1; t < nt - 2; t++) {
             //diagonal
             // extract L  & B blocks
@@ -482,8 +482,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             double* B_block = malloc(ns * ns * sizeof(double));
             for (int i = t * ns; i < (t + 1) * ns; i++) {
                 for (int j = t * ns; j < (t + 1) * ns; j++) {
-                    L_block[(j - t * ns) * ns + (i - t * ns)] = L_mat->x[j * N + i];
-                    B_block[(j - t * ns) * ns + (i - t * ns)] = B->x[j * N + i];
+                    L_block[(j - t * ns) * ns + (i - t * ns)] = L_mat->x[diag_start + (t - 1) * ns * ns + (j - t * ns) * ns + (i - t * ns)]; //t-th block row, t-th block column
+                    B_block[(j - t * ns) * ns + (i - t * ns)] = B->x[diag_start + (t - 1) * ns * ns + (j - t * ns)*ns + (i - t * ns)];
                 }
             }
             double* C_block = malloc(ns * ns * sizeof(double));
@@ -500,7 +500,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 				}
 				//off diagonal block
                 for(int j = (t + 1) * ns; j < (t + 2) * ns; j++){
-					ret[idx] = -1 / timestep * B[j * ns + i + ns]; //get the t+1,t+1 block from B
+					ret[idx] = ( - 1 / timestep) * B[diag_start + t * ns * ns + (j - (t + 1) * ns) * ns + (i - t * ns)]; //get the t+1,t+1 block from B
 					idx++;
 				}
              }
@@ -514,8 +514,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         double* B_block = malloc(ns * ns * sizeof(double));
         for (int i = (nt - 1) * ns; i < nt * ns; i++) {
             for (int j = (nt - 1) * ns; j < nt * ns; j++) {
-                L_block[(j - (nt - 1) * ns) * ns + (i - (nt - 1) * ns)] = L_mat->x[j * N + i];
-                B_block[(j - (nt - 1) * ns) * ns + (i - (nt - 1) * ns)] = B->x[j * N + i];
+                L_block[(j - (nt - 1) * ns) * ns + (i - (nt - 1) * ns)] = L_mat->x[diag_start + (nt - 1) * ns * ns + (j - nt * ns) * ns + (i - nt * ns)];
+                B_block[(j - (nt - 1) * ns) * ns + (i - (nt - 1) * ns)] = B->x[diag_start + (nt - 1) * ns * ns + (j - nt * ns) * ns + (i - nt * ns)];
             }
         }
             double* C_block = malloc(ns * ns * sizeof(double));
@@ -555,46 +555,55 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         ret = Calloc(1 + N, double);
         assert(ret);
         ret[0] = N; /* dimension */
-
-        inla_cgeneric_mat_tp* L_mat = malloc(sizeof(inla_cgeneric_mat_tp));
-        L_mat->x = calloc(N * N, sizeof(double));
+		idx < -1;
+        inla_cgeneric_smat_tp* L_mat = malloc(sizeof(inla_cgeneric_smat_tp));
+        L_mat->x = malloc(ns * ns + 2 * ns * ns * (nt - 1), sizeof(double));
         L_mat->nrow = N;
         L_mat->ncol = N;
-        Lmat(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, L_mat->x);
+        L_mat->n = ns * ns + 2 * ns * ns * (nt - 1); //number of nonzeros in L
+        Lmat_block(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, &L_mat);
 
         inla_cgeneric_vec_tp* rvector = malloc(sizeof(inla_cgeneric_vec_tp));
         rvector->doubles = calloc(N, sizeof(double));
         rvector->len = N;
         r_vector(growth, carry_cap, move_const, linpoint->doubles, mag_grad_sq->doubles, ns, nt, rvector->doubles);
         for (int i = 0; i < ns; i++) {
-            rvector->doubles[i] = prior_mean->doubles[i];
+			ret[idx] = prior_mean->doubles[i];
+            idx++
         }
 
-        //calculate L_mat^-1 * rvector
+        //calculate L_mat^-1 * rvector block by block
         int* ipiv = malloc(ns * nt * sizeof(int));
         int lda = N;
         int ldb = N;
         int nrhs = 1;
         int info;
-        double* A = malloc(N * N * sizeof(double));
-        double* B = malloc(N * sizeof(double));
-		memcpy(A, L_mat->x, N* N * sizeof(double));
-        memcpy(B, rvector->doubles, N * sizeof(double));
-
-        dgesv_(&N, &nrhs, A, &lda, ipiv, B, &ldb, &info);
-        if (info != 0) {
-            printf("dgesv failed, info = %d\n", info);
-            free(A); free(B); free(ipiv);
-            free(L_mat->x); free(L_mat);
-            free(rvector->doubles); free(rvector);
-            return NULL;
+        
+        for (int t = 1; t < nt; t++) {
+			//extract L block
+			double* L_block = malloc(ns * ns * sizeof(double));
+			double* rvector_block = malloc(ns * sizeof(double));
+            for (int i = t * ns; i < (t + 1) * ns; i++) {
+                for (int j = t * ns; j < (t + 1) * ns; j++) {
+                    L_block[(j - t * ns) * ns + (i - t * ns)] = L_mat->x[diag_start + (t - 1) * ns * ns + (j - t * ns) * ns + (i - t * ns)]; //t-th block row, t-th block column
+                }
+				rvector_block[i - t * ns] = rvector->doubles[i];
+            }
+			//solve L_block * x = rvector_block
+            dgesv_(&ns, &nrhs, L_block, &lda,
+				ipiv, rvector_block, &ldb, &info);
+            if (info != 0) {
+                fprintf(stderr, "Error in dgesv_: info = %d\n", info);
+                abort();
+			}
+            //put into ret
+            for (int i = 0; i < ns; i++) {
+                ret[idx] = rvector_block[i];
+                idx++;
+            }
+			free(L_block);
+			free(rvector_block);
         }
-
-        for (int i = 0; i < N; i++) {
-            ret[i + 1] = B[i]; // Fill in mu
-        }
-        free(A);
-        free(B);
         free(ipiv);
         free(L_mat->x);
         free(L_mat);
