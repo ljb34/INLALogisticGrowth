@@ -147,7 +147,7 @@ void Lmat_block(double growth, double carry_cap, double move_const, double times
     }
 
     //subdiagonal
-    for (int t = 1; t < nt - 1; t++) {
+    for (int t = 1; t < nt; t++) {
         for (int i = (t - 1) * ns; i < t * ns; i++) {
             for (int j = t * ns; j < (t + 1) * ns; j++) {
                 if (i + ns == j) {
@@ -164,6 +164,10 @@ void Lmat_block(double growth, double carry_cap, double move_const, double times
             }
         }
     }
+    //print offset and expected value
+	printf("Offset after subdiagonal: %d, expected: %d\n", offset, ns * ns + (nt - 1) * ns * ns);
+
+
     //Main diagonal block - CinvG + diag(a_array + 1/timestep)
     double* a_array = malloc(ns * nt * sizeof(double));
     a_func(growth, carry_cap,
