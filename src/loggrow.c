@@ -99,7 +99,7 @@ void Lmat_sparse(double growth, double carry_cap, double move_const, double time
            
 	int offset = ns * nt + ns * (nt - 1);
     if (CinvG->n != ns * ns) {
-		print("Sparse CinvG not supported in Lmat_sparse yet\n");
+		printf("Sparse CinvG not supported in Lmat_sparse yet\n");
     }
     for (int t = 1; t < nt; t++) {
         for (int i = t * ns; i < (t + 1) * ns; i++) {
@@ -119,10 +119,7 @@ void Lmat_sparse(double growth, double carry_cap, double move_const, double time
         }
     }
 	free(a_array);
-    free(i);
-    free(j);
-    free(t);
-    free(offset);
+
 }
 
 // Block version of Lmat, output is in COLUMN MAJOR
@@ -130,7 +127,7 @@ void Lmat_block(double growth, double carry_cap, double move_const, double times
     double* linpoint, int ns, int nt, inla_cgeneric_smat_tp* CinvG, inla_cgeneric_smat_tp* result) {
     //identity sub matrix in first block
 	int offset = 0;
-    for(int i = 0; i < ns, i++){ //identity sub matrix in first block
+    for (int i = 0; i < ns; i++) { //identity sub matrix in first block
         for (int j = 0; j < ns; j++) {
             if (i == j) {
                 result->i[offset] = i;
@@ -169,9 +166,8 @@ void Lmat_block(double growth, double carry_cap, double move_const, double times
     a_func(growth, carry_cap,
         linpoint, ns, nt, a_array);
 
-    int offset = ns * nt + ns * (nt - 1);
     if (CinvG->n != ns * ns) {
-        print("Sparse CinvG not supported in Lmat_sparse yet\n");
+        printf("Sparse CinvG not supported in Lmat_sparse yet\n");
     }
     for (int t = 1; t < nt; t++) {
         for (int i = t * ns; i < (t + 1) * ns; i++) {
@@ -191,10 +187,7 @@ void Lmat_block(double growth, double carry_cap, double move_const, double times
         }
     }
     free(a_array);
-    free(i);
-    free(j);
-    free(t);
-    free(offset);
+   
 }
 void r_vector(double growth, double carry_cap, double move_const,
     double* linpoint, double* mag_grad_sq, int ns, int nt, double* result) {
@@ -376,20 +369,14 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         ret = Calloc(2 +M, double);
 
         inla_cgeneric_smat_tp* L_mat = malloc(sizeof(inla_cgeneric_smat_tp));
-        L_mat->x = malloc(ns*ns + 2*ns*ns*(nt-1), sizeof(double));
+        L_mat->x = malloc(ns*ns + 2*ns*ns*(nt-1)*sizeof(double));
         L_mat->nrow = N;
         L_mat->ncol = N;
 		L_mat->n = ns * ns + 2 * ns * ns * (nt - 1); //number of nonzeros in L
-        Lmat_block(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, &L_mat);
+        Lmat_block(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, L_mat);
 
-        int* ipiv = malloc(ns * nt * sizeof(int));
-        int lda = N;
-        int ldb = N;
-        int nrhs = N;
-        int info;
-
-		//Make copy of L_mat, but add extra space for prior precision
-		int max_B_n = L_mat->n;
+		//Make copy of L_mat
+		
         inla_cgeneric_smat_tp* B = malloc(sizeof(inla_cgeneric_smat_tp));
         B->nrow = L_mat->nrow;
         B->n = L_mat->n;
@@ -409,25 +396,26 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 
 		//initial ns x ns prior_precision block - prior precision * identity so can just copy prior_precision to B
 		//if sparse prior_precision
-        if (prior_precision->n != ns * ns) {
-            // sparse prior_precision: apply its nonzeros 
-            for (int k = 0; k < prior_precision->n; k++) {
-                int ii = prior_precision->i[k]; 
-                int jj = prior_precision->j[k]; 
-				//find corresponding entry in B
-                int found = 0;
-                for (int idx = 0; idx < ns * ns; idx++) {
-					if (B->i[idx] == jj && B->j[idx] == ii) { //B is col-major but prior_precision is row-major
-                        B->x[idx] += prior_precision->x[k];
-                        found = 1;
-                        break;
+            if (prior_precision->n != ns * ns) {
+                // sparse prior_precision: apply its nonzeros 
+                for (int k = 0; k < prior_precision->n; k++) {
+                    int ii = prior_precision->i[k];
+                    int jj = prior_precision->j[k];
+                    //find corresponding entry in B
+                    int found = 0;
+                    for (int idx = 0; idx < ns * ns; idx++) {
+                        if (B->i[idx] == jj && B->j[idx] == ii) { //B is col-major but prior_precision is row-major
+                            B->x[idx] += prior_precision->x[k];
+                            found = 1;
+                            break;
+                        }
+                    }
+                    if (found != 1) {
+                        fprintf(stderr, "Could not find matching entry in B for prior precision at (%d, %d)\n", ii, jj);
+                        abort();
                     }
                 }
-                if(found ! = 1) {
-                    fprintf(stderr, "Could not find matching entry in B for prior precision at (%d, %d)\n", ii, jj);
-					abort();
             }
-        }
         else {
             // dense prior_precision
             for (int i = 0; i < ns; i++) {
@@ -437,8 +425,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             }
 		}
 
-        double* out = calloc(N * N, sizeof(double));
-        double one = 1, zero = 0;
+        
         ret[0] = -1; /* REQUIRED! */
         ret[1] = M;
         int idx = 2; // Start after -1 and M
@@ -449,17 +436,17 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             //first column block
             for (int j = i; j < ns; j++) { //ret needs to be upper triangular
                 if (i == j) {
-                    ret[idx] = B[j * ns + i] + 1 / timestep * sigma * sigma;
+                    ret[idx] = B->x[j * ns + i] + 1 / timestep * sigma * sigma;
 
                 }
                 else {
-                    ret[idx] = B[j * ns + i];
+                    ret[idx] = B->x[j * ns + i];
                 }
                 idx++;
             }
             //second column block
             for (int j = i; j < 2 * ns; j++) {
-                ret[idx] = -1 / timestep * B[j * ns + i];
+                ret[idx] = -1 / timestep * B->x[j * ns + i];
                 idx++;
             }
         }
@@ -500,7 +487,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 				}
 				//off diagonal block
                 for(int j = (t + 1) * ns; j < (t + 2) * ns; j++){
-					ret[idx] = ( - 1 / timestep) * B[diag_start + t * ns * ns + (j - (t + 1) * ns) * ns + (i - t * ns)]; //get the t+1,t+1 block from B
+					ret[idx] = ( - 1 / timestep) * B->x[diag_start + t * ns * ns + (j - (t + 1) * ns) * ns + (i - t * ns)]; //get the t+1,t+1 block from B
 					idx++;
 				}
              }
@@ -514,8 +501,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         double* B_block = malloc(ns * ns * sizeof(double));
         for (int i = (nt - 1) * ns; i < nt * ns; i++) {
             for (int j = (nt - 1) * ns; j < nt * ns; j++) {
-                L_block[(j - (nt - 1) * ns) * ns + (i - (nt - 1) * ns)] = L_mat->x[diag_start + (nt - 1) * ns * ns + (j - nt * ns) * ns + (i - nt * ns)];
-                B_block[(j - (nt - 1) * ns) * ns + (i - (nt - 1) * ns)] = B->x[diag_start + (nt - 1) * ns * ns + (j - nt * ns) * ns + (i - nt * ns)];
+                L_block[(j - (nt - 1) * ns) * ns + (i - (nt - 1) * ns)] = L_mat->x[diag_start + (nt - 2) * ns * ns + (j - (nt-1) * ns) * ns + (i - (nt-1) * ns)];
+                B_block[(j - (nt - 1) * ns) * ns + (i - (nt - 1) * ns)] = B->x[diag_start + (nt - 2) * ns * ns + (j - (nt - 1) * ns) * ns + (i - (nt - 1) * ns)];
             }
         }
             double* C_block = malloc(ns * ns * sizeof(double));
@@ -533,13 +520,16 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         free(L_block);
 		free(B_block);
 		free(C_block);
+        free(L_mat->x);
+        free(L_mat->i);
+        free(L_mat->j);
         free(L_mat);
+
+        free(B->x);
+		free(B->i);
+		free(B->j);
         free(B);
-		free(transB);
-		free(transL);
-		free(lda);
-		free(ldb);
-		free(nrhs);
+		
         if (idx - 2 != M) {
             fprintf(stderr, "Q filled %d values, expected %d\n", idx - 2, M);
             abort();
@@ -555,13 +545,13 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         ret = Calloc(1 + N, double);
         assert(ret);
         ret[0] = N; /* dimension */
-		idx < -1;
+		int idx = 1;
         inla_cgeneric_smat_tp* L_mat = malloc(sizeof(inla_cgeneric_smat_tp));
-        L_mat->x = malloc(ns * ns + 2 * ns * ns * (nt - 1), sizeof(double));
+        L_mat->x = malloc(ns * ns + 2 * ns * ns * (nt - 1)*sizeof(double));
         L_mat->nrow = N;
         L_mat->ncol = N;
         L_mat->n = ns * ns + 2 * ns * ns * (nt - 1); //number of nonzeros in L
-        Lmat_block(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, &L_mat);
+        Lmat_block(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, L_mat);
 
         inla_cgeneric_vec_tp* rvector = malloc(sizeof(inla_cgeneric_vec_tp));
         rvector->doubles = calloc(N, sizeof(double));
@@ -569,16 +559,17 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         r_vector(growth, carry_cap, move_const, linpoint->doubles, mag_grad_sq->doubles, ns, nt, rvector->doubles);
         for (int i = 0; i < ns; i++) {
 			ret[idx] = prior_mean->doubles[i];
-            idx++
+            idx++;
         }
 
         //calculate L_mat^-1 * rvector block by block
         int* ipiv = malloc(ns * nt * sizeof(int));
-        int lda = N;
-        int ldb = N;
+        int lda = ns;
+        int ldb = ns;
         int nrhs = 1;
         int info;
-        
+        int diag_start = ns * ns + (nt - 1) * ns * ns; //start of diagonal blocks in B
+
         for (int t = 1; t < nt; t++) {
 			//extract L block
 			double* L_block = malloc(ns * ns * sizeof(double));
@@ -606,6 +597,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         }
         free(ipiv);
         free(L_mat->x);
+        free(L_mat->i);
+        free(L_mat->j);
         free(L_mat);
         free(rvector->doubles);
         free(rvector);

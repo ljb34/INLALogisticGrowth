@@ -1,5 +1,5 @@
 rm(list = ls())
-.libPaths("/home/lblackma/R/x86_64-pc-linux-gnu-library/4.5/")
+
 options(repos = c(CRAN = "https://cloud.r-project.org"))
 #install.packages("tidyverse", "stringr")
 remove.packages("INLAloggrowth")
@@ -51,7 +51,7 @@ priors <- list(cc = c(90,0.15),
 initial.linpoint <- log(logit.nest(exp(plogis(fit0$summary.fixed$mean +fit0$summary.fitted.values$mean[index-1 +1:mesh_obs$n])),
                                    0.8,10,4)$x)
 
-iterate.bernoulli.fit <- iterate.fit.custom(obs ~ -1 + prob(1, model = "linear", mean.linear = 0.05), 
+iterate.bernoulli.fit <- iterate_fit_custom(obs ~ -1 + prob(1, model = "linear", mean.linear = 0.05), 
                                             data = bernoulli.obs$animal_obs,
                                             family = "binomial", smesh = mesh_obs,
                                             tmesh = mesh_time, samplers = bnd,
@@ -61,7 +61,7 @@ iterate.bernoulli.fit <- iterate.fit.custom(obs ~ -1 + prob(1, model = "linear",
                                             initial.growth = log(0.7), initial.carry.cap = log(10),
                                             initial.move.const = 0.25,
                                             initial.log.sigma = log(0.1), options = list(verbose = T), debug = T,
-                                            method = "rgeneric")
+                                            method = "cgeneric")
 
 iterate.bernoulli.fit$data <- bernoulli.obs
 iterate.bernoulli.fit$initial <- fit0

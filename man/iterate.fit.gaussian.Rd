@@ -10,7 +10,7 @@ iterate.fit.gaussian(
   tmesh,
   samplers,
   prior.mean,
-  prior.variance,
+  prior.precision,
   max.iter = 100,
   gamma = 0.75,
   stop.crit = 0.05,
@@ -20,7 +20,9 @@ iterate.fit.gaussian(
   initial.carry.cap = 0.05,
   initial.move.const = 1,
   initial.log.sigma = log(1.5),
-  verbose = F
+  options = list(verbose = F, control.inla = list(control.vb = list(emergency = 30),
+    int.strategy = "eb")),
+  saveall = T
 )
 }
 \arguments{
@@ -34,7 +36,7 @@ iterate.fit.gaussian(
 
 \item{prior.mean}{estimated mean for first year of data. Helper function for calculating coming soon}
 
-\item{prior.variance}{uncertainty for estimated mean of first year of data. Helper function for calculating coming soon}
+\item{prior.precision}{uncertainty for estimated mean of first year of data. Helper function for calculating coming soon}
 
 \item{max.iter}{maximum iterations to attempt}
 

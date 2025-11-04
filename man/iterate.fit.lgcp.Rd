@@ -20,7 +20,8 @@ iterate.fit.lgcp(
   initial.carry.cap = NULL,
   initial.move.const = NULL,
   initial.log.sigma = NULL,
-  verbose = F,
+  options = list(verbose = F, control.inla = list(control.vb = list(emergency = 30),
+    int.strategy = "eb")),
   saveall = T
 )
 }
