@@ -597,6 +597,13 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 }
 				rvector_block[i - t * ns] = rvector->doubles[i];
             }
+            printf("L_block(t=%d):\n", t);
+            for (int i = 0; i < ns; i++) {
+                for (int j = 0; j < ns; j++) {
+                    printf("%8.4f ", L_block[j * ns + i]);
+                }
+                printf("\n");
+            }
 			//solve L_block * x = rvector_block
             dgesv_(&ns, &nrhs, L_block, &lda,
 				ipiv, rvector_block, &ldb, &info);
