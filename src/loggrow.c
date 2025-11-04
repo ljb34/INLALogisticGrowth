@@ -100,7 +100,7 @@ void Lmat_sparse(double growth, double carry_cap, double move_const, double time
            
 	int offset = ns * nt + ns * (nt - 1);
     if (CinvG->n != ns * ns) {
-		printf("Sparse CinvG not supported in Lmat_sparse yet\n");
+		//printf("Sparse CinvG not supported in Lmat_sparse yet\n");
     }
     for (int t = 1; t < nt; t++) {
         for (int i = t * ns; i < (t + 1) * ns; i++) {
@@ -126,7 +126,7 @@ void Lmat_sparse(double growth, double carry_cap, double move_const, double time
 // Block version of Lmat, output is in COLUMN MAJOR
 void Lmat_block(double growth, double carry_cap, double move_const, double timestep,
     double* linpoint, int ns, int nt, inla_cgeneric_smat_tp* CinvG, inla_cgeneric_smat_tp* result) {
-	printf("Building L matrix in block sparse format\n");
+	//printf("Building L matrix in block sparse format\n");
 
     //identity sub matrix in first block
 	int offset = 0;
@@ -164,8 +164,8 @@ void Lmat_block(double growth, double carry_cap, double move_const, double times
             }
         }
     }
-    //print offset and expected value
-	printf("Offset after subdiagonal: %d, expected: %d\n", offset, ns * ns + (nt - 1) * ns * ns);
+    ////print offset and expected value
+	//printf("Offset after subdiagonal: %d, expected: %d\n", offset, ns * ns + (nt - 1) * ns * ns);
 
 
     //Main diagonal block - CinvG + diag(a_array + 1/timestep)
@@ -174,7 +174,7 @@ void Lmat_block(double growth, double carry_cap, double move_const, double times
         linpoint, ns, nt, a_array);
 
     if (CinvG->n != ns * ns) {
-        printf("Sparse CinvG not supported in Lmat_sparse yet\n");
+        //printf("Sparse CinvG not supported in Lmat_sparse yet\n");
     }
     for (int t = 1; t < nt; t++) {
         for (int i = t * ns; i < (t + 1) * ns; i++) {
@@ -182,12 +182,12 @@ void Lmat_block(double growth, double carry_cap, double move_const, double times
                 if (i == j) { //on diagonal, include a_array + 1/timestep
                     result->i[offset] = i;
                     result->j[offset] = j;
-                    result->x[offset] = move_const * CinvG->x[(i - t * ns) * ns + (j - t * ns)] + a_array[i] + (1 / timestep);
+                    result->x[offset] = move_const * CinvG->x[(j - t * ns) * ns + (i - t * ns)] + a_array[i] + (1 / timestep);
                 }
                 else {
                     result->i[offset] = i;
                     result->j[offset] = j;
-                    result->x[offset] = move_const * CinvG->x[(i - t * ns) * ns + (j - t * ns)];
+                    result->x[offset] = move_const * CinvG->x[(j - t * ns) * ns + (i - t * ns)];
                 }
                 offset++;
             }
@@ -195,7 +195,7 @@ void Lmat_block(double growth, double carry_cap, double move_const, double times
     }
     free(a_array);
     if (offset > result->n) {
-        fprintf(stderr, "Lmat_block wrote %d elements, expected %d\n", offset, result->n);
+        //fprintf(stderr, "Lmat_block wrote %d elements, expected %d\n", offset, result->n);
         abort();
     }
 }
@@ -313,7 +313,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     break;
     case INLA_CGENERIC_GRAPH:
     {   
-		printf("Calculating GRAPH \n");
+		//printf("Calculating GRAPH \n");
         // return a vector of indices with format
         // c(N, M, ii, jj)
         // where ii<=jj, ii is non-decreasing and jj is non-decreasing for the same ii
@@ -363,7 +363,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         //    }
         //}
         if (idx - 2 != M) {
-            fprintf(stderr, "GRAPH produced %d pairs, expected %d\n", idx - 2, M);
+            //fprintf(stderr, "GRAPH produced %d pairs, expected %d\n", idx - 2, M);
             abort();
         }
 
@@ -371,13 +371,13 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     break;
     case INLA_CGENERIC_Q:
     {
-        printf("Calculating Q \n");
+        //printf("Calculating Q \n");
         // return c(-1, M, Qij) in the same order as defined in INLA_CGENERIC_GRAPH
         if (debug > 0) {
-            printf("INLA_CGENERIC_Q\n");
+            //printf("INLA_CGENERIC_Q\n");
         }
         int M = ns * ns * (nt-1) + 0.5 * ns * (ns + 1) * nt;
-        //printf("M: %d\n", M);
+        ////printf("M: %d\n", M);
         ret = Calloc(2 +M, double);
 
         inla_cgeneric_smat_tp* L_mat = malloc(sizeof(inla_cgeneric_smat_tp));
@@ -426,7 +426,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                         }
                     }
                     if (found != 1) {
-                        fprintf(stderr, "Could not find matching entry in B for prior precision at (%d, %d)\n", ii, jj);
+                        //fprintf(stderr, "Could not find matching entry in B for prior precision at (%d, %d)\n", ii, jj);
                         abort();
                     }
                 }
@@ -548,17 +548,17 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         free(B);
 		
         if (idx - 2 != M) {
-            fprintf(stderr, "Q filled %d values, expected %d\n", idx - 2, M);
+            //fprintf(stderr, "Q filled %d values, expected %d\n", idx - 2, M);
             abort();
         }
     }
     break;
     case INLA_CGENERIC_MU:
     {   
-		printf("Calculating MU \n");
+		//printf("Calculating MU \n");
         // return (N, mu)
         if (debug > 0) {
-            printf("INLA_CGENERIC_MU\n");
+            //printf("INLA_CGENERIC_MU\n");
         }
         ret = Calloc(1 + N, double);
         assert(ret);
@@ -606,10 +606,10 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             dgesv_(&ns, &nrhs, L_block, &lda,
 				ipiv, rvector_block, &ldb, &info);
             if (info != 0) {
-                fprintf(stderr, "Error in dgesv_: info = %d\n", info);
-                printf("First col of L_block(t=%d):\n", t);
+                //printf(stderr, "Error in dgesv_: info = %d\n", info);
+                //printf("First col of L_block(t=%d):\n", t);
                 for (int j = 0; j < ns; j++) {
-                    printf("%8.4f ", L_block[j * ns]);
+                    //printf("%8.4f ", L_block[j * ns]);
                 }
                 abort();
 			}
@@ -636,7 +636,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         // return c(P, initials)
         // where P is the number of hyperparameters
         if(debug>0) {
-            printf("INLA_CGENERIC_INITIAL\n");
+            //printf("INLA_CGENERIC_INITIAL\n");
 		}
         ret = Calloc(5, double);
         ret[0] = 4;
@@ -674,7 +674,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     {
         // return c(LOG_PRIOR)
         if (debug > 0) {
-            printf("INLA_CGENERIC_LOG_PRIOR\n");
+            //printf("INLA_CGENERIC_LOG_PRIOR\n");
         }
         ret = Calloc(1, double);
 
