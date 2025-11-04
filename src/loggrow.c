@@ -139,7 +139,7 @@ void Lmat_block(double growth, double carry_cap, double move_const, double times
             }
             else {
                 result->i[offset] = i;
-                result->j[offset] = i;
+                result->j[offset] = j;
                 result->x[offset] = 0;
             }
             offset++;
@@ -416,7 +416,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                     int found = 0;
                     for (int idx = 0; idx < ns * ns; idx++) {
                         if (B->i[idx] == ii && B->j[idx] == jj) { 
-                            B->x[idx] += prior_precision->x[k];
+                            B->x[idx] = prior_precision->x[k];
                             found = 1;
                             break;
                         }
