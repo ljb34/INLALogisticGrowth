@@ -372,7 +372,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         if (debug > 0) {
             printf("INLA_CGENERIC_Q\n");
         }
-        int M = 2 * ns * ns + ns + (nt - 2) * (ns * ns + ns * (ns + 1) / 2);
+        int M = ns * ns * (nt-1) + 0.5 * ns * (ns + 1) * nt;
         //printf("M: %d\n", M);
         ret = Calloc(2 +M, double);
 
@@ -414,9 +414,9 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                     int jj = prior_precision->j[k];
                     //find corresponding entry in B
                     int found = 0;
-                    for (int idx = 0; idx < ns * ns; idx++) {
-                        if (B->i[idx] == ii && B->j[idx] == jj) { 
-                            B->x[idx] = prior_precision->x[k];
+                    for (int l = 0; l < ns * ns; l++) {
+                        if (B->i[l] == ii && B->j[l] == jj) { 
+                            B->x[l] = prior_precision->x[k];
                             found = 1;
                             break;
                         }
@@ -431,7 +431,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             // dense prior_precision
             for (int i = 0; i < ns; i++) {
 				for (int j = 0; j < ns; j++) {
-					B->x[i * ns + j] += prior_precision->x[j * ns + i]; //B is col-major but prior_precision is row-major - shouldn't matter bacause symmetric, but good practice
+					B->x[j * ns + i] += prior_precision->x[i * ns + j]; //B is col-major but prior_precision is row-major - shouldn't matter bacause symmetric, but good practice
                     }
             }
 		}
@@ -440,8 +440,10 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         ret[0] = -1; /* REQUIRED! */
         ret[1] = M;
         int idx = 2; // Start after -1 and M
+
 		// Compute out = L_mat^T * B block by block
 
+        int diag_start = ns * ns + (nt - 1) * ns * ns; //start of diagonal blocks in B
         //first ns rows
         for (int i = 0; i < ns; i++) {
             //first column block
@@ -456,8 +458,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 idx++;
             }
             //second column block
-            for (int j = i; j < 2 * ns; j++) {
-                ret[idx] = -1 / timestep * B->x[j * ns + i];
+            for (int j = ns; j < 2 * ns; j++) {
+                ret[idx] = -1 / timestep * B->x[diag_start + (j-ns)*ns + i];
                 idx++;
             }
         }
@@ -472,8 +474,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         const double alpha = 1.0;
         const double beta = 0.0;
 
-		int diag_start = ns * ns + (nt - 1) * ns * ns; //start of diagonal blocks in B
-        for (int t = 1; t < nt - 2; t++) {
+		
+        for (int t = 1; t < nt - 1; t++) {
             //diagonal
             // extract L  & B blocks
             double* L_block = malloc(ns * ns * sizeof(double));
