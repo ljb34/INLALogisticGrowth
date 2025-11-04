@@ -79,6 +79,7 @@ void Lmat(double growth, double carry_cap, double move_const, double timestep,
 // Sparse version of Lmat, output is in COLUMN MAJOR
 void Lmat_sparse(double growth, double carry_cap, double move_const, double timestep,
     double* linpoint, int ns, int nt, inla_cgeneric_smat_tp* CinvG, inla_cgeneric_smat_tp* result) {
+
 	//identity sub matrix in first block
     for (int i = 0; i < ns; i++) {
 		result->i[i] = i;
@@ -125,6 +126,8 @@ void Lmat_sparse(double growth, double carry_cap, double move_const, double time
 // Block version of Lmat, output is in COLUMN MAJOR
 void Lmat_block(double growth, double carry_cap, double move_const, double timestep,
     double* linpoint, int ns, int nt, inla_cgeneric_smat_tp* CinvG, inla_cgeneric_smat_tp* result) {
+	printf("Building L matrix in block sparse format\n");
+
     //identity sub matrix in first block
 	int offset = 0;
     for (int i = 0; i < ns; i++) { //identity sub matrix in first block
@@ -187,7 +190,10 @@ void Lmat_block(double growth, double carry_cap, double move_const, double times
         }
     }
     free(a_array);
-   
+    if (offset > result->n) {
+        fprintf(stderr, "Lmat_block wrote %d elements, expected %d\n", offset, result->n);
+        abort();
+    }
 }
 void r_vector(double growth, double carry_cap, double move_const,
     double* linpoint, double* mag_grad_sq, int ns, int nt, double* result) {
@@ -570,7 +576,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         }
 
         //calculate L_mat^-1 * rvector block by block
-        int* ipiv = malloc(ns * nt * sizeof(int));
+        int* ipiv = malloc(ns * sizeof(int));
         int lda = ns;
         int ldb = ns;
         int nrhs = 1;
