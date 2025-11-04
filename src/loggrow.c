@@ -374,6 +374,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         L_mat->x = malloc(ns*ns + 2*ns*ns*(nt-1)*sizeof(double));
         L_mat->nrow = N;
         L_mat->ncol = N;
+        L_mat->i = malloc(L_mat->n * sizeof(int));
+        L_mat->j = malloc(L_mat->n * sizeof(int));
 		L_mat->n = ns * ns + 2 * ns * ns * (nt - 1); //number of nonzeros in L
         Lmat_block(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, L_mat);
 
@@ -553,6 +555,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         L_mat->x = malloc(ns * ns + 2 * ns * ns * (nt - 1)*sizeof(double));
         L_mat->nrow = N;
         L_mat->ncol = N;
+        L_mat->i = malloc(L_mat->n * sizeof(int));
+        L_mat->j = malloc(L_mat->n * sizeof(int));
         L_mat->n = ns * ns + 2 * ns * ns * (nt - 1); //number of nonzeros in L
         Lmat_block(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, L_mat);
 
