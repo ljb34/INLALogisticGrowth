@@ -93,8 +93,8 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
   new.mean <- Reduce("+", weighted.means)
   new.linpoint <- (1-gamma)*initial.linpoint +gamma*new.mean
   
-  lp.mat <- cbind(lp.mat,new.linpoint)
-  print("Updated linpoint")
+  print("Calcualted new linpoint")
+  lp.mat <- cbind(initial.linpoint,new.linpoint)
   n <- 2
   #print(fit$summary.hyperpar$mean)
   while(n < max.iter & mean(abs(lp.mat[,n]-lp.mat[,n-1]))>stop.crit){
