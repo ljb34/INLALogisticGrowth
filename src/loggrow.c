@@ -24,14 +24,26 @@ extern void dgemm_(const char* TRANSA, const char* TRANSB,
 	const double* B, const int* ldb,
 	const double* beta,
 	double* C, const int* ldc);
-
+//helper function for easily copying matrices
+inla_cgeneric_smat_tp* copy_smat(inla_cgeneric_smat_tp* src) {
+    inla_cgeneric_smat_tp* dst = malloc(sizeof(inla_cgeneric_smat_tp));
+    dst->nrow = src->nrow;
+    dst->n = src->n;
+    dst->i = malloc(src->n * sizeof(int));
+    dst->j = malloc(src->n * sizeof(int));
+    dst->x = malloc(src->n * sizeof(double));
+    memcpy(dst->i, src->i, src->n * sizeof(int));
+    memcpy(dst->j, src->j, src->n * sizeof(int));
+    memcpy(dst->x, src->x, src->n * sizeof(double));
+    return dst;
+}
 void a_func(double growth, double carry_cap,
 	double* linpoint, int ns, int nt, double* result) { /*important! must give pointer for where to export result*/
 	for (int i = 0; i < ns * nt; i++) {
 		result[i] = growth * exp(linpoint[i]) / carry_cap;
 	}
 }
-
+//Full dense version of Lmat, output is in COLUMN MAJOR
 void Lmat(double growth, double carry_cap, double move_const, double timestep,
 	double* linpoint, int ns, int nt, inla_cgeneric_smat_tp* CinvG, double* result) { /* result is nsnt x nsnt double matrix in inla_cgeneric_mat_tp form*/
 	//identity sub matrix in first block
@@ -76,6 +88,126 @@ void Lmat(double growth, double carry_cap, double move_const, double timestep,
 
 }
 
+// Sparse version of Lmat, output is in COLUMN MAJOR
+void Lmat_sparse(double growth, double carry_cap, double move_const, double timestep,
+    double* linpoint, int ns, int nt, inla_cgeneric_smat_tp* CinvG, inla_cgeneric_smat_tp* result) {
+	//identity sub matrix in first block
+    for (int i = 0; i < ns; i++) {
+		result->i[i] = i;
+		result->j[i] = i;
+		result->x[i] = 1;
+    }
+    
+	//subdiagonal
+    for(int i = 0; i < ns * (nt - 1); i++) {
+        result->i[ns * nt + i] = i;
+        result->j[ns * nt + i] = i + ns;
+        result->x[ns * nt + i] = -1 / timestep;
+	}
+	//Main diagonal block - CinvG + diag(a_array + 1/timestep)
+	double* a_array = malloc(ns * nt * sizeof(double));
+    a_func(growth, carry_cap,
+        linpoint, ns, nt, a_array);
+           
+	int offset = ns * nt + ns * (nt - 1);
+    if (CinvG->n != ns * ns) {
+		print("Sparse CinvG not supported in Lmat_sparse yet\n");
+    }
+    for (int t = 1; t < nt; t++) {
+        for (int i = t * ns; i < (t + 1) * ns; i++) {
+            for (int j = t * ns; j < (t + 1) * ns; j++) {
+                if (i == j) { //on diagonal, include a_array + 1/timestep
+                    result->i[offset] = i;
+                    result->j[offset] = j;
+                    result->x[offset] = move_const * CinvG->x[(i - t * ns) * ns + (j - t * ns)] + a_array[i] + (1 / timestep);
+                }
+                else {
+                    result->i[offset] = i;
+                    result->j[offset] = j;
+                    result->x[offset] = move_const * CinvG->x[(i - t * ns) * ns + (j - t * ns)];
+				}
+				offset++;
+            }
+        }
+    }
+	free(a_array);
+    free(i);
+    free(j);
+    free(t);
+    free(offset);
+}
+
+// Block version of Lmat, output is in COLUMN MAJOR
+void Lmat_block(double growth, double carry_cap, double move_const, double timestep,
+    double* linpoint, int ns, int nt, inla_cgeneric_smat_tp* CinvG, inla_cgeneric_smat_tp* result) {
+    //identity sub matrix in first block
+	int offset = 0;
+    for(int i = 0; i < ns, i++){ //identity sub matrix in first block
+        for (int j = 0; j < ns; j++) {
+            if (i == j) {
+                result->i[offset] = i;
+                result->j[offset] = j;
+                result->x[offset] = 1;
+            }
+            else {
+                result->i[offset] = i;
+                result->j[offset] = i;
+                result->x[offset] = 0;
+            }
+            offset++;
+        }
+    }
+
+    //subdiagonal
+    for (int t = 1; t < nt; t++) {
+        for (int i = (t - 1) * ns; i < t * ns; i++) {
+            for (int j = t * ns; j < (t + 1) * ns; j++) {
+                if (i + ns == j) {
+                    result->i[offset] = i;
+                    result->j[offset] = j;
+                    result->x[offset] = -1 / timestep;
+                }
+                else {
+                    result->i[offset] = i;
+                    result->j[offset] = j;
+                    result->x[offset] = 0;
+                }
+                offset++;
+            }
+        }
+    }
+    //Main diagonal block - CinvG + diag(a_array + 1/timestep)
+    double* a_array = malloc(ns * nt * sizeof(double));
+    a_func(growth, carry_cap,
+        linpoint, ns, nt, a_array);
+
+    int offset = ns * nt + ns * (nt - 1);
+    if (CinvG->n != ns * ns) {
+        print("Sparse CinvG not supported in Lmat_sparse yet\n");
+    }
+    for (int t = 1; t < nt; t++) {
+        for (int i = t * ns; i < (t + 1) * ns; i++) {
+            for (int j = t * ns; j < (t + 1) * ns; j++) {
+                if (i == j) { //on diagonal, include a_array + 1/timestep
+                    result->i[offset] = i;
+                    result->j[offset] = j;
+                    result->x[offset] = move_const * CinvG->x[(i - t * ns) * ns + (j - t * ns)] + a_array[i] + (1 / timestep);
+                }
+                else {
+                    result->i[offset] = i;
+                    result->j[offset] = j;
+                    result->x[offset] = move_const * CinvG->x[(i - t * ns) * ns + (j - t * ns)];
+                }
+                offset++;
+            }
+        }
+    }
+    free(a_array);
+    free(i);
+    free(j);
+    free(t);
+    free(offset);
+}
 void r_vector(double growth, double carry_cap, double move_const,
     double* linpoint, double* mag_grad_sq, int ns, int nt, double* result) {
     for (int i = 0; i < ns; i++) {
@@ -255,11 +387,12 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         //printf("M: %d\n", M);
         ret = Calloc(2 +M, double);
 
-        inla_cgeneric_mat_tp* L_mat = malloc(sizeof(inla_cgeneric_mat_tp));
-        L_mat->x = calloc(N * N, sizeof(double));
+        inla_cgeneric_smat_tp* L_mat = malloc(sizeof(inla_cgeneric_smat_tp));
+        L_mat->x = malloc(ns*ns + 2*ns*ns*(nt-1), sizeof(double));
         L_mat->nrow = N;
         L_mat->ncol = N;
-        Lmat(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, L_mat->x);
+		L_mat->n = ns * ns + 2 * ns * ns * (nt - 1); //number of nonzeros in L
+        Lmat_block(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, &L_mat);
 
         int* ipiv = malloc(ns * nt * sizeof(int));
         int lda = N;
@@ -267,15 +400,23 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         int nrhs = N;
         int info;
 
-        double* B = malloc(N * N * sizeof(double));
-        memcpy(B, L_mat->x, N * N * sizeof(double));
+		//Make copy of L_mat, but add extra space for prior precision
+		int max_B_n = L_mat->n;
+        inla_cgeneric_smat_tp* B = malloc(sizeof(inla_cgeneric_smat_tp));
+        B->nrow = L_mat->nrow;
+        B->n = L_mat->n;
+        B->i = malloc(L_mat->n * sizeof(int));
+        B->j = malloc(L_mat->n * sizeof(int));
+        B->x = malloc(L_mat->n * sizeof(double));
+        memcpy(B->i, L_mat->i, L_mat->n * sizeof(int));
+        memcpy(B->j, L_mat->j, L_mat->n * sizeof(int));
+        memcpy(B->x, L_mat->x, L_mat->n * sizeof(double));
+  
         //Compute Noise * L
-        //scale rows by diagonal noise* 
+		//scale everything but first ns rows by timestep / (sigma^2)
 		double scale = timestep / (sigma * sigma);
-            for (int i = ns; i < N; i++) {
-                for (int j = ns; j < N; j++) {
-                    B[j * N + i] *= scale;
-                }
+            for (int i = ns*ns; i < B->n; i++) {
+				B->x[i] *= scale;
             }
 
 		//initial ns x ns prior_precision block - prior precision * identity so can just copy prior_precision to B
@@ -285,26 +426,33 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             for (int k = 0; k < prior_precision->n; k++) {
                 int ii = prior_precision->i[k]; 
                 int jj = prior_precision->j[k]; 
-                double pv = prior_precision->x[k];
-				B[jj * N + ii] += pv;
-            }
-        }
-        else { //if dense prior precision
-            for (int i = 0; i < ns; i++) {
-                for (int j = 0; j < ns; j++) {
-					B[j * N + i] += prior_precision->x[i * ns + j]; //B is col-major but prior_precision is row-major
+				//find corresponding entry in B
+                int found = 0;
+                for (int idx = 0; idx < ns * ns; idx++) {
+                    if (B->i[idx] == ii && B->j[idx] == jj) {
+                        B->x[idx] += prior_precision->x[k];
+                        found = 1;
+                        break;
+                    }
                 }
             }
         }
-
+        else {
+            // dense prior_precision
+            for (int i = 0; i < ns; i++) {
+				for (int j = 0; j < ns; j++) {
+					B->x[i * ns + j] += prior_precision->x[j * ns + i]; //B is col-major but prior_precision is row-major
+                    }
+            }
+		}
 
         double* out = calloc(N * N, sizeof(double));
         double one = 1, zero = 0;
 
-        /* Now compute out = L_mat^T * B */
-        char transL = 'T';
-		char transB = 'N';
-        dgemm_(&transL, &transB, &N, &N, &N, &one, L_mat->x, &lda, B, &ldb, &zero, out, &N);
+		// Now compute out = L_mat^T * B block by block
+
+               
+
 
         free(L_mat->x);
         free(L_mat);
