@@ -371,7 +371,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         ret = Calloc(2 +M, double);
 
         inla_cgeneric_smat_tp* L_mat = malloc(sizeof(inla_cgeneric_smat_tp));
-        L_mat->x = malloc(ns*ns + 2*ns*ns*(nt-1)*sizeof(double));
+        L_mat->x = malloc((ns*ns + 2*ns*ns*(nt-1))*sizeof(double));
         L_mat->nrow = N;
         L_mat->ncol = N;
         L_mat->i = malloc(L_mat->n * sizeof(int));
@@ -552,7 +552,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         ret[0] = N; /* dimension */
 		int idx = 1;
         inla_cgeneric_smat_tp* L_mat = malloc(sizeof(inla_cgeneric_smat_tp));
-        L_mat->x = malloc(ns * ns + 2 * ns * ns * (nt - 1)*sizeof(double));
+        L_mat->x = malloc((ns * ns + 2 * ns * ns * (nt - 1))*sizeof(double));
         L_mat->nrow = N;
         L_mat->ncol = N;
         L_mat->i = malloc(L_mat->n * sizeof(int));
