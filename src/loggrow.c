@@ -302,7 +302,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     }
     break;
     case INLA_CGENERIC_GRAPH:
-    {
+    {   
+		printf("Calculating GRAPH \n");
         // return a vector of indices with format
         // c(N, M, ii, jj)
         // where ii<=jj, ii is non-decreasing and jj is non-decreasing for the same ii
@@ -360,6 +361,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     break;
     case INLA_CGENERIC_Q:
     {
+        printf("Calculating Q \n");
         // return c(-1, M, Qij) in the same order as defined in INLA_CGENERIC_GRAPH
         if (debug > 0) {
             printf("INLA_CGENERIC_Q\n");
@@ -537,7 +539,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     }
     break;
     case INLA_CGENERIC_MU:
-    {
+    {   
+		printf("Calculating MU \n");
         // return (N, mu)
         if (debug > 0) {
             printf("INLA_CGENERIC_MU\n");
