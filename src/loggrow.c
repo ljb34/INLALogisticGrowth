@@ -24,19 +24,7 @@ extern void dgemm_(const char* TRANSA, const char* TRANSB,
 	const double* B, const int* ldb,
 	const double* beta,
 	double* C, const int* ldc);
-//helper function for easily copying matrices
-inla_cgeneric_smat_tp* copy_smat(inla_cgeneric_smat_tp* src) {
-    inla_cgeneric_smat_tp* dst = malloc(sizeof(inla_cgeneric_smat_tp));
-    dst->nrow = src->nrow;
-    dst->n = src->n;
-    dst->i = malloc(src->n * sizeof(int));
-    dst->j = malloc(src->n * sizeof(int));
-    dst->x = malloc(src->n * sizeof(double));
-    memcpy(dst->i, src->i, src->n * sizeof(int));
-    memcpy(dst->j, src->j, src->n * sizeof(int));
-    memcpy(dst->x, src->x, src->n * sizeof(double));
-    return dst;
-}
+
 void a_func(double growth, double carry_cap,
 	double* linpoint, int ns, int nt, double* result) { /*important! must give pointer for where to export result*/
 	for (int i = 0; i < ns * nt; i++) {
@@ -429,12 +417,15 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 				//find corresponding entry in B
                 int found = 0;
                 for (int idx = 0; idx < ns * ns; idx++) {
-                    if (B->i[idx] == ii && B->j[idx] == jj) {
+					if (B->i[idx] == jj && B->j[idx] == ii) { //B is col-major but prior_precision is row-major
                         B->x[idx] += prior_precision->x[k];
                         found = 1;
                         break;
                     }
                 }
+                if(found ! = 1) {
+                    fprintf(stderr, "Could not find matching entry in B for prior precision at (%d, %d)\n", ii, jj);
+					abort();
             }
         }
         else {
@@ -448,48 +439,107 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 
         double* out = calloc(N * N, sizeof(double));
         double one = 1, zero = 0;
-
-		// Now compute out = L_mat^T * B block by block
-
-               
-
-
-        free(L_mat->x);
-        free(L_mat);
-        free(B);
-        free(ipiv);
-
         ret[0] = -1; /* REQUIRED! */
-        ret[1] = M; 
+        ret[1] = M;
+        int idx = 2; // Start after -1 and M
+		// Compute out = L_mat^T * B block by block
 
-		//fill in ret with non zero parts of out 
-
-
-		int idx = 2; // Start after -1 and M
-		//first year only has two blocks
+        //first ns rows
         for (int i = 0; i < ns; i++) {
-            for (int j = i; j < 2*ns; j++) {
-                ret[idx++] = out[j * N + i];
+            //first column block
+            for (int j = i; j < ns; j++) { //ret needs to be upper triangular
+                if (i == j) {
+                    ret[idx] = B[j * ns + i] + 1 / timestep * sigma * sigma;
+
+                }
+                else {
+                    ret[idx] = B[j * ns + i];
+                }
+                idx++;
+            }
+            //second column block
+            for (int j = i; j < 2 * ns; j++) {
+                ret[idx] = -1 / timestep * B[j * ns + i];
+                idx++;
             }
         }
-		//middle years have three blocks
-        for (int k = 1; k < nt - 1; k++) {
-            for (int i = k * ns; i < (k + 1) * ns; i++) {
-                for (int j = i; j < (k + 2) * ns; j++) {
-                    ret[idx++] = out[j * N + i];
+
+		//middle blocks
+		//set up for dgemm
+        const char transL = 'T';   // L^T
+        const char transB = 'N';   // B
+		const int nrowsC = ns;     //size of output block 
+        const int lda = ns;         // leading dimension of L
+        const int ldb = ns;         // leading dimension of B
+        const double alpha = 1.0;
+        const double beta = 0.0;
+
+        
+        for (int t = 1; t < nt - 2; t++) {
+            //diagonal
+            // extract L  & B blocks
+            double* L_block = malloc(ns * ns * sizeof(double));
+            double* B_block = malloc(ns * ns * sizeof(double));
+            for (int i = t * ns; i < (t + 1) * ns; i++) {
+                for (int j = t * ns; j < (t + 1) * ns; j++) {
+                    L_block[(j - t * ns) * ns + (i - t * ns)] = L_mat->x[j * N + i];
+                    B_block[(j - t * ns) * ns + (i - t * ns)] = B->x[j * N + i];
                 }
             }
+            double* C_block = malloc(ns * ns * sizeof(double));
+            dgemm_(&transL, &transB, &nrowsC, &nrowsC, &nrowsC,
+                &alpha, L_block, &lda,
+                B_block, &ldb,
+				&beta, C_block, &nrowsC);
+
+            //fill in the t-th row of ret
+            for(int i = t * ns; i < (t + 1) * ns; i++){
+                for(int j = i; j < (t + 1) * ns; j++){
+					ret[idx] = C_block[(j - t * ns) * ns + (i - t * ns)] + 1/timestep*sigma*sigma;
+                    idx++;
+				}
+				//off diagonal block
+                for(int j = (t + 1) * ns; j < (t + 2) * ns; j++){
+					ret[idx] = -1 / timestep * B[j * ns + i + ns]; //get the t+1,t+1 block from B
+					idx++;
+				}
+             }
+            free(L_block);
+            free(B_block);
+			free(C_block);
         }
 
-        //final year has two blocks
-        
+		//final block - diagonal only
+        double* L_block = malloc(ns * ns * sizeof(double));
+        double* B_block = malloc(ns * ns * sizeof(double));
         for (int i = (nt - 1) * ns; i < nt * ns; i++) {
-            for (int j = i; j < nt * ns; j++) {
-                ret[idx++] = out[j * N + i];
+            for (int j = (nt - 1) * ns; j < nt * ns; j++) {
+                L_block[(j - (nt - 1) * ns) * ns + (i - (nt - 1) * ns)] = L_mat->x[j * N + i];
+                B_block[(j - (nt - 1) * ns) * ns + (i - (nt - 1) * ns)] = B->x[j * N + i];
             }
         }
-		free(out);
-
+            double* C_block = malloc(ns * ns * sizeof(double));
+            dgemm_(&transL, &transB, &nrowsC, &nrowsC, &nrowsC,
+                &alpha, L_block, &lda,
+                B_block, &ldb,
+                &beta, C_block, &nrowsC);
+			//fill in the t-th row of ret
+            for(int i = (nt - 1) * ns; i < nt * ns; i++){
+                for(int j = i; j < nt * ns; j++){
+                    ret[idx] = C_block[(j - (nt - 1) * ns) * ns + (i - (nt - 1) * ns)] + 1/timestep*sigma*sigma;
+                    idx++;
+                }
+             }
+        free(L_block);
+		free(B_block);
+		free(C_block);
+        free(L_mat);
+        free(B);
+		free(transB);
+		free(transL);
+		free(lda);
+		free(ldb);
+		free(nrhs);
         if (idx - 2 != M) {
             fprintf(stderr, "Q filled %d values, expected %d\n", idx - 2, M);
             abort();
