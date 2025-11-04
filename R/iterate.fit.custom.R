@@ -75,6 +75,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
   }
   n.nodes <- fit$misc$configs$nconfig
   nodes <- data.frame(log.prob=rep(NA,n.nodes))
+  mean_list <- list()
   for(i in 1:n.nodes){
     nodes[i,]<- fit$misc$configs$config[[i]]$log.posterior
     #mat_list[[i]] <- fit$misc$configs$config[[i]]$Q[1:(smesh$n*tmesh$n),1:(smesh$n*tmesh$n)]
@@ -153,13 +154,14 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
       }
     }
     nodes <- data.frame(log.prob=rep(NA,n.nodes))
+    mean_list <- list()
     for(i in 1:n.nodes){
       nodes[i,]<- fit$misc$configs$config[[i]]$log.posterior
       mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean[1:(smesh$n*tmesh$n)]
     }
     nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
       dplyr::mutate(weight.prob = weight/sum(weight))
-
+  
     
     #New update rule
     weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
