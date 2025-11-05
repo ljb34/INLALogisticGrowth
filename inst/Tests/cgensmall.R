@@ -10,12 +10,12 @@ library(inlabru)
 library(INLAloggrowth)
 library(sf)
 library(dplyr)
-out.lgcp <- simulate_loggrowth(growth = 0.8, carry.cap = 500, movement = 0.25, sigma = 0.2,
-                               initial.pop = 250, initial.range = 0.3, initial.sigma=0.01, 
-                               timesteps = 4,sample.type = "LGCP", boundaries = c(0,1), debug = T,
-                               max.edge = 0.1)
-saveRDS(out.lgcp, "cgensmalldata.RData")
-#out.lgcp <- readRDS("/mnt/shared/scratch/lblackma/cgensmalldata.RData")
+#out.lgcp <- simulate_loggrowth(growth = 0.8, carry.cap = 500, movement = 0.25, sigma = 0.2,
+#                               initial.pop = 250, initial.range = 0.3, initial.sigma=0.01, 
+#                               timesteps = 4,sample.type = "LGCP", boundaries = c(0,1), debug = T,
+#                               max.edge = 0.1)
+#saveRDS(out.lgcp, "cgensmalldata.RData")
+out.lgcp <- readRDS("cgensmalldata.RData")
 #fit initial year
 if(nrow(out.lgcp$animal_obs) <= 200){
   print("Something's gone wrong, retrying")
@@ -32,7 +32,7 @@ if(nrow(out.lgcp$animal_obs) <= 200){
 print(nrow(out.lgcp$animal_obs))
 bnd <- spoly(data.frame(easting = c(0,1,1,0), northing = c(0,0,1,1)))
 mesh_obs <- fm_mesh_2d(boundary = bnd,
-                       max.edge = c(0.075,0.5), offset = c(-0.1, 0.75))
+                       max.edge = c(0.2,0.5), offset = c(-0.1, 0.5))
 bnd <- st_as_sf(bnd)
 mesh_time <- fm_mesh_1d(loc = 1:4)
 matern <- inla.spde2.pcmatern(mesh_obs,
@@ -72,7 +72,7 @@ iterated.fit.lgcp <- iterate.cgeneric.fit.lgcp(data = out.lgcp$animal_obs, smesh
                                                prior.precision = initial.precision, priors = priors,
                                                max.iter = 20,gamma = 0.5,
                                                stop.crit = 0.1,
-                                               initial.linpoint = NULL, initial.growth = log(0.8),
+                                               initial.linpoint = initial.linpoint, initial.growth = log(0.8),
                                                initial.log.sigma = log(0.1),
                                                initial.move.const = 0.25,
                                                initial.carry.cap = log(500),

@@ -107,12 +107,13 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     #print(mean(mu))
     return(mu)
   }
-  
+  #browser()
   #set up for simulation
-  corners <- c(boundaries[1] - 2*initial.range, boundaries[2]+2*initial.range)
-  bnd_extended <- inlabru::spoly(data.frame(easting = c(corners[1], corners[2],corners[2],corners[1]), 
-                                            northing = c(corners[1], corners[1],corners[2],corners[2])))
-  smesh <- fmesher::fm_mesh_2d_inla(boundary = bnd_extended, max.edge = max.edge)
+  bnd_inner <- sf::st_as_sf(inlabru::spoly(data.frame(easting = c(boundaries[1],boundaries[2],boundaries[2],boundaries[1]), 
+                                                      northing = c(boundaries[1], boundaries[1], boundaries[2], boundaries[2]))))
+  smesh <- fmesher::fm_mesh_2d_inla(boundary = bnd_inner, 
+                                    max.edge = c(max.edge, 2*max.edge), 
+                                    offset = c(-0.1, initial.range))
   tmesh <- fmesher::fm_mesh_1d(loc = 0:timesteps)
   step.size <- 1
   if(debug) print("set up finished, generating first year")
@@ -147,8 +148,8 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   field$time <- rep(0:timesteps, each = smesh$n)
   expand_for_plot <- function(i){
     animal_tempsf <- expand.grid(
-      easting = seq(corners[1],corners[2], by = 0.01),
-      northing = seq(corners[1],corners[2], by = 0.01))
+      easting = seq(boundaries[1],boundaries[2], by = max.edge/10),
+      northing = seq(boundaries[1],boundaries[2], by = max.edge/10))
     animal_tempsf <- dplyr::mutate(sf::st_as_sf(animal_tempsf, coords = c("easting", "northing")),
                                    time = i)
     animal_tempsf$field <- fmesher::fm_evaluate(
@@ -184,7 +185,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     }
   }
   if(sample.type == "LGCP"){
-    field$field[field$field <0] <- 0
+    #field$field[field$field <0] <- 0
     simulate_obs <- function(i){
       samp_animal <- inlabru::sample.lgcp(smesh, 
                                  loglambda = field$field[field$time == i],
