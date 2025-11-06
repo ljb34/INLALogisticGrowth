@@ -450,21 +450,22 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         int diag_start = ns * ns + (nt - 1) * ns * ns; //start of diagonal blocks in B
         //first ns rows
         for (int i = 0; i < ns; i++) {
-            //first column block
-            for (int j = i; j < ns; j++) { //ret needs to be upper triangular
-                if (i == j) {
-                    ret[idx] = B->x[j * ns + i] + 1 / timestep * sigma * sigma;
 
+            for (int j = i; j < 2 * ns; j++) { //ret needs to be upper triangular
+                if (j < ns) { //first column block
+                    if (i == j) {
+                        ret[idx] = B->x[j * ns + i] + 1 / timestep * sigma * sigma;
+
+                    }
+                    else {
+                        ret[idx] = B->x[j * ns + i];
+                    }
+                    idx++;
                 }
-                else {
-                    ret[idx] = B->x[j * ns + i];
+                else { //second column block
+                    ret[idx] = -1 / timestep * B->x[diag_start + (j - ns) * ns + i];
+                    idx++;
                 }
-                idx++;
-            }
-            //second column block
-            for (int j = ns; j < 2 * ns; j++) {
-                ret[idx] = -1 / timestep * B->x[diag_start + (j-ns)*ns + i];
-                idx++;
             }
         }
 
@@ -498,15 +499,18 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 
             //fill in the t-th row of ret
             for(int i = t * ns; i < (t + 1) * ns; i++){
-                for(int j = i; j < (t + 1) * ns; j++){
-					ret[idx] = C_block[(j - t * ns) * ns + (i - t * ns)] + 1/timestep*sigma*sigma;
-                    idx++;
+                for(int j = i; j < (t + 2) * ns; j++){
+                    if (j < (t + 1) * ns) {
+                        //diagonal block
+                        ret[idx] = C_block[(j - t * ns) * ns + (i - t * ns)] + 1 / timestep * sigma * sigma;
+                        idx++;
+                    }
+					else { //off diagonal block
+                        ret[idx] = (-1 / timestep) * B->x[diag_start + t * ns * ns + (j - (t + 1) * ns) * ns + (i - t * ns)]; //get the t+1,t+1 block from B
+                        idx++;
+                    }
 				}
-				//off diagonal block
-                for(int j = (t + 1) * ns; j < (t + 2) * ns; j++){
-					ret[idx] = ( - 1 / timestep) * B->x[diag_start + t * ns * ns + (j - (t + 1) * ns) * ns + (i - t * ns)]; //get the t+1,t+1 block from B
-					idx++;
-				}
+				
              }
             free(L_block);
             free(B_block);
