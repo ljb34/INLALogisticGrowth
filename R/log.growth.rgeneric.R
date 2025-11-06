@@ -99,7 +99,7 @@ log_growth_rgeneric =  function(
     #print(par)
     if(!is.null(priors)) warning("Parameters missing for priors")
     val = dnorm(theta[1L], mean = priors$growth[1], sd = priors$growth[2], log = T)+
-      dnorm(theta[2L], mean = priors$cc[1], sd = priors$cc[2], log = T)+
+      dgamma(exp(theta[2L]), shape = priors$cc[1], rate = priors$cc[2], log = T)+
       dnorm(theta[3L],mean = priors$move[1], sd = priors$move[2], log = T)+ 
       dnorm(theta[4L], mean = priors$sigma[1], sd = priors$sigma[2], log = T)
     return(val)
