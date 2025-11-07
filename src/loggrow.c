@@ -174,7 +174,7 @@ void Lmat_block(double growth, double carry_cap, double move_const, double times
         linpoint, ns, nt, a_array);
 
     if (CinvG->n != ns * ns) {
-        //fprintf(stderr,"Sparse CinvG not supported in Lmat_sparse yet\n");
+        fprintf(stderr,"Sparse CinvG not supported in Lmat_sparse yet\n");
     }
     for (int t = 1; t < nt; t++) {
         for (int i = t * ns; i < (t + 1) * ns; i++) {
@@ -194,11 +194,11 @@ void Lmat_block(double growth, double carry_cap, double move_const, double times
         }
     }
     free(a_array);
-    if (offset >= result->n) {
+    if (offset > result->n) {
         fprintf(stderr,"Lmat_block wrote %d elements, expected %d\n", offset, result->n);
         abort();
     }
-    fprintf(stderr,"Lmat_block wrote %d elements, expected %d\n", offset, result->n);
+    //fprintf(stderr,"Lmat_block wrote %d elements, expected %d\n", offset, result->n);
 }
 void r_vector(double growth, double carry_cap, double move_const,
     double* linpoint, double* mag_grad_sq, int ns, int nt, double* result) {
@@ -365,7 +365,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         //        idx++;
         //    }
         //}
-        fprintf(stderr,"GRAPH produced %d pairs, expected %d\n", idx - 2, M);
+        //fprintf(stderr,"GRAPH produced %d pairs, expected %d\n", idx - 2, M);
         if (idx - 2 != M) {
             fprintf(stderr,"GRAPH produced %d pairs, expected %d\n", idx - 2, M);
             abort();
@@ -436,7 +436,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                             break;
 						}
 					}
-					fprintf(stderr,"Found %d matches for prior precision at (%d, %d)\n", found, ii, jj);
+					//fprintf(stderr,"Found %d matches for prior precision at (%d, %d)\n", found, ii, jj);
                     if (found != 2) {
                         fprintf(stderr,"Could not find matching entry in B for prior precision at (%d, %d)\n", ii, jj);
                         abort();
@@ -550,7 +550,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                     idx++;
                 }
              }
-            fprintf(stderr,"Q filled %d values, expected %d\n", idx - 2, M);
+            //fprintf(stderr,"Q filled %d values, expected %d\n", idx - 2, M);
         free(L_block);
 		free(B_block);
 		free(C_block);
