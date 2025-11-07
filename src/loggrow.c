@@ -194,10 +194,11 @@ void Lmat_block(double growth, double carry_cap, double move_const, double times
         }
     }
     free(a_array);
-    if (offset > result->n) {
+    if (offset >= result->n) {
         printf("Lmat_block wrote %d elements, expected %d\n", offset, result->n);
         abort();
     }
+    printf("Lmat_block wrote %d elements, expected %d\n", offset, result->n);
 }
 void r_vector(double growth, double carry_cap, double move_const,
     double* linpoint, double* mag_grad_sq, int ns, int nt, double* result) {
@@ -362,6 +363,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         //        idx++;
         //    }
         //}
+        printf("GRAPH produced %d pairs, expected %d\n", idx - 2, M);
         if (idx - 2 != M) {
             printf("GRAPH produced %d pairs, expected %d\n", idx - 2, M);
             abort();
@@ -546,6 +548,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                     idx++;
                 }
              }
+            printf("Q filled %d values, expected %d\n", idx - 2, M);
         free(L_block);
 		free(B_block);
 		free(C_block);
