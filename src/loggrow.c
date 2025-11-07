@@ -195,7 +195,7 @@ void Lmat_block(double growth, double carry_cap, double move_const, double times
     }
     free(a_array);
     if (offset > result->n) {
-        //fprintf(stderr, "Lmat_block wrote %d elements, expected %d\n", offset, result->n);
+        printf("Lmat_block wrote %d elements, expected %d\n", offset, result->n);
         abort();
     }
 }
