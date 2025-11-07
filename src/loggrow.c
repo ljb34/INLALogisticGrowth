@@ -126,7 +126,7 @@ void Lmat_sparse(double growth, double carry_cap, double move_const, double time
 // Block version of Lmat, output is in COLUMN MAJOR (i = column index, j = row index)
 void Lmat_block(double growth, double carry_cap, double move_const, double timestep,
     double* linpoint, int ns, int nt, inla_cgeneric_smat_tp* CinvG, inla_cgeneric_smat_tp* result) {
-	fprintf(stderr,"Building L matrix in block sparse format\n");
+	//fprintf(stderr,"Building L matrix in block sparse format\n");
 
     //identity sub matrix in first block
 	int offset = 0;
@@ -220,7 +220,7 @@ double normal_pdf_log(double x, double mean, double stddev) {
 
 
 double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inla_cgeneric_data_tp* data) {
-    fprintf(stderr, "Entered model function\n"); fflush(stderr);
+    
 
     // this reimplement `inla.rgeneric.iid.model` using cgeneric
     double* ret = NULL, growth = (theta ? exp(theta[0]) : NAN), carry_cap = (theta ? exp(theta[1]) : NAN), move_const = (theta ? theta[2] : NAN), sigma = (theta ? exp(theta[3]) : NAN); //interpret.theta equivalent
@@ -231,7 +231,10 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     // Read parameters from data
     assert(!strcasecmp(data->ints[1]->name, "debug"));     // this will always be the case
     int debug = data->ints[1]->ints[0];
-    if (debug > 0) debug = 1;
+    if (debug > 0) {
+        debug = 1;
+        fprintf(stderr, "Entered model function\n"); fflush(stderr);
+    }
 
     assert(!strcasecmp(data->ints[2]->name, "ns"));
     int ns = data->ints[2]->ints[0];
@@ -316,7 +319,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     break;
     case INLA_CGENERIC_GRAPH:
     {   
-		fprintf(stderr,"Calculating GRAPH \n");
+		if(debug >0) fprintf(stderr,"Calculating GRAPH \n");
         // return a vector of indices with format
         // c(N, M, ii, jj)
         // where ii<=jj, ii is non-decreasing and jj is non-decreasing for the same ii
@@ -375,10 +378,10 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     break;
     case INLA_CGENERIC_Q:
     {
-        fprintf(stderr,"Calculating Q \n");
+		
         // return c(-1, M, Qij) in the same order as defined in INLA_CGENERIC_GRAPH
         if (debug > 0) {
-            //fprintf(stderr,"INLA_CGENERIC_Q\n");
+            fprintf(stderr,"INLA_CGENERIC_Q\n");
         }
         int M = (nt - 1) * (ns * ns + 0.5 * (ns + 1) * ns) + 0.5 * (ns + 1) * ns;
         //fprintf(stderr,"M: %d\n", M);
@@ -574,10 +577,10 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     break;
     case INLA_CGENERIC_MU:
     {   
-		fprintf(stderr,"Calculating MU \n");
+		
         // return (N, mu)
         if (debug > 0) {
-            //fprintf(stderr,"INLA_CGENERIC_MU\n");
+            fprintf(stderr,"INLA_CGENERIC_MU\n");
         }
         ret = Calloc(1 + N, double);
         assert(ret);
