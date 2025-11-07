@@ -322,7 +322,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         // for j=i, ...
         // G_ij =
         // and M is the total length while N is the dimension
-        int M =  2* ns * ns + ns  +(nt-2)*(ns * ns + ns * (ns+1)/2);
+        int M =  nt*(ns*ns + 0.5*(ns+1)*ns);
 		//printf("M: %d\n", M);
         ret = calloc(2 + 2*M, sizeof(double));
         assert(ret);
@@ -363,7 +363,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         //    }
         //}
         if (idx - 2 != M) {
-            //fprintf(stderr, "GRAPH produced %d pairs, expected %d\n", idx - 2, M);
+            printf("GRAPH produced %d pairs, expected %d\n", idx - 2, M);
             abort();
         }
 
@@ -376,7 +376,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         if (debug > 0) {
             //printf("INLA_CGENERIC_Q\n");
         }
-        int M = ns * ns * (nt-1) + 0.5 * ns * (ns + 1) * nt;
+        int M = nt * (ns * ns + 0.5 * (ns + 1) * ns);
         //printf("M: %d\n", M);
         ret = Calloc(2 +M, double);
 
@@ -560,7 +560,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         free(B);
 		
         if (idx - 2 != M) {
-            //fprintf(stderr, "Q filled %d values, expected %d\n", idx - 2, M);
+            printf("Q filled %d values, expected %d\n", idx - 2, M);
             abort();
         }
     }
