@@ -220,6 +220,8 @@ double normal_pdf_log(double x, double mean, double stddev) {
 
 
 double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inla_cgeneric_data_tp* data) {
+    fprintf(stderr, "Entered model function\n"); fflush(stderr);
+
     // this reimplement `inla.rgeneric.iid.model` using cgeneric
     double* ret = NULL, growth = (theta ? exp(theta[0]) : NAN), carry_cap = (theta ? exp(theta[1]) : NAN), move_const = (theta ? theta[2] : NAN), sigma = (theta ? exp(theta[3]) : NAN); //interpret.theta equivalent
     assert(!strcasecmp(data->ints[0]->name, "n")); // this will always be the case
