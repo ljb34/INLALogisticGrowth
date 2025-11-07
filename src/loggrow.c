@@ -428,8 +428,10 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 							B->x[l] = prior_precision->x[k];
                             found++;
 						}
-                        if ((B->i[l] == jj) && (B->j[l] == ii) && (ii != jj)) {
-                            B->x[l] = prior_precision->x[k];
+                        if ((B->i[l] == jj) && (B->j[l] == ii)) {
+                            if (ii != jj) { //don't double count diagonal
+                                B->x[l] = prior_precision->x[k];
+                            }
                             found++;
                         }
                         if(found == 2) {
