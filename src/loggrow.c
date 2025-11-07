@@ -126,7 +126,7 @@ void Lmat_sparse(double growth, double carry_cap, double move_const, double time
 // Block version of Lmat, output is in COLUMN MAJOR (i = column index, j = row index)
 void Lmat_block(double growth, double carry_cap, double move_const, double timestep,
     double* linpoint, int ns, int nt, inla_cgeneric_smat_tp* CinvG, inla_cgeneric_smat_tp* result) {
-	//printf("Building L matrix in block sparse format\n");
+	printf("Building L matrix in block sparse format\n");
 
     //identity sub matrix in first block
 	int offset = 0;
@@ -567,7 +567,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     break;
     case INLA_CGENERIC_MU:
     {   
-		//printf("Calculating MU \n");
+		printf("Calculating MU \n");
         // return (N, mu)
         if (debug > 0) {
             //printf("INLA_CGENERIC_MU\n");
