@@ -123,7 +123,7 @@ void Lmat_sparse(double growth, double carry_cap, double move_const, double time
 
 }
 
-// Block version of Lmat, output is in COLUMN MAJOR
+// Block version of Lmat, output is in COLUMN MAJOR (i = column index, j = row index)
 void Lmat_block(double growth, double carry_cap, double move_const, double timestep,
     double* linpoint, int ns, int nt, inla_cgeneric_smat_tp* CinvG, inla_cgeneric_smat_tp* result) {
 	//printf("Building L matrix in block sparse format\n");
@@ -377,7 +377,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             //printf("INLA_CGENERIC_Q\n");
         }
         int M = ns * ns * (nt-1) + 0.5 * ns * (ns + 1) * nt;
-        ////printf("M: %d\n", M);
+        //printf("M: %d\n", M);
         ret = Calloc(2 +M, double);
 
         inla_cgeneric_smat_tp* L_mat = malloc(sizeof(inla_cgeneric_smat_tp));
@@ -417,15 +417,22 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                     int ii = prior_precision->i[k];
                     int jj = prior_precision->j[k];
                     //find corresponding entry in B
-                    int found = 0;
-                    for (int l = 0; l < ns * ns; l++) {
-                        if (B->i[l] == ii && B->j[l] == jj) { 
+					//prior precision = symmetric so stored as upper triangle only. Need to find both (ii, jj) and (jj, ii) in B
+					int found = 0;
+                    for(int l = 0; l < B->n; l++) {
+                        if ((B->i[l] == ii) && (B->j[l] == jj)) {
+							B->x[l] = prior_precision->x[k];
+                            found++;
+						}
+                        if ((B->i[l] == jj) && (B->j[l] == ii) && (ii != jj)) {
                             B->x[l] = prior_precision->x[k];
-                            found = 1;
-                            break;
+                            found++;
                         }
-                    }
-                    if (found != 1) {
+                        if(found == 2) {
+                            break;
+						}
+					}
+                    if (found != 2) {
                         //fprintf(stderr, "Could not find matching entry in B for prior precision at (%d, %d)\n", ii, jj);
                         abort();
                     }
