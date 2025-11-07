@@ -419,7 +419,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                     //find corresponding entry in B
 					//prior precision = symmetric so stored as upper triangle only. Need to find both (ii, jj) and (jj, ii) in B
 					int found = 0;
-                    for(int l = 0; l < B->n; l++) {
+                    for(int l = 0; l < ns*ns; l++) {
                         if ((B->i[l] == ii) && (B->j[l] == jj)) {
 							B->x[l] = prior_precision->x[k];
                             found++;
@@ -433,7 +433,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 						}
 					}
                     if (found != 2) {
-                        //fprintf(stderr, "Could not find matching entry in B for prior precision at (%d, %d)\n", ii, jj);
+                        printf(stderr, "Could not find matching entry in B for prior precision at (%d, %d)\n", ii, jj);
                         abort();
                     }
                 }
@@ -442,7 +442,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             // dense prior_precision
             for (int i = 0; i < ns; i++) {
 				for (int j = 0; j < ns; j++) {
-					B->x[j * ns + i] += prior_precision->x[i * ns + j]; //B is col-major but prior_precision is row-major - shouldn't matter bacause symmetric, but good practice
+					B->x[j * ns + i] = prior_precision->x[i * ns + j]; //B is col-major but prior_precision is row-major - shouldn't matter bacause symmetric, but good practice
                     }
             }
 		}
