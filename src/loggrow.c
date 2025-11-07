@@ -433,7 +433,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 						}
 					}
                     if (found != 2) {
-                        printf(stderr, "Could not find matching entry in B for prior precision at (%d, %d)\n", ii, jj);
+                        printf("Could not find matching entry in B for prior precision at (%d, %d)\n", ii, jj);
                         abort();
                     }
                 }
