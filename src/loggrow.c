@@ -325,7 +325,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         // for j=i, ...
         // G_ij =
         // and M is the total length while N is the dimension
-        int M =  nt*(ns*ns + 0.5*(ns+1)*ns);
+        int M =  (nt-1)*(ns*ns + 0.5*(ns+1)*ns) + 0.5 * (ns + 1) * ns;
 		//printf("M: %d\n", M);
         ret = calloc(2 + 2*M, sizeof(double));
         assert(ret);
@@ -380,7 +380,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         if (debug > 0) {
             //fprintf(stderr,"INLA_CGENERIC_Q\n");
         }
-        int M = nt * (ns * ns + 0.5 * (ns + 1) * ns);
+        int M = (nt - 1) * (ns * ns + 0.5 * (ns + 1) * ns) + 0.5 * (ns + 1) * ns;
         //fprintf(stderr,"M: %d\n", M);
         ret = Calloc(2 +M, double);
 
