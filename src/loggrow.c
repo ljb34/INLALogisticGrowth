@@ -25,6 +25,40 @@ extern void dgemm_(const char* TRANSA, const char* TRANSB,
 	const double* beta,
 	double* C, const int* ldc);
 
+extern void dgetrf_(int* m, int* n, double* a, int* lda, int* ipiv, int* info);
+
+extern void dgemv_(const char* trans, const int* m, const int* n,
+    const double* alpha, const double* a, const int* lda,
+    const double* x, const int* incx,
+    const double* beta, double* y, const int* incy);
+
+double determinant(double* A, int n) {
+    int* ipiv = malloc(n * sizeof(int));
+    double* Acopy = malloc(n * n * sizeof(double));
+    memcpy(Acopy, A, n * n * sizeof(double));
+
+    int info;
+    dgetrf_(&n, &n, Acopy, &n, ipiv, &info);
+    if (info != 0) {
+        // Singular or numerical issues
+        free(ipiv);
+        free(Acopy);
+        return 0.0;
+    }
+
+    double det = 1.0;
+    for (int i = 0; i < n; i++) {
+        det *= Acopy[i * n + i];
+        if (ipiv[i] != i + 1)
+            det = -det; // account for row swaps
+    }
+
+    free(ipiv);
+    free(Acopy);
+    return det;
+}
+
+
 void a_func(double growth, double carry_cap,
 	double* linpoint, int ns, int nt, double* result) { /*important! must give pointer for where to export result*/
 	for (int i = 0; i < ns * nt; i++) {
@@ -76,52 +110,7 @@ void Lmat(double growth, double carry_cap, double move_const, double timestep,
 
 }
 
-// Sparse version of Lmat, output is in COLUMN MAJOR
-void Lmat_sparse(double growth, double carry_cap, double move_const, double timestep,
-    double* linpoint, int ns, int nt, inla_cgeneric_smat_tp* CinvG, inla_cgeneric_smat_tp* result) {
 
-	//identity sub matrix in first block
-    for (int i = 0; i < ns; i++) {
-		result->i[i] = i;
-		result->j[i] = i;
-		result->x[i] = 1;
-    }
-    
-	//subdiagonal
-    for(int i = 0; i < ns * (nt - 1); i++) {
-        result->i[ns * nt + i] = i;
-        result->j[ns * nt + i] = i + ns;
-        result->x[ns * nt + i] = -1 / timestep;
-	}
-	//Main diagonal block - CinvG + diag(a_array + 1/timestep)
-	double* a_array = malloc(ns * nt * sizeof(double));
-    a_func(growth, carry_cap,
-        linpoint, ns, nt, a_array);
-           
-	int offset = ns * nt + ns * (nt - 1);
-    if (CinvG->n != ns * ns) {
-		//fprintf(stderr,"Sparse CinvG not supported in Lmat_sparse yet\n");
-    }
-    for (int t = 1; t < nt; t++) {
-        for (int i = t * ns; i < (t + 1) * ns; i++) {
-            for (int j = t * ns; j < (t + 1) * ns; j++) {
-                if (i == j) { //on diagonal, include a_array + 1/timestep
-                    result->i[offset] = i;
-                    result->j[offset] = j;
-                    result->x[offset] = move_const * CinvG->x[(i - t * ns) * ns + (j - t * ns)] + a_array[i] + (1 / timestep);
-                }
-                else {
-                    result->i[offset] = i;
-                    result->j[offset] = j;
-                    result->x[offset] = move_const * CinvG->x[(i - t * ns) * ns + (j - t * ns)];
-				}
-				offset++;
-            }
-        }
-    }
-	free(a_array);
-
-}
 
 // Block version of Lmat, output is in COLUMN MAJOR (i = column index, j = row index)
 void Lmat_block(double growth, double carry_cap, double move_const, double timestep,
@@ -625,16 +614,45 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             }
             
 			//solve L_block * x = rvector_block
-            dgesv_(&ns, &nrhs, L_block, &lda,
-				ipiv, rvector_block, &ldb, &info);
-            if (info != 0) {
-                //fprintf(stderr,stderr, "Error in dgesv_: info = %d\n", info);
-                //fprintf(stderr,"First col of L_block(t=%d):\n", t);
-                for (int j = 0; j < ns; j++) {
-                    //fprintf(stderr,"%8.4f ", L_block[j * ns]);
+            double detL = determinant(L_block, ns);
+            if (abs(detL) < 1e-10) {
+                // near singular: use (L^TL)^-1 L^Tr
+				double* y = malloc(ns*sizeof(double)); //create output vector y
+                const char transT = 'T';
+                const double alpha1 = 1.0;
+                const double beta0 = 0.0;
+                dgemv_(&transT, &ns, &ns, &alpha1, L_block, &ns, rvector_block, &ns, &beta0, y, &ns);
+
+                // Step 2: A = L_block^T * L_block
+                double* A = malloc(ns * ns*sizeof(double));
+                const char transN = 'N';
+                dgemm_(&transT, &transN, &ns, &ns, &ns,
+                    &alpha1, L_block, &ns, L_block, &ns, &beta0, A, &ns);
+
+                // Step 3: Solve A * x = y
+                memcpy(rvector_block, y, ns * sizeof(double)); // reuse rvector_block as RHS
+                dgesv_(&ns, &nrhs, A, &lda, ipiv, rvector_block, &ldb, &info);
+                if (info != 0) {
+                    fprintf(stderr, "Error in dgesv_ (normal equations): info = %d\n", info);
+                    abort();
                 }
-                abort();
-			}
+                // cleanup
+                free(A);
+                free(y);
+            }
+            else {
+                // regular solve: L^-1r
+                dgesv_(&ns, &nrhs, L_block, &lda,
+                    ipiv, rvector_block, &ldb, &info);
+                if (info != 0) {
+                    //fprintf(stderr,stderr, "Error in dgesv_: info = %d\n", info);
+                    //fprintf(stderr,"First col of L_block(t=%d):\n", t);
+                    for (int j = 0; j < ns; j++) {
+                        //fprintf(stderr,"%8.4f ", L_block[j * ns]);
+                    }
+                    abort();
+                }
+            }
             //put into ret
             for (int i = 0; i < ns; i++) {
                 ret[idx] = rvector_block[i];
