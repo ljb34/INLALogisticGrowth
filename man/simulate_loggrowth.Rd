@@ -20,7 +20,8 @@ simulate_loggrowth(
   ncores = 1,
   boundaries = c(0, 1),
   debug = F,
-  max.edge = 0.05
+  max.edge = 0.05,
+  nsurv = 3
 )
 }
 \arguments{

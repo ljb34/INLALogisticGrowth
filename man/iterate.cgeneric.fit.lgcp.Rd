@@ -20,10 +20,9 @@ iterate.cgeneric.fit.lgcp(
   initial.carry.cap = 100,
   initial.move.const = 1,
   initial.log.sigma = log(1.5),
-  verbose = F,
   debug = NULL,
   saveall = T,
-  control.vb = list(enable = T, emergency = 25)
+  options = list(verbose = F, control.vb = list(enable = T, emergency = 25))
 )
 }
 \arguments{

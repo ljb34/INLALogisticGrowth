@@ -286,13 +286,13 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 int ii = prior_precision->i[k]; 
                 int jj = prior_precision->j[k]; 
                 double pv = prior_precision->x[k];
-				B[jj * N + ii] += pv;
+				B[jj * N + ii] = pv;
             }
         }
         else { //if dense prior precision
             for (int i = 0; i < ns; i++) {
                 for (int j = 0; j < ns; j++) {
-					B[j * N + i] += prior_precision->x[i * ns + j]; //B is col-major but prior_precision is row-major
+					B[j * N + i] = prior_precision->x[i * ns + j]; //B is col-major but prior_precision is row-major
                 }
             }
         }

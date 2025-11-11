@@ -22,7 +22,10 @@ iterate.fit.custom(
   initial.carry.cap = 1000,
   initial.move.const = 0.5,
   initial.log.sigma = log(1.5),
-  verbose = F
+  method = "cgeneric",
+  debug = F,
+  options = NULL,
+  saveall = T
 )
 }
 \arguments{
