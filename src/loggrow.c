@@ -171,12 +171,12 @@ void Lmat_block(double growth, double carry_cap, double move_const, double times
                 if (i == j) { //on diagonal, include a_array + 1/timestep
                     result->i[offset] = i;
                     result->j[offset] = j;
-                    result->x[offset] = move_const * CinvG->x[(j - t * ns) * ns + (i - t * ns)] + a_array[i] + (1 / timestep);
+                    result->x[offset] = move_const * CinvG->x[(i - t * ns) * ns + (j - t * ns)] + a_array[i] + (1 / timestep);
                 }
                 else {
                     result->i[offset] = i;
                     result->j[offset] = j;
-                    result->x[offset] = move_const * CinvG->x[(j - t * ns) * ns + (i - t * ns)];
+                    result->x[offset] = move_const * CinvG->x[(i - t * ns) * ns + (j - t * ns)];
                 }
                 offset++;
             }
@@ -441,7 +441,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             // dense prior_precision
             for (int i = 0; i < ns; i++) {
 				for (int j = 0; j < ns; j++) {
-					B->x[j * ns + i] = prior_precision->x[i * ns + j]; //B is col-major but prior_precision is row-major - shouldn't matter bacause symmetric, but good practice
+					B->x[i * ns + j] = prior_precision->x[i * ns + j]; //B is col-major but prior_precision is row-major - shouldn't matter bacause symmetric, but good practice
                     }
             }
 		}
