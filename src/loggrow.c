@@ -271,7 +271,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         memcpy(B, L_mat->x, N * N * sizeof(double));
         //Compute Noise * L
         //scale rows by diagonal noise* 
-        double scale = timestep / sigma; //(sigma * sigma);
+        double scale = timestep / (sigma * sigma);
             for (int i = ns; i < N; i++) {
                 for (int j = ns; j < N; j++) {
                     B[j * N + i] *= scale;
