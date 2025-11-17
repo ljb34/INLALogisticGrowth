@@ -113,7 +113,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   bnd_extended <- inlabru::spoly(data.frame(easting = c(corners[1], corners[2],corners[2],corners[1]), 
                                             northing = c(corners[1], corners[1],corners[2],corners[2])))
   smesh <- fmesher::fm_mesh_2d_inla(boundary = bnd_extended, max.edge = max.edge)
-  tmesh <- fmesher::fm_mesh_1d(loc = 0:timesteps)
+  tmesh <- fmesher::fm_mesh_1d(loc = 1:timesteps)
   step.size <- 1
   if(debug) print("set up finished, generating first year")
   matern <-
@@ -144,7 +144,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   #generate field
   if(debug) print("generating field")
   field <- data.frame(field = inla.qsample(1, Q_mat, mu = mu_mat)[, 1])
-  field$time <- rep(0:timesteps, each = smesh$n)
+  field$time <- rep(1:timesteps, each = smesh$n)
   expand_for_plot <- function(i){
     animal_tempsf <- expand.grid(
       easting = seq(corners[1],corners[2], by = 0.01),
@@ -157,7 +157,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
       field = field$field[field$time == i])
     return(animal_tempsf)
   }
-  expanded <- parallel::mclapply(0:timesteps, expand_for_plot,  mc.cores = ncores)
+  expanded <- parallel::mclapply(1:timesteps, expand_for_plot,  mc.cores = ncores)
   animal <- do.call(rbind, expanded)
   bnd_inner <- sf::st_as_sf(inlabru::spoly(data.frame(easting = c(boundaries[1],boundaries[2],boundaries[2],boundaries[1]), 
                                                       northing = c(boundaries[1], boundaries[1], boundaries[2], boundaries[2]))))
@@ -184,7 +184,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     }
   }
   if(sample.type == "LGCP"){
-    field$field[field$field <0] <- 0
+    #field$field[field$field <0] <- 0
     simulate_obs <- function(i){
       samp_animal <- inlabru::sample.lgcp(smesh, 
                                  loglambda = field$field[field$time == i],
@@ -193,12 +193,12 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
       samp_animal_df <- dplyr::mutate(samp_animal, time = i)
       return(samp_animal_df)
     }
-    observations <- parallel::mclapply(0:timesteps, simulate_obs,  mc.cores =  ncores)
+    observations <- parallel::mclapply(1:timesteps, simulate_obs,  mc.cores =  ncores)
     animal_obs <- do.call(rbind, observations)
     #remove edge effects
     #animal_obs <- st_as_sf(animal_obs, coords = c("x","y"))
   }
-  return(list(animal = animal[animal$time !=0,],field = field[field$time != 0,],
-              animal_obs = animal_obs[animal_obs$time != 0,]))
+  return(list(animal = animal,field = field,
+              animal_obs = animal_obs))
 }
 
