@@ -70,7 +70,8 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
   
   print(paste("dim P = ", dim(P)))
   print(paste("dim b = ", dim(b)))
-  new.linpoint <- (1-gamma)*initial.linpoint +gamma*solve(P,b)
+  print(class(b))
+  new.linpoint <- (1-gamma)*initial.linpoint +gamma*Matrix::solve(P,b)
   
   #New update rule
   #weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
