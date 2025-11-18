@@ -67,6 +67,9 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
   P <- Reduce("+", Map(function(m, w) m * w, mat_list, nodes$weight.prob))
   weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
   b <- Reduce("+", Map(function(m,w) m%*%w, mat_list,weighted.means))
+  
+  print(paste("dim P = ", dim(P)))
+  print(paste("dim b = ", dim(b)))
   new.linpoint <- (1-gamma)*initial.linpoint +gamma*solve(P,b)
   
   #New update rule
