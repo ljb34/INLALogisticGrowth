@@ -54,11 +54,11 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
   print("First fitting finished")
   n.nodes <- fit$misc$configs$nconfig
   nodes <- data.frame(log.prob=rep(NA,n.nodes))
-  #mat_list <- list()
+  mat_list <- list()
   mean_list <- list()
   for(i in 1:n.nodes){
     nodes[i,]<- fit$misc$configs$config[[i]]$log.posterior
-    #mat_list[[i]] <- fit$misc$configs$config[[i]]$Q[1:(smesh$n*tmesh$n), 1:(smesh$n*tmesh$n)]
+    mat_list[[i]] <- fit$misc$configs$config[[i]]$Q[1:(smesh$n*tmesh$n), 1:(smesh$n*tmesh$n)]
     mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean[1:(smesh$n*tmesh$n)]
   }
   nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
@@ -125,11 +125,11 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
       }
     }
     nodes <- data.frame(log.prob=rep(NA,n.nodes))
-    #mat_list <- list()
+    mat_list <- list()
     mean_list <- list()
     for(i in 1:n.nodes){
       nodes[i,]<- fit$misc$configs$config[[i]]$log.posterior
-      #mat_list[[i]] <- fit$misc$configs$config[[i]]$Q[1:(smesh$n*tmesh$n),1:(smesh$n*tmesh$n)]
+      mat_list[[i]] <- fit$misc$configs$config[[i]]$Q[1:(smesh$n*tmesh$n),1:(smesh$n*tmesh$n)]
       mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean[1:(smesh$n*tmesh$n)]
     }
     nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
