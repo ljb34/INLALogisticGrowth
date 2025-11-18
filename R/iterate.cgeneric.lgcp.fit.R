@@ -31,7 +31,7 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
   }
   if(!is.matrix(initial.linpoint)) initial.linpoint <- as.matrix(initial.linpoint, ncol = 1)
   #Set up initial model
-  fit.list <- list()
+  fit_list <- list()
   log_growth_model <- define.cgeneric.loggrow.model(linpoint = initial.linpoint, 
                                            smesh = smesh,tmesh = tmesh, step.size = step.size, 
                                            prior.mean = prior.mean,
@@ -47,9 +47,9 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
              samplers = samplers,
              family = "cp", options = options)
   if(saveall){
-    fit.list[[1]]<-fit
+    fit_list[[1]]<-fit
   }else{
-    fit.list <- fit
+    fit_list <- fit
   }
   print("First fitting finished")
   n.nodes <- fit$misc$configs$nconfig
@@ -100,9 +100,9 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
                family = "cp", options = options)
     print(paste("Fitted new model", n))
     if(saveall){
-      fit.list[[n]]<-fit
+      fit_list[[n]]<-fit
     } else{
-      fit.list <- fit
+      fit_list <- fit
     }
     n.nodes <- fit$misc$configs$nconfig
     if(!is.numeric(n.nodes)){
@@ -116,12 +116,12 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
       n.nodes <- fit$misc$configs$nconfig
       if(!is.numeric(fit$misc$configs$nconfig)){
         print("Failed again, returning model output")
-        return(list(new.linpoint = new.linpoint,fit = fit, linpoints = lp.mat, fit.list = fit.list))
+        return(list(new.linpoint = new.linpoint,fit = fit, linpoints = lp.mat, fit_list = fit_list))
       }
       if(saveall){
-        fit.list[[n]]<-fit
+        fit_list[[n]]<-fit
       } else{
-        fit.list <- fit
+        fit_list <- fit
       }
     }
     nodes <- data.frame(log.prob=rep(NA,n.nodes))
@@ -168,5 +168,5 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
                    data = data, domain = list(geometry = smesh,time = tmesh),
                    samplers = samplers,
                    family = "cp", options = options)
-  return(list(fit = final.fit, n = n, linpoints = lp.mat, fit_list = fit.list))
+  return(list(fit = final.fit, n = n, linpoints = lp.mat, fit_list = fit_list))
 }
