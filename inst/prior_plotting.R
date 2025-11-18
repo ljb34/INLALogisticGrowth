@@ -71,9 +71,9 @@ dens_prior_sd = function(sigma_0, p_sigma)
 }
 
 ggplot()+
-  geom_line(data = dens_prior_range(0.025,0.01,0.6), aes(x,y))+
   geom_line(data = dens_prior_range(0.05,0.05,0.6), aes(x,y), colour = "red")+
-  geom_line(data = dens_prior_range(0.05,0.01,0.6), aes(x,y), colour = "green")
+  geom_line(data = dens_prior_range(0.05,0.01,0.6), aes(x,y), colour = "green")+
+  geom_line(data = dens_prior_range(0.1,0.05,0.6), aes(x,y), colour = "blue")
 
 ggplot()+
   geom_line(data = dens_prior_sd(0.25,0.1), aes(x,y))
