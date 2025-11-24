@@ -26,14 +26,14 @@
 #'}
 #'
 #'@export
-simulate_loggrowth <- function(growth, carry.cap, movement, sigma, 
+simulate.loggrowth <- function(growth, carry.cap, movement, sigma, 
                                initial.pop,initial.range, initial.sigma, 
                                timesteps, npoints = NULL, obs.sd=NULL,
                                obs.prob = NULL,
                                sample.type = "LGCP", ncores = 1,
                                boundaries = c(0,1), debug = F,
                                max.edge = 0.05, nsurv = 3){
-  #browser()
+  browser()
   #functions needed
   a.func <- function(growth,carry.cap, linpoint){
     #print("Calcualting a")
@@ -163,12 +163,14 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
                                                       northing = c(boundaries[1], boundaries[1], boundaries[2], boundaries[2]))))
   if(debug) print("Sampling")
   if(sample.type == "Normal"){
+    if(is.null(obs.sd) | is.null(npoints)){
+      warning("obs.sd and npoints must be defined")
+    }
     points.to.sample <- sample(unique(sf::st_filter(animal,bnd_inner)$geometry),
                                npoints)
     animal_obs <- filter(animal, geometry %in% points.to.sample) %>% 
       dplyr::mutate(obs = rnorm(npoints*(tmesh$n), field, obs.sd))
-  }
-  if(sample.type == "Bernoulli"){
+  } else if(sample.type == "Bernoulli"){
     points.to.sample <- sample(unique(sf::st_filter(animal,bnd_inner)$geometry),
                                npoints)
     animal_obs <- filter(animal, geometry %in% points.to.sample) %>% 
@@ -182,8 +184,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
                                             survey = rep(i, npoints*tmesh$n)))
       }
     }
-  }
-  if(sample.type == "LGCP"){
+  }else if(sample.type == "LGCP"){
     #field$field[field$field <0] <- 0
     simulate_obs <- function(i){
       samp_animal <- inlabru::sample.lgcp(smesh, 
@@ -197,7 +198,10 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     animal_obs <- do.call(rbind, observations)
     #remove edge effects
     #animal_obs <- st_as_sf(animal_obs, coords = c("x","y"))
-  }
+  } else{
+    print("Sampling type not recognised")
+    animal_obs = 0
+    }
   return(list(animal = animal,field = field,
               animal_obs = animal_obs))
 }
