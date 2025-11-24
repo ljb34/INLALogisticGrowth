@@ -1,3 +1,25 @@
+#' Fit a logistic growth model with gaussian observations
+#' 
+#' @description
+#' Iteratively fits the spatial logistic growth model. 
+#' @param data spatial dataframe of gaussian observations, with column y = log(observed value)
+#' @param smesh spatial mesh created with fm_mesh_2d_inla
+#' @param tmesh mesh over equally spaced time pointes created with fm_mesh_1d
+#' @param samplers sampling area for supplying to inlabru
+#' @param prior.mean estimated mean for first year of data. Helper function for calculating coming soon
+#' @param prior.precision uncertainty for estimated mean of first year of data. Helper function for calculating coming soon
+#' @param max.iter maximum iterations to attempt
+#' @param gamma dampening parameter for update rule
+#' @param stop.crit stopping criteria for linearisation point update rule. Stop updating if mean(abs(new_linearisation_point-old_linearisation_point))<=stop.crit
+#' @param priors named list of prior parameters, named \code{cc} (carrying capacity), \code{growth}, \code{move}, \code{sigma}. 
+#' Each is a two element vector containing the mean and variance for parameter. 
+#' @param initial.linpoint Optional. Starting guess for the linearisation point. If NULL, will be estimated within function
+#' @param initial.growth,initial.carry.cap,initial.move.const,initial.log.sigma Starting values for the growth, 
+#' \emph{log} carrying capacity, movement constant and \emph{log} standard deviation
+#' @param verbose logical supplied to INLA
+#' @returns list containing final model fit, number of iterations \code{n}, matrix of all past linearisation points and list of all past model fits.  
+#'@import inlabru
+#'@export
 iterate.cgeneric.fit.gaussian <- function(data, smesh, tmesh, samplers,prior.mean,
                                  prior.precision, max.iter = 100,gamma = 0.75,stop.crit = 0.05,
                                  priors = NULL,initial.linpoint = NULL, initial.growth=1, 
