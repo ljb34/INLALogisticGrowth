@@ -57,26 +57,26 @@ iterate.cgeneric.fit.gaussian <- function(data, smesh, tmesh, samplers,prior.mea
   print("First fitting finished")
   n.nodes <- fit$misc$configs$nconfig
   nodes <- data.frame(log.prob=rep(NA,n.nodes))
-  #mat_list <- list()
+  mat_list <- list()
   mean_list <- list()
   for(i in 1:n.nodes){
     nodes[i,]<- c(fit$misc$configs$config[[i]]$log.posterior)
-    #mat_list[[i]] <- fit$misc$configs$config[[i]]$Q[1:(smesh$n*tmesh$n), 1:(smesh$n*tmesh$n)]
+    mat_list[[i]] <- fit$misc$configs$config[[i]]$Q[1:(smesh$n*tmesh$n), 1:(smesh$n*tmesh$n)]
     mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean[1:(smesh$n*tmesh$n)]
   }
   nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
     dplyr::mutate(weight.prob = weight/sum(weight))
   #Old rule- in theory faster but gives some extreme changes
-  #P <- Reduce("+", Map(function(m, w) m * w, mat_list, nodes$weight.prob))
-  #weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
-  #b <- Reduce("+", Map(function(m,w) m%*%w, mat_list,weighted.means))
-  #new.linpoint <- (1-gamma)*initial.linpoint +gamma*solve(P,b)
+  P <- Reduce("+", Map(function(m, w) m * w, mat_list, nodes$weight.prob))
+  weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
+  b <- Reduce("+", Map(function(m,w) m%*%w, mat_list,weighted.means))
+  new.linpoint <- (1-gamma)*initial.linpoint +gamma*solve(P,b)
   
   #New update rule
-  weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
-  new.mean <- Reduce("+", weighted.means)
+  #weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
+  #new.mean <- Reduce("+", weighted.means)
   #print(new.mean)
-  new.linpoint <- (1-gamma)*initial.linpoint +gamma*new.mean
+  #new.linpoint <- (1-gamma)*initial.linpoint +gamma*new.mean
   #plot(new.linpoint)
   lp.mat <- cbind(initial.linpoint,new.linpoint)
   n <- 2
@@ -130,25 +130,25 @@ iterate.cgeneric.fit.gaussian <- function(data, smesh, tmesh, samplers,prior.mea
       fit.list <- fit
     }
     nodes <- data.frame(log.prob=rep(NA,n.nodes))
-    #mat_list <- list()
+    mat_list <- list()
     mean_list <- list()
     for(i in 1:n.nodes){
       nodes[i,]<- c(fit$misc$configs$config[[i]]$log.posterior)
-      #mat_list[[i]] <- fit$misc$configs$config[[i]]$Q[1:(smesh$n*tmesh$n),1:(smesh$n*tmesh$n)]
+      mat_list[[i]] <- fit$misc$configs$config[[i]]$Q[1:(smesh$n*tmesh$n),1:(smesh$n*tmesh$n)]
       mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean[1:(smesh$n*tmesh$n)]
     }
     nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
       dplyr::mutate(weight.prob = weight/sum(weight))
     #Old rule- in theory faster but gives some extreme changes
-    #P <- Reduce("+", Map(function(m, w) m * w, mat_list, nodes$weight.prob))
-    #weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
-    #b <- Reduce("+", Map(function(m,w) m%*%w, mat_list,weighted.means))
-    #new.linpoint <- (1-gamma)*initial.linpoint +gamma*solve(P,b)
+    P <- Reduce("+", Map(function(m, w) m * w, mat_list, nodes$weight.prob))
+    weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
+    b <- Reduce("+", Map(function(m,w) m%*%w, mat_list,weighted.means))
+    new.linpoint <- (1-gamma)*initial.linpoint +gamma*solve(P,b)
     
     #New update rule
-    weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
-    new.mean <- Reduce("+", weighted.means)
-    new.linpoint <- (1-gamma)*lp.mat[,n] +gamma*new.mean
+    #weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
+    #new.mean <- Reduce("+", weighted.means)
+    #new.linpoint <- (1-gamma)*lp.mat[,n] +gamma*new.mean
     #plot(new.linpoint, main = paste("Linearisation point", n))
     lp.mat <- cbind(lp.mat,new.linpoint)
     print("Updated linpoint")
