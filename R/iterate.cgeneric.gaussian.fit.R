@@ -26,7 +26,7 @@ iterate.cgeneric.fit.gaussian <- function(data, smesh, tmesh, samplers,prior.mea
                                  initial.carry.cap=0.05, initial.move.const = 1, initial.log.sigma = log(1.5),
                                  options = list(verbose = F, 
                                                 control.inla = list(control.vb=list(emergency=30),int.strategy = 'eb')),
-                                 saveall = T){
+                                 saveall = T, debug = NULL){
   #browser()
   step.size = (tmesh$interval[2]-tmesh$interval[1])/(tmesh$n-1) #calculate step size. -1 in denom due to fence post problem 
   if(is.null(initial.linpoint)){
