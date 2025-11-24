@@ -26,14 +26,14 @@
 #'}
 #'
 #'@export
-simulate.loggrowth <- function(growth, carry.cap, movement, sigma, 
+simulate_loggrowth <- function(growth, carry.cap, movement, sigma, 
                                initial.pop,initial.range, initial.sigma, 
                                timesteps, npoints = NULL, obs.sd=NULL,
                                obs.prob = NULL,
                                sample.type = "LGCP", ncores = 1,
                                boundaries = c(0,1), debug = F,
                                max.edge = 0.05, nsurv = 3){
-  browser()
+  #browser()
   #functions needed
   a.func <- function(growth,carry.cap, linpoint){
     #print("Calcualting a")
