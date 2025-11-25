@@ -113,7 +113,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   bnd_extended <- inlabru::spoly(data.frame(easting = c(corners[1], corners[2],corners[2],corners[1]), 
                                             northing = c(corners[1], corners[1],corners[2],corners[2])))
   smesh <- fmesher::fm_mesh_2d_inla(boundary = bnd_extended, max.edge = max.edge)
-  tmesh <- fmesher::fm_mesh_1d(loc = 1:timesteps)
+  tmesh <- fmesher::fm_mesh_1d(loc = 0:timesteps)
   step.size <- 1
   if(debug) print("set up finished, generating first year")
   matern <-
@@ -194,7 +194,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
       samp_animal_df <- dplyr::mutate(samp_animal, time = i)
       return(samp_animal_df)
     }
-    observations <- parallel::mclapply(1:timesteps, simulate_obs,  mc.cores =  ncores)
+    observations <- parallel::mclapply(0:timesteps, simulate_obs,  mc.cores =  ncores)
     animal_obs <- do.call(rbind, observations)
     #remove edge effects
     #animal_obs <- st_as_sf(animal_obs, coords = c("x","y"))
@@ -202,7 +202,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     print("Sampling type not recognised")
     animal_obs = 0
     }
-  return(list(animal = animal,field = field,
-              animal_obs = animal_obs))
+  return(list(animal = animal[animal$time != 0,],field = field[field$time !=0,],
+              animal_obs = animal_obs[animalobs$time != 0,]))
 }
 
