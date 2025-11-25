@@ -144,7 +144,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   #generate field
   if(debug) print("generating field")
   field <- data.frame(field = inla.qsample(1, Q_mat, mu = mu_mat)[, 1])
-  field$time <- rep(1:timesteps, each = smesh$n)
+  field$time <- rep(0:timesteps, each = smesh$n)
   expand_for_plot <- function(i){
     animal_tempsf <- expand.grid(
       easting = seq(corners[1],corners[2], by = 0.01),
@@ -157,7 +157,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
       field = field$field[field$time == i])
     return(animal_tempsf)
   }
-  expanded <- parallel::mclapply(1:timesteps, expand_for_plot,  mc.cores = ncores)
+  expanded <- parallel::mclapply(0:timesteps, expand_for_plot,  mc.cores = ncores)
   animal <- do.call(rbind, expanded)
   bnd_inner <- sf::st_as_sf(inlabru::spoly(data.frame(easting = c(boundaries[1],boundaries[2],boundaries[2],boundaries[1]), 
                                                       northing = c(boundaries[1], boundaries[1], boundaries[2], boundaries[2]))))
