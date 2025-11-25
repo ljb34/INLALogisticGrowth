@@ -70,7 +70,7 @@ iterate.cgeneric.fit.gaussian <- function(data, smesh, tmesh, samplers,prior.mea
   P <- Reduce("+", Map(function(m, w) m * w, mat_list, nodes$weight.prob))
   weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
   b <- Reduce("+", Map(function(m,w) m%*%w, mat_list,weighted.means))
-  new.linpoint <- (1-gamma)*initial.linpoint +gamma*solve(P,b)
+  new.linpoint <- (1-gamma)*initial.linpoint +gamma*Matrix::solve(P,b)
   
   #New update rule
   #weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
@@ -143,7 +143,7 @@ iterate.cgeneric.fit.gaussian <- function(data, smesh, tmesh, samplers,prior.mea
     P <- Reduce("+", Map(function(m, w) m * w, mat_list, nodes$weight.prob))
     weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
     b <- Reduce("+", Map(function(m,w) m%*%w, mat_list,weighted.means))
-    new.linpoint <- (1-gamma)*initial.linpoint +gamma*solve(P,b)
+    new.linpoint <- (1-gamma)*initial.linpoint +gamma*Matrix::solve(P,b)
     
     #New update rule
     #weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
