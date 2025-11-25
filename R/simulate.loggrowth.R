@@ -203,6 +203,6 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     animal_obs = 0
     }
   return(list(animal = animal[animal$time != 0,],field = field[field$time !=0,],
-              animal_obs = animal_obs[animalobs$time != 0,]))
+              animal_obs = animal_obs[animal_obs$time != 0,]))
 }
 
