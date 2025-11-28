@@ -1,5 +1,5 @@
 library(tidyverse)
-k <- seq(500,1500)
+k <- seq(0,1000, length.out = 1001)
 k.df <- data.frame(k = rep(k,times = 5), shape = rep(c(0.5,1,1.5,2,2.5), each = length(k)))
 
 k.df %>% 
@@ -39,8 +39,21 @@ ggplot()+
 ggsave("gammaprior.png")
 
 
+k.prior <- data.frame(value = 250:750,parameter = "k")
+k.prior <- mutate(k.prior, density = dnorm(log(value), log(453)-0.5*0.1*0.1, 0.1))
+r.prior <- data.frame(value = seq(0.4,1.2,by = 0.01),parameter = "growth")
+r.prior <- mutate(r.prior, density = dnorm(log(value), log(0.8) - 0.5*0.1*0.1, 0.1))
+move.prior <- data.frame(value = seq(-1,1,by = 0.01),parameter = "move")
+move.prior <- mutate(move.prior, density = dnorm(value, 0.1))
+sigma.prior <- data.frame(value = seq(0,0.25,by = 0.01), parameter = "sigma")
+sigma.prior <- mutate(sigma.prior, density = dnorm(log(value), log(0.1) - 0.5*0.1*0.1, 0.1))
 
 
+priors.df <- rbind(k.prior, r.prior)#, move.prior, sigma.prior)
+ggplot(priors.df)+
+  geom_line(aes(x = value, y = density))+
+  facet_wrap(~parameter, scales = "free")
+ggsave("priors.png")
 # SPDE --------------------------------------------------------------------
 dens_prior_range = function(rho_0, p_alpha, upper)
 {
