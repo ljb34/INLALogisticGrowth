@@ -58,7 +58,11 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
   mean_list <- list()
   for(i in 1:n.nodes){
     nodes[i,]<- fit$misc$configs$config[[i]]$log.posterior
-    mat_list[[i]] <- fit$misc$configs$config[[i]]$Q[1:(smesh$n*tmesh$n), 1:(smesh$n*tmesh$n)]
+    Q <- fit$misc$configs$config[[i]]$Q[1:(smesh$n*tmesh$n), 1:(smesh$n*tmesh$n)]
+    dQ <- diag(Q)
+    Q <- Q + Matrix::t(Q)
+    diag(Q) <- dQ
+    mat_list[[i]] <- Q
     mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean[1:(smesh$n*tmesh$n)]
   }
   nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
@@ -129,7 +133,11 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
     mean_list <- list()
     for(i in 1:n.nodes){
       nodes[i,]<- fit$misc$configs$config[[i]]$log.posterior
-      mat_list[[i]] <- fit$misc$configs$config[[i]]$Q[1:(smesh$n*tmesh$n),1:(smesh$n*tmesh$n)]
+      Q <- fit$misc$configs$config[[i]]$Q[1:(smesh$n*tmesh$n), 1:(smesh$n*tmesh$n)]
+      dQ <- diag(Q)
+      Q <- Q + Matrix::t(Q)
+      diag(Q) <- dQ
+      mat_list[[i]] <- Q
       mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean[1:(smesh$n*tmesh$n)]
     }
     nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%

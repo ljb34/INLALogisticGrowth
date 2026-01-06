@@ -35,7 +35,11 @@ nodes <- data.frame(log.prob=rep(NA,n.nodes))
 mat_list <- list()
 for(i in 1:n.nodes){
   nodes[i,]<- fit0$misc$configs$config[[i]]$log.posterior
-  mat_list[[i]] <- fit0$misc$configs$config[[i]]$Q[1:mesh_obs$n,1:mesh_obs$n]
+  Q <- fit$misc$configs$config[[i]]$Q[1:(smesh$n*tmesh$n), 1:(smesh$n*tmesh$n)]
+  dQ <- diag(Q)
+  Q <- Q + Matrix::t(Q)
+  diag(Q) <- dQ
+  mat_list[[i]] <- Q
 }
 nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
   dplyr::mutate(weight.prob = weight/sum(weight))
