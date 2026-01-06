@@ -39,8 +39,8 @@ ggplot()+
 ggsave("gammaprior.png")
 
 
-k.prior <- data.frame(value = 250:750,parameter = "k")
-k.prior <- mutate(k.prior, density = dnorm(log(value), log(453)-0.5*0.1*0.1, 0.1))
+k.prior <- data.frame(value = 700:1300,parameter = "k")
+k.prior <- mutate(k.prior, density = dnorm(log(value), log(1000)-0.5*0.1*0.1, 0.1))
 r.prior <- data.frame(value = seq(0.4,1.2,by = 0.01),parameter = "growth")
 r.prior <- mutate(r.prior, density = dnorm(log(value), log(0.8) - 0.5*0.1*0.1, 0.1))
 move.prior <- data.frame(value = seq(-1,1,by = 0.01),parameter = "move")
@@ -73,7 +73,7 @@ dens_prior_sd = function(sigma_0, p_sigma)
   # sd sigma of the Matern field
   # sigma_0 and p_sigma are defined such that
   # P(sigma>sigma_0) = p_sigma
-  sigma = seq(0, sigma_0*10, length.out =100)
+  sigma = seq(0, 0.1, length.out =100)
   alpha2_tilde = -log(p_sigma)/sigma_0
   dens_sigma = alpha2_tilde* exp(-alpha2_tilde * sigma) 
   return(data.frame(x = sigma, y = dens_sigma))
@@ -88,5 +88,8 @@ ggplot()+
   geom_line(data = dens_prior_sd(0.25,0.1), aes(x,y))
 
 ggplot()+
-  geom_line(data = dens_prior_sd(1,0.1), aes(x,y, colour = "1"))+
-  geom_line(data = dens_prior_sd(0.5,0.1), aes(x,y, colour = "0.5"))
+  geom_line(data = dens_prior_sd(0.1,0.1), aes(x,y, colour = "0.1"))+
+  geom_line(data = dens_prior_sd(0.11,0.1), aes(x,y, colour = "0.125"))+
+  geom_line(data = dens_prior_sd(0.1,0.15), aes(x,y, colour = "0.15"))+
+  geom_vline(xintercept = 0.015)
+  #geom_line(data = dens_prior_sd(0.15,0.1), aes(x,y, colour = "0.15"))

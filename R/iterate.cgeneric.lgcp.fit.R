@@ -63,24 +63,20 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
   }
   nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
     dplyr::mutate(weight.prob = weight/sum(weight))
-  #Old rule- in theory faster but gives some extreme changes
+  #Type II rule
   P <- Reduce("+", Map(function(m, w) m * w, mat_list, nodes$weight.prob))
   weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
   b <- Reduce("+", Map(function(m,w) m%*%w, mat_list,weighted.means))
-  
-  print(paste("dim P = ", dim(P)))
-  print(paste("dim b = ", dim(b)))
-  print(class(b))
   new.linpoint <- (1-gamma)*initial.linpoint +gamma*Matrix::solve(P,b)
   
-  #New update rule
+  #Type I rule
   #weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
   #new.mean <- Reduce("+", weighted.means)
   #new.linpoint <- (1-gamma)*initial.linpoint +gamma*new.mean
   print("Calcualted new linpoint")
   lp.mat <- cbind(initial.linpoint,new.linpoint)
   n <- 2
-  #print(fit$summary.hyperpar$mean)
+
   while(n < max.iter & mean(abs(lp.mat[,n]-lp.mat[,n-1]))>stop.crit){
     log_growth_model <- define.cgeneric.loggrow.model(linpoint = as.vector(new.linpoint), 
                                              smesh = smesh,tmesh = tmesh, step.size = step.size, 
@@ -143,7 +139,7 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
     b <- Reduce("+", Map(function(m,w) m%*%w, mat_list,weighted.means))
     new.linpoint <- (1-gamma)*lp.mat[,n] +gamma*Matrix::solve(P,b)
     
-    #New update rule
+    #Type I
     #weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
     #new.mean <- Reduce("+", weighted.means)
     #new.linpoint <- (1-gamma)*lp.mat[,n-1] +gamma*new.mean
