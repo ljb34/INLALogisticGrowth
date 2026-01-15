@@ -58,12 +58,12 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
   mean_list <- list()
   for(i in 1:n.nodes){
     nodes[i,]<- fit$misc$configs$config[[i]]$log.posterior
-    Q <- fit$misc$configs$config[[i]]$Q[1:(smesh$n*tmesh$n), 1:(smesh$n*tmesh$n)]
+    Q <- fit$misc$configs$config[[i]]$Q
     dQ <- Matrix::diag(Q)
     Q <- Q + Matrix::t(Q)
     Matrix::diag(Q) <- dQ
     mat_list[[i]] <- Q
-    mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean[1:(smesh$n*tmesh$n)]
+    mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean
   }
   nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
     dplyr::mutate(weight.prob = weight/sum(weight))
@@ -103,11 +103,7 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
                samplers = samplers,
                family = "cp", options = options)
     print(paste("Fitted new model", n))
-    if(saveall){
-      fit_list[[n]]<-fit
-    } else{
-      fit_list <- fit
-    }
+
     n.nodes <- fit$misc$configs$nconfig
     if(!is.numeric(n.nodes)){
       print("Failed to fit, trying again")
@@ -133,12 +129,12 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
     mean_list <- list()
     for(i in 1:n.nodes){
       nodes[i,]<- fit$misc$configs$config[[i]]$log.posterior
-      Q <- fit$misc$configs$config[[i]]$Q[1:(smesh$n*tmesh$n), 1:(smesh$n*tmesh$n)]
+      Q <- fit$misc$configs$config[[i]]$Q
       dQ <- Matrix::diag(Q)
       Q <- Q + Matrix::t(Q)
       Matrix::diag(Q) <- dQ
       mat_list[[i]] <- Q
-      mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean[1:(smesh$n*tmesh$n)]
+      mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean
     }
     nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
       dplyr::mutate(weight.prob = weight/sum(weight))

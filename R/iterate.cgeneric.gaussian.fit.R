@@ -33,7 +33,7 @@ iterate.cgeneric.fit.gaussian <- function(data, smesh, tmesh, samplers,prior.mea
     initial.linpoint <- log(logit.nest(exp(prior.mean), exp(initial.growth), exp(initial.carry.cap), tmesh$n)$x)
   }
   if(!is.matrix(initial.linpoint)) initial.linpoint <- as.matrix(initial.linpoint, ncol = 1)
-  fit.list <- list()
+  fit_list <- list()
   #Set up initial model
   log_growth_model <- define.cgeneric.loggrow.model(linpoint = initial.linpoint, 
                                                     smesh = smesh,tmesh = tmesh, step.size = step.size, 
@@ -50,9 +50,9 @@ iterate.cgeneric.fit.gaussian <- function(data, smesh, tmesh, samplers,prior.mea
              samplers = samplers,
              family = "gaussian", options = options)
   if(saveall){
-    fit.list[[1]]<-fit
+    fit_list[[1]]<-fit
   }else{
-    fit.list <- fit
+    fit_list <- fit
   }
   print("First fitting finished")
   n.nodes <- fit$misc$configs$nconfig
@@ -61,12 +61,12 @@ iterate.cgeneric.fit.gaussian <- function(data, smesh, tmesh, samplers,prior.mea
   mean_list <- list()
   for(i in 1:n.nodes){
     nodes[i,]<- c(fit$misc$configs$config[[i]]$log.posterior)
-    Q <- fit$misc$configs$config[[i]]$Q[1:(smesh$n*tmesh$n), 1:(smesh$n*tmesh$n)]
+    Q <- fit$misc$configs$config[[i]]$Q
     dQ <- Matrix::diag(Q)
     Q <- Q + Matrix::t(Q)
     Matrix::diag(Q) <- dQ
     mat_list[[i]] <- Q
-    mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean[1:(smesh$n*tmesh$n)]
+    mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean
   }
   nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
     dplyr::mutate(weight.prob = weight/sum(weight))
@@ -101,10 +101,7 @@ iterate.cgeneric.fit.gaussian <- function(data, smesh, tmesh, samplers,prior.mea
                                                       #initial.move.const = fit$summary.hyperpar$mean[3],
                                                       #initial.log.sigma = fit$summary.hyperpar$mean[4],
                                                       debug = debug)
-    #initial.growth = initial.growth, 
-    #initial.carry.cap = initial.carry.cap,
-    #initial.move.const = initial.move.const,
-    #initial.log.sigma = initial.log.sigma)
+
     print("Defined new model")
     fit <- bru(y ~ loggrow(list(space = geometry, time = time), 
                            model = log_growth_model, 
@@ -124,26 +121,26 @@ iterate.cgeneric.fit.gaussian <- function(data, smesh, tmesh, samplers,prior.mea
                  family = "gaussian", options = options)
       if(!is.numeric(fit$misc$configs$nconfig)){
         print("Failed again, returning model output")
-        return(list(new.linpoint = new.linpoint,fit = fit, past.linpoints = lp.mat, fit.list = fit.list))
+        return(list(new.linpoint = new.linpoint,fit = fit, past.linpoints = lp.mat, fit_list = fit_list))
       }
       n.nodes <- fit$misc$configs$nconfig
     }
     if(saveall){
-      fit.list[[n]]<-fit
+      fit_list[[n]]<-fit
     }else{
-      fit.list <- fit
+      fit_list <- fit
     }
     nodes <- data.frame(log.prob=rep(NA,n.nodes))
     mat_list <- list()
     mean_list <- list()
     for(i in 1:n.nodes){
       nodes[i,]<- c(fit$misc$configs$config[[i]]$log.posterior)
-      Q <- fit$misc$configs$config[[i]]$Q[1:(smesh$n*tmesh$n), 1:(smesh$n*tmesh$n)]
+      Q <- fit$misc$configs$config[[i]]$Q
       dQ <- Matrix::diag(Q)
       Q <- Q + Matrix::t(Q)
       Matrix::diag(Q) <- dQ
       mat_list[[i]] <- Q
-      mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean[1:(smesh$n*tmesh$n)]
+      mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean
     }
     nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
       dplyr::mutate(weight.prob = weight/sum(weight))
@@ -175,10 +172,7 @@ iterate.cgeneric.fit.gaussian <- function(data, smesh, tmesh, samplers,prior.mea
                                                     #initial.move.const = fit$summary.hyperpar$mean[3],
                                                     #initial.log.sigma = fit$summary.hyperpar$mean[4],
                                                     debug = debug)
-  #initial.growth = initial.growth, 
-  #initial.carry.cap = initial.carry.cap,
-  #initial.move.const = initial.move.const,
-  #initial.log.sigma = initial.log.sigma)
+
   print("Defined final model")
   final.fit <- bru(y ~ loggrow(list(space = geometry, time = time), 
                                model = log_growth_model, 
@@ -186,5 +180,5 @@ iterate.cgeneric.fit.gaussian <- function(data, smesh, tmesh, samplers,prior.mea
                    data = data, domain = list(geometry = smesh,time = tmesh),
                    samplers = samplers,
                    family = "gaussian", options = options)
-  return(list(fit = final.fit, n = n, linpoints = lp.mat, fit.list = fit.list))
+  return(list(fit = final.fit, n = n, linpoints = lp.mat, fit_list = fit_list))
 }
