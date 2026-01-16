@@ -23,7 +23,8 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
                                    prior.precision, max.iter = 100,gamma = 0.5,stop.crit = 0.05,
                                    priors = NULL, initial.linpoint = NULL, initial.growth=1, 
                                    initial.carry.cap=100, initial.move.const = 1, initial.log.sigma = log(1.5),
-                                    debug = NULL, saveall = T, options = list(verbose = F,control.vb = list(enable = T, emergency =25))){
+                                    debug = NULL, saveall = T, options = list(verbose = F,control.vb = list(enable = T, emergency =25)),
+                                   update.rule = 2){
   #browser()
   step.size = (tmesh$interval[2]-tmesh$interval[1])/(tmesh$n-1) #calculate step size. -1 in denom due to fence post problem 
   if(is.null(initial.linpoint)){
@@ -67,16 +68,18 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
   }
   nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
     dplyr::mutate(weight.prob = weight/sum(weight))
-  #Type II rule
-  P <- Reduce("+", Map(function(m, w) m * w, mat_list, nodes$weight.prob))
-  weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
-  b <- Reduce("+", Map(function(m,w) m%*%w, mat_list,weighted.means))
-  new.linpoint <- (1-gamma)*initial.linpoint +gamma*Matrix::solve(P,b)
-  
-  #Type I rule
-  #weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
-  #new.mean <- Reduce("+", weighted.means)
-  #new.linpoint <- (1-gamma)*initial.linpoint +gamma*new.mean
+  if(update.rule == 2){
+    #Type II update
+    P <- Reduce("+", Map(function(m, w) m * w, mat_list, nodes$weight.prob))
+    weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
+    b <- Reduce("+", Map(function(m,w) m%*%w, mat_list,weighted.means))
+    new.linpoint <- (1-gamma)*initial.linpoint +gamma*Matrix::solve(P,b)
+  }else{
+    #Type I
+    weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
+    new.mean <- Reduce("+", weighted.means)
+    new.linpoint <- (1-gamma)*initial.linpoint +gamma*new.mean
+  }
   print("Calcualted new linpoint")
   lp.mat <- cbind(initial.linpoint,new.linpoint)
   n <- 2
@@ -138,15 +141,18 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
     }
     nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
       dplyr::mutate(weight.prob = weight/sum(weight))
-    P <- Reduce("+", Map(function(m, w) m * w, mat_list, nodes$weight.prob))
-    weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
-    b <- Reduce("+", Map(function(m,w) m%*%w, mat_list,weighted.means))
-    new.linpoint <- (1-gamma)*lp.mat[,n] +gamma*Matrix::solve(P,b)
-    
-    #Type I
-    #weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
-    #new.mean <- Reduce("+", weighted.means)
-    #new.linpoint <- (1-gamma)*lp.mat[,n-1] +gamma*new.mean
+    if(update.rule == 2){
+      #Type II update
+      P <- Reduce("+", Map(function(m, w) m * w, mat_list, nodes$weight.prob))
+      weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
+      b <- Reduce("+", Map(function(m,w) m%*%w, mat_list,weighted.means))
+      new.linpoint <- (1-gamma)*initial.linpoint +gamma*Matrix::solve(P,b)
+    }else{
+      #Type I
+      weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
+      new.mean <- Reduce("+", weighted.means)
+      new.linpoint <- (1-gamma)*initial.linpoint +gamma*new.mean
+    }
     
     lp.mat <- cbind(lp.mat,new.linpoint)
     print("Updated linpoint")
