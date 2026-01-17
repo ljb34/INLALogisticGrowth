@@ -110,9 +110,10 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   
   #set up for simulation
   corners <- c(boundaries[1] - 2*initial.range, boundaries[2]+2*initial.range)
-  bnd_extended <- inlabru::spoly(data.frame(easting = c(corners[1], corners[2],corners[2],corners[1]), 
-                                            northing = c(corners[1], corners[1],corners[2],corners[2])))
-  smesh <- fmesher::fm_mesh_2d_inla(boundary = bnd_extended, max.edge = max.edge)
+  bnd_extended <- sf::st_as_sf(inlabru::spoly(data.frame(easting = c(corners[1], corners[2],corners[2],corners[1]), 
+                                                         northing = c(corners[1], corners[1],corners[2],corners[2]))))
+  hex_points <- fm_hexagon_lattice(bnd = bnd_extended, edge_len = max.edge)
+  smesh <- fmesher::fm_mesh_2d_inla(loc = hex_points, boundary = bnd_extended)
   tmesh <- fmesher::fm_mesh_1d(loc = 0:timesteps)
   step.size <- 1
   if(debug) print("set up finished, generating first year")
