@@ -32,6 +32,8 @@ define.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.size,
   }
   
   fem.matrices <- fmesher::fm_fem(smesh)
+  C <- fem.matrices$c1
+  G <- fem.matrices$g1
   CinvG <- Matrix::solve(fem.matrices$c1, fem.matrices$g1)
   #browser()
   INLAversion <- INLAtools::packageCheck(
@@ -84,8 +86,9 @@ define.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.size,
                               pmove = as.double(priors$move),
                               psigma = as.double(priors$sigma),
                               CinvG = CinvG,
-                              prior_precision = Matrix::Matrix(prior.precision, sparse = T)
-                              )))
+                              prior_precision = Matrix::Matrix(prior.precision, sparse = T),
+                              C = C,
+                              G = G)))
   
   class(the_model) <- c("log_growth_model", class(the_model))
   the_model[["smesh"]] <- smesh

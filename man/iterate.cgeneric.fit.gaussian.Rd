@@ -20,9 +20,10 @@ iterate.cgeneric.fit.gaussian(
   initial.carry.cap = 0.05,
   initial.move.const = 1,
   initial.log.sigma = log(1.5),
-  options = list(verbose = F, control.inla = list(control.vb = list(emergency = 30),
-    int.strategy = "eb")),
-  saveall = T
+  options = list(verbose = F, control.inla = list(control.vb = list(emergency = 30))),
+  saveall = T,
+  debug = NULL,
+  update.rule = 2
 )
 }
 \arguments{

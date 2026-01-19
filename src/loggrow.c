@@ -181,6 +181,14 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     inla_cgeneric_smat_tp* prior_precision = data->smats[1];
     assert(prior_precision->nrow == ns); 
 
+    assert(!strcasecmp(data->smats[2]->name, "C"));
+    inla_cgeneric_smat_tp* C = data->smats[2];
+    assert(C->nrow == ns);
+
+    assert(!strcasecmp(data->smats[3]->name, "G"));
+    inla_cgeneric_smat_tp* G = data->smats[3];
+    assert(G->nrow == ns);
+
     //different outputs for the commands supplied
     switch (cmd) { 
     case INLA_CGENERIC_VOID:
@@ -267,17 +275,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         int nrhs = N;
         int info;
 
-        double* B = malloc(N * N * sizeof(double));
-        memcpy(B, L_mat->x, N * N * sizeof(double));
+        double* B = calloc(N * N, sizeof(double));
         //Compute Noise * L
-        //scale rows by diagonal noise* 
-        double scale = timestep / (sigma * sigma);
-            for (int i = ns; i < N; i++) {
-                for (int j = ns; j < N; j++) {
-                    B[j * N + i] *= scale;
-                }
-            }
-
 		//initial ns x ns prior_precision block - prior precision * identity so can just copy prior_precision to B
 		//if sparse prior_precision
         if (prior_precision->n != ns * ns) {
@@ -292,16 +291,85 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         else { //if dense prior precision
             for (int i = 0; i < ns; i++) {
                 for (int j = 0; j < ns; j++) {
-					B[j * N + i] = prior_precision->x[j * ns + i]; //B is col-major but prior_precision is row-major
+					B[j * N + i] = prior_precision->x[j * ns + i]; 
                 }
             }
         }
-
-
-        double* out = calloc(N * N, sizeof(double));
+        /*Rest of B=Q*L */
         double one = 1, zero = 0;
+        //Calculate sigma**2/h * (C+gG)
+		double g = pow(move_const, 0.5);
+		double* Qblock = calloc(ns * ns, sizeof(double));
+		if (C->n == ns & G->n == ns) { //if dense C and G
+            for (int i = 0; i < ns; i++) {
+                for (int j = 0; j < ns; j++) {
+                    Qblock[j * ns + i] = sigma * sigma * (C->x[j * ns + i] + g * G->x[j * ns + i]) / timestep;
+                }
+            }
+        }
+        else //C and G both sparse, non zero entries don't line up
+        { //calculate C+ gG
+            //first copy C to Qblock
+            for (int k = 0; k < C->n; k++) {
+                int ii = C->i[k];
+                int jj = C->j[k];
+                double cv = C->x[k];
+                Qblock[jj * ns + ii] = cv;
+            }
+            //then add gG to Qblock
+            for (int k = 0; k < G->n; k++) {
+                int ii = G->i[k];
+                int jj = G->j[k];
+                double gv = G->x[k];
+                Qblock[jj * ns + ii] += g * gv;
+            }
+            //finally scale by sigma^2 / timestep
+            for (int i = 0; i < ns; i++) {
+                for (int j = 0; j < ns; j++) {
+                    Qblock[j * ns + i] = sigma * sigma * Qblock[j * ns + i] / timestep;
+                }
+			}
+        }
+        
+		//main diagonal blocks
+        for (int t = 1; t < nt; t++) {
+
+			//extract t-th block of L
+			double* Lblock = malloc(ns * ns * sizeof(double));
+            for (int i = 0; i < ns; i++) {
+                for (int j = 0; j < ns; j++) {
+                    Lblock[j * ns + i] = L_mat->x[(t * ns + j) * N + t * ns + i];
+                }
+            }
+			//multiply Qblock * Lblock and store in B
+			double* temp = malloc(ns * ns * sizeof(double));
+			char transA = 'N';
+			char transB = 'N';
+			dgemm_(&transA, &transB, &ns, &ns, &ns, &one, Qblock, &ns, Lblock, &ns, &zero, temp, &ns);
+            for (int i = 0; i < ns; i++) {
+                for (int j = 0; j < ns; j++) {
+                    B[(t * ns + j) * N + t * ns + i] = temp[j * ns + i];
+                }
+            }
+
+			//clear memory
+			free(Lblock);
+			free(temp);
+        }
+
+		//sub diagonal blocks -1/timestep*Qblock
+        for (int t = 1; t < nt - 1; t++) {
+            for(int i = 0; i < ns; i++) {
+                for (int j = 0; j < ns; j++) {
+                    B[(t * ns + j) * N + (t + 1) * ns + i] = -1.0 / timestep * Qblock[j * ns + i];
+                }
+			}
+        }
+
+		free(Qblock);
 
         /* Now compute out = L_mat^T * B */
+        double* out = calloc(N * N, sizeof(double));
         char transL = 'T';
 		char transB = 'N';
         dgemm_(&transL, &transB, &N, &N, &N, &one, L_mat->x, &lda, B, &ldb, &zero, out, &N);

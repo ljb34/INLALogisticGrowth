@@ -22,7 +22,8 @@ iterate.cgeneric.fit.lgcp(
   initial.log.sigma = log(1.5),
   debug = NULL,
   saveall = T,
-  options = list(verbose = F, control.vb = list(enable = T, emergency = 25))
+  options = list(verbose = F, control.vb = list(enable = T, emergency = 25)),
+  update.rule = 2
 )
 }
 \arguments{
