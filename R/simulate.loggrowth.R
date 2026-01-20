@@ -74,7 +74,10 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     par = interpret.theta()
     #print(par)
     Lmat = L.matrix(par$growth, par$carry.cap, par$move.const,step.size, linpoint, smesh, tmesh)
-    noiseonly = Matrix::Diagonal(smesh$n*(tmesh$n-1), 1/(par$sigma*step.size)**2)
+    mats <- fmesher::fm_fem(smesh)
+    g <- sqrt(1/par$move.const)
+    noiseblock <- (mats$c1 + g*mats$g1)*(par$sigma**2)/step.size
+    noiseonly = Matrix::bdiag(replicate(tmesh$n-1, noiseblock, simplify = FALSE))
     noise.precision = Matrix::bdiag(list(prior.precision, noiseonly))
     output = Matrix::crossprod(Lmat, noise.precision %*% Lmat)
     #print(output[smesh$n:(smesh$n +10),smesh$n:(smesh$n +10)])
@@ -109,11 +112,12 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   }
   
   #set up for simulation
-  corners <- c(boundaries[1] - 2*initial.range, boundaries[2]+2*initial.range)
-  bnd_extended <- sf::st_as_sf(inlabru::spoly(data.frame(easting = c(corners[1], corners[2],corners[2],corners[1]), 
-                                                         northing = c(corners[1], corners[1],corners[2],corners[2]))))
-  hex_points <- fm_hexagon_lattice(bnd = bnd_extended, edge_len = max.edge)
-  smesh <- fmesher::fm_mesh_2d_inla(loc = hex_points, boundary = bnd_extended)
+  bnd_extended <- sf::st_as_sf(inlabru::spoly(data.frame(easting = c(boundaries[1], boundaries[2],boundaries[2],boundaries[1]), 
+                                                         northing = c(boundaries[1], boundaries[1],boundaries[2],boundaries[2]))))
+  hex_points <- fm_hexagon_lattice(bnd = bnd_extended, edge_len = 0.9*max.edge)
+  smesh <- fmesher::fm_mesh_2d_inla(loc = hex_points, boundary = bnd_extended,
+                                   max.edge = c(max.edge*1.1, 2*max.edge),
+                                   offset = c(-0.01, (boundaries[2]-boundaries[1])/2))
   tmesh <- fmesher::fm_mesh_1d(loc = 0:timesteps)
   step.size <- 1
   if(debug) print("set up finished, generating first year")
@@ -148,8 +152,8 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   field$time <- rep(0:timesteps, each = smesh$n)
   expand_for_plot <- function(i){
     animal_tempsf <- expand.grid(
-      easting = seq(corners[1],corners[2], by = 0.01),
-      northing = seq(corners[1],corners[2], by = 0.01))
+      easting = seq(boundaries[1],boundaries[2], by = 0.01),
+      northing = seq(boundaries[1],boundaries[2], by = 0.01))
     animal_tempsf <- dplyr::mutate(sf::st_as_sf(animal_tempsf, coords = c("easting", "northing")),
                                    time = i)
     animal_tempsf$field <- fmesher::fm_evaluate(
@@ -204,6 +208,6 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     animal_obs = 0
     }
   return(list(animal = animal[animal$time != 0,],field = field[field$time !=0,],
-              animal_obs = animal_obs[animal_obs$time != 0,]))
+              animal_obs = animal_obs[animal_obs$time != 0,], mesh = smesh))
 }
 
