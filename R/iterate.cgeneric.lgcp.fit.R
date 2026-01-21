@@ -157,6 +157,11 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
     lp.mat <- cbind(lp.mat,new.linpoint)
     print("Updated linpoint")
     n <- n+1
+    if(saveall){
+      fit_list[[n]]<-fit
+    } else{
+      fit_list <- fit
+    }
   }
   log_growth_model <- define.cgeneric.loggrow.model(linpoint = as.vector(new.linpoint), 
                                            smesh = smesh,tmesh = tmesh, step.size = step.size, 

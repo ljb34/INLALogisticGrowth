@@ -83,6 +83,11 @@ iterate.cgeneric.fit.gaussian <- function(data, smesh, tmesh, samplers,prior.mea
     new.linpoint <- (1-gamma)*initial.linpoint +gamma*new.mean
   }
   #plot(new.linpoint)
+  if(saveall){
+    fit_list[[n]]<-fit
+  } else{
+    fit_list <- fit
+  }
   lp.mat <- cbind(initial.linpoint,new.linpoint)
   n <- 2
   #print(fit$summary.hyperpar$mean)

@@ -75,7 +75,8 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     #print(par)
     Lmat = L.matrix(par$growth, par$carry.cap, par$move.const,step.size, linpoint, smesh, tmesh)
     mats <- fmesher::fm_fem(smesh)
-    g <- par$move.const**2
+    a<- a.func(growth,carry.cap, linpoint)
+    g <- par$move.const/mean(a)
     noiseblock <- (mats$c1 + g*mats$g1)*(par$sigma**2)/step.size
     noiseonly = Matrix::bdiag(replicate(tmesh$n-1, noiseblock, simplify = FALSE))
     noise.precision = Matrix::bdiag(list(prior.precision, noiseonly))

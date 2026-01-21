@@ -298,9 +298,17 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         /*Rest of B=Q*L */
         double one = 1, zero = 0;
         //Calculate sigma**2/h * (C+gG)
-		double g = pow(move_const, 2);
+        double* a_array = malloc(ns*nt * sizeof(double));
+        a_func(growth, carry_cap, linpoint->doubles, ns, nt, a_array);
+		double mean_a = 0.0;
+        for (int i = 0; i < ns*nt; i++) {
+            mean_a += a_array[i];
+        }
+        mean_a = mean_a/(ns*nt);
+		free(a_array);
+		double g = move_const / mean_a;
 		double* Qblock = calloc(ns * ns, sizeof(double));
-		if (C->n == ns & G->n == ns) { //if dense C and G
+		if ((C->n == ns) & (G->n == ns)) { //if dense C and G
             for (int i = 0; i < ns; i++) {
                 for (int j = 0; j < ns; j++) {
                     Qblock[j * ns + i] = sigma * sigma * (C->x[j * ns + i] + g * G->x[j * ns + i]) / timestep;
