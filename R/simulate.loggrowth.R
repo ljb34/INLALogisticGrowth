@@ -75,8 +75,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     #print(par)
     Lmat = L.matrix(par$growth, par$carry.cap, par$move.const,step.size, linpoint, smesh, tmesh)
     mats <- fmesher::fm_fem(smesh)
-    a<- a.func(growth,carry.cap, linpoint)
-    g <- par$move.const/mean(a)
+    g <- par$move.const
     noiseblock <- (mats$c1 + g*mats$g1)*(par$sigma**2)/step.size
     noiseonly = Matrix::bdiag(replicate(tmesh$n-1, noiseblock, simplify = FALSE))
     noise.precision = Matrix::bdiag(list(prior.precision, noiseonly))
@@ -191,19 +190,20 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
       }
     }
   }else if(sample.type == "LGCP"){
-    #field$field[field$field <0] <- 0
-    simulate_obs <- function(i){
-      samp_animal <- inlabru::sample.lgcp(smesh, 
-                                 loglambda = field$field[field$time == i],
-                                 samplers = bnd_inner)
+    samp_animal <- inlabru::sample.lgcp(mesh = smesh,loglambda = field$field[field$time == 0],
+                                        samplers = bnd_inner)
+    samp_animal <- sf::st_as_sf(samp_animal, coords = c("x","y"))
+    animal_obs <- dplyr::mutate(samp_animal, time = 0)
+    rm(samp_animal)
+    for(i in 1:timesteps){
+      samp_animal <- inlabru::sample.lgcp(mesh = smesh,loglambda = field$field[field$time == i],
+                                          samplers = bnd_inner)
       samp_animal <- sf::st_as_sf(samp_animal, coords = c("x","y"))
       samp_animal_df <- dplyr::mutate(samp_animal, time = i)
-      return(samp_animal_df)
+      animal_obs <- rbind(animal_obs, samp_animal_df)
+      rm(samp_animal)
+      rm(samp_animal_df)
     }
-    observations <- parallel::mclapply(0:timesteps, simulate_obs,  mc.cores =  ncores)
-    animal_obs <- do.call(rbind, observations)
-    #remove edge effects
-    #animal_obs <- st_as_sf(animal_obs, coords = c("x","y"))
   } else{
     print("Sampling type not recognised")
     animal_obs = 0
