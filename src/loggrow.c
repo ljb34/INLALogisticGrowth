@@ -307,7 +307,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         mean_a = mean_a/(ns*nt);
 		free(a_array);
 		double g = move_const / mean_a; */
-        double g = pow(move_const, 0.5);
+        double g = pow(move_const, 2);
 		double* Qblock = calloc(ns * ns, sizeof(double));
 		if ((C->n == ns) & (G->n == ns)) { //if dense C and G
             for (int i = 0; i < ns; i++) {
