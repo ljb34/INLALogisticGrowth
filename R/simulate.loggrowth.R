@@ -190,20 +190,34 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
       }
     }
   }else if(sample.type == "LGCP"){
-    samp_animal <- inlabru::sample.lgcp(mesh = smesh,loglambda = field$field[field$time == 0],
-                                        samplers = bnd_inner)
-    samp_animal <- sf::st_as_sf(samp_animal, coords = c("x","y"))
-    animal_obs <- dplyr::mutate(samp_animal, time = 0)
-    rm(samp_animal)
-    for(i in 1:timesteps){
-      samp_animal <- inlabru::sample.lgcp(mesh = smesh,loglambda = field$field[field$time == i],
-                                          samplers = bnd_inner)
-      samp_animal <- sf::st_as_sf(samp_animal, coords = c("x","y"))
-      samp_animal_df <- dplyr::mutate(samp_animal, time = i)
-      animal_obs <- rbind(animal_obs, samp_animal_df)
-      rm(samp_animal)
-      rm(samp_animal_df)
+    lambda_func <- function(x,y){
+      points_sf <- st_as_sf(data.frame(x = x, y = y), coords = c("x","y"))
+      field_values <- fmesher::fm_evaluate(
+        smesh,
+        loc = points_sf,
+        field = field$field[field$time == 0])
+      return(exp(field_values))
     }
+    spatstat_sim <- rpoispp(lambda = lambda_func1, win = owin(boundaries,boundaries))
+    spatstat_df <- data.frame(x = spatstat_sim$x, y = spatstat_sim$y, time = rep(0, length(spatstat_sim$x)))
+    animal_obs <- st_as_sf(spatstat_df, coords = c("x","y"))
+    
+    for(i in 1:timesteps){
+      lambda_func_i <- function(x,y){
+        points_sf <- st_as_sf(data.frame(x = x, y = y), coords = c("x","y"))
+        field_values <- fmesher::fm_evaluate(
+          smesh,
+          loc = points_sf,
+          field = field$field[field$time == i])
+        return(exp(field_values))
+      }
+      spatstat_sim_i <- spatstat::rpoispp(lambda = lambda_func_i, win = owin(boundaries,boundaries))
+      spatstat_df_i <- data.frame(x = spatstat_sim_i$x, y = spatstat_sim_i$y, time = rep(i, length(spatstat_sim_i$x)))
+      spatstat_sf_i <- st_as_sf(spatstat_df_i, coords = c("x","y"))
+      animal_obs <- rbind(animal_obs, spatstat_sf_i)
+      rm(spatstat_sim_i, spatstat_df_i, spatstat_sf_i)
+    }
+    
   } else{
     print("Sampling type not recognised")
     animal_obs = 0

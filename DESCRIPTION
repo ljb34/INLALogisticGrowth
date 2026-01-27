@@ -10,7 +10,8 @@ Imports:
     Matrix,
     parallel,
     sf,
-    stringr
+    stringr,
+    spatstat
 Depends: 
     INLA,
     inlabru

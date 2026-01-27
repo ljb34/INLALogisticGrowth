@@ -1,5 +1,5 @@
 library(tidyverse)
-k <- seq(0,1000, length.out = 1001)
+k <- seq(500,1500, length.out = 1001)
 k.df <- data.frame(k = rep(k,times = 5), shape = rep(c(0.5,1,1.5,2,2.5), each = length(k)))
 
 k.df %>% 
