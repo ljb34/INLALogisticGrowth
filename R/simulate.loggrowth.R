@@ -198,7 +198,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
         field = field$field[field$time == 0])
       return(exp(field_values))
     }
-    spatstat_sim <- spatstat.random::rpoispp(lambda = lambda_func1, win = owin(boundaries,boundaries))
+    spatstat_sim <- spatstat.random::rpoispp(lambda = lambda_func, win = owin(boundaries,boundaries))
     spatstat_df <- data.frame(x = spatstat_sim$x, y = spatstat_sim$y, time = rep(0, length(spatstat_sim$x)))
     animal_obs <- st_as_sf(spatstat_df, coords = c("x","y"))
     
