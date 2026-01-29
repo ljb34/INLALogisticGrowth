@@ -97,7 +97,7 @@ double normal_pdf_log(double x, double mean, double stddev) {
 
 double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inla_cgeneric_data_tp* data) {
     // this reimplement `inla.rgeneric.iid.model` using cgeneric
-    double* ret = NULL, growth = (theta ? exp(theta[0]) : NAN), carry_cap = (theta ? exp(theta[1]) : NAN), move_const = (theta ? theta[2] : NAN), sigma = (theta ? exp(theta[3]) : NAN); //interpret.theta equivalent
+    double* ret = NULL, growth = (theta ? exp(theta[0]) : NAN), carry_cap = (theta ? exp(theta[1]) : NAN), move_const = (theta ? exp(theta[2]) : NAN), sigma = (theta ? exp(theta[3]) : NAN); //interpret.theta equivalent
     assert(!strcasecmp(data->ints[0]->name, "n")); // this will always be the case
     int N = data->ints[0]->ints[0]; // this will always be the case
     assert(N > 0);
@@ -531,7 +531,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 
         ret[0] = normal_pdf_log(theta[0], pgrowth->doubles[0], pgrowth->doubles[1]) +
             normal_pdf_log(theta[1], pcc->doubles[0], pcc->doubles[1]) + 
-            normal_pdf_log(move_const, pmove->doubles[0], pmove->doubles[1]) + 
+            normal_pdf_log(theta[2], pmove->doubles[0], pmove->doubles[1]) +
             normal_pdf_log(theta[3], psigma->doubles[0],psigma->doubles[1]);
     }
     break;
