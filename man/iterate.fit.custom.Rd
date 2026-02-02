@@ -23,6 +23,7 @@ iterate.fit.custom(
   initial.move.const = 0.5,
   initial.log.sigma = log(1.5),
   method = "cgeneric",
+  update.rule = 2,
   debug = F,
   options = NULL,
   saveall = T

@@ -32,7 +32,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
                         prior.precision, max.iter = 100,gamma = 0.5,stop.crit = 0.05,
                         priors = NULL, initial.linpoint = NULL, initial.growth=0.5, 
                         initial.carry.cap=1000, initial.move.const = 0.5, initial.log.sigma = log(1.5),
-                        method = "cgeneric", debug = F, options = NULL, saveall = T){
+                        method = "cgeneric",update.rule = 2, debug = F, options = NULL, saveall = T){
   #browser()
   step.size = (tmesh$interval[2]-tmesh$interval[1])/(tmesh$n-1) #calculate step size. -1 in denom due to fence post problem 
   if(is.null(initial.linpoint)){
@@ -75,23 +75,31 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
   }
   n.nodes <- fit$misc$configs$nconfig
   nodes <- data.frame(log.prob=rep(NA,n.nodes))
+  mat_list <- list()
   mean_list <- list()
   for(i in 1:n.nodes){
     nodes[i,]<- fit$misc$configs$config[[i]]$log.posterior
-    #mat_list[[i]] <- fit$misc$configs$config[[i]]$Q[1:(smesh$n*tmesh$n),1:(smesh$n*tmesh$n)]
-    mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean[1:(smesh$n*tmesh$n)]
+    Q <- fit$misc$configs$config[[i]]$Q
+    dQ <- Matrix::diag(Q)
+    Q <- Q + Matrix::t(Q)
+    Matrix::diag(Q) <- dQ
+    mat_list[[i]] <- Q
+    mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean
   }
   nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
     dplyr::mutate(weight.prob = weight/sum(weight))
-  #P <- Reduce("+", Map(function(m, w) m * w, mat_list, nodes$weight.prob))
-  #weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
-  #b <- Reduce("+", Map(function(m,w) m%*%w, mat_list,weighted.means))
-  #new.linpoint <- (1-gamma)*lp.mat[,n] +gamma*solve(P,b)
-  
-  #New update rule
-  weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
-  new.mean <- Reduce("+", weighted.means)
-  new.linpoint <- (1-gamma)*initial.linpoint +gamma*new.mean
+  if(update.rule == 2){
+    #Type II update
+    P <- Reduce("+", Map(function(m, w) m * w, mat_list, nodes$weight.prob))
+    weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
+    b <- Reduce("+", Map(function(m,w) m%*%w, mat_list,weighted.means))
+    new.linpoint <- (1-gamma)*initial.linpoint +gamma*Matrix::solve(P,b)
+  }else{
+    #Type I
+    weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
+    new.mean <- Reduce("+", weighted.means)
+    new.linpoint <- (1-gamma)*initial.linpoint +gamma*new.mean
+  }
   
   print("Calcualted new linpoint")
   lp.mat <- cbind(initial.linpoint,new.linpoint)
@@ -135,42 +143,58 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
     n.nodes <- fit$misc$configs$nconfig
     if(!is.numeric(n.nodes)){
       print("Failed to fit, trying again")
-      new.cmp <- update(formula, . ~ . + loggrow(list(space = geometry, time = time),
-                                                 model = log_growth_model, n = smesh$n * tmesh$n))
-      environment(new.cmp) <- environment()
-      fit <- bru(new.cmp,
+      fit <- bru(geometry + time ~ loggrow(list(space = geometry, time = time), 
+                                           model = log_growth_model, 
+                                           n = smesh$n*tmesh$n) -1,
                  data = data, domain = list(geometry = smesh,time = tmesh),
                  samplers = samplers,
-                 family = family, options = options)
+                 family = "cp", options = options)
       n.nodes <- fit$misc$configs$nconfig
       if(!is.numeric(fit$misc$configs$nconfig)){
         print("Failed again, returning model output")
-        return(list(new.linpoint = new.linpoint,fit = fit, past.linpoints = lp.mat, fit.list = fit.list))
-      }
-      if(saveall){
-        fit.list[[n]]<-fit
-      }else{
-        fit.list <- fit
+        if(saveall){
+          fit_list[[n]]<-fit
+        } else{
+          fit_list <- fit
+        }
+        return(list(new.linpoint = new.linpoint,fit = fit, linpoints = lp.mat, fit_list = fit_list))
       }
     }
     nodes <- data.frame(log.prob=rep(NA,n.nodes))
+    mat_list <- list()
     mean_list <- list()
     for(i in 1:n.nodes){
       nodes[i,]<- fit$misc$configs$config[[i]]$log.posterior
-      mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean[1:(smesh$n*tmesh$n)]
+      Q <- fit$misc$configs$config[[i]]$Q
+      dQ <- Matrix::diag(Q)
+      Q <- Q + Matrix::t(Q)
+      Matrix::diag(Q) <- dQ
+      mat_list[[i]] <- Q
+      mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean
     }
     nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
       dplyr::mutate(weight.prob = weight/sum(weight))
-  
-    
-    #New update rule
-    weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
-    new.mean <- Reduce("+", weighted.means)
-    new.linpoint <- (1-gamma)*lp.mat[,n-1] +gamma*new.mean
+    if(update.rule == 2){
+      #Type II update
+      P <- Reduce("+", Map(function(m, w) m * w, mat_list, nodes$weight.prob))
+      weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
+      b <- Reduce("+", Map(function(m,w) m%*%w, mat_list,weighted.means))
+      new.linpoint <- (1-gamma)*initial.linpoint +gamma*Matrix::solve(P,b)
+    }else{
+      #Type I
+      weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
+      new.mean <- Reduce("+", weighted.means)
+      new.linpoint <- (1-gamma)*initial.linpoint +gamma*new.mean
+    }
     
     lp.mat <- cbind(lp.mat,new.linpoint)
     print("Updated linpoint")
     n <- n+1
+    if(saveall){
+      fit_list[[n]]<-fit
+    } else{
+      fit_list <- fit
+    }
   }
   if(method == "rgeneric"){
     log_growth_model <- define.loggrow.model(linpoint = as.vector(new.linpoint), 
@@ -199,5 +223,5 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
              data = data, domain = list(geometry = smesh,time = tmesh),
              samplers = samplers,
              family = family, options = options)
-  return(list(final.fit = fit, n = n, linpoints = lp.mat))
+  return(list(fit = final.fit, n = n, linpoints = lp.mat, fit_list = fit_list))
 }

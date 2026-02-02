@@ -119,12 +119,12 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
       n.nodes <- fit$misc$configs$nconfig
       if(!is.numeric(fit$misc$configs$nconfig)){
         print("Failed again, returning model output")
+        if(saveall){
+          fit_list[[n]]<-fit
+        } else{
+          fit_list <- fit
+        }
         return(list(new.linpoint = new.linpoint,fit = fit, linpoints = lp.mat, fit_list = fit_list))
-      }
-      if(saveall){
-        fit_list[[n]]<-fit
-      } else{
-        fit_list <- fit
       }
     }
     nodes <- data.frame(log.prob=rep(NA,n.nodes))

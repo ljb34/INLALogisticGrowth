@@ -218,7 +218,15 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
       rm(spatstat_sim_i, spatstat_df_i, spatstat_sf_i)
     }
     
-  } else{
+  }else if(sample.type == "Poisson"){
+    if(is.null(npoints)){
+      warning("obs.sd and npoints must be defined")
+    }
+    points.to.sample <- sample(unique(sf::st_filter(animal,bnd_inner)$geometry),
+                               npoints)
+    animal_obs <- filter(animal, geometry %in% points.to.sample) %>% 
+      dplyr::mutate(obs = rpois(npoints*(tmesh$n), exp(field)))
+  }else{
     print("Sampling type not recognised")
     animal_obs = 0
     }
