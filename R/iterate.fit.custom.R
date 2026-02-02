@@ -219,7 +219,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
   new.cmp <- update(formula, . ~ . + loggrow(list(space = geometry, time = time),
                                              model = log_growth_model, n = smesh$n * tmesh$n))
   environment(new.cmp) <- environment()
-  fit <- bru(new.cmp,
+  final.fit <- bru(new.cmp,
              data = data, domain = list(geometry = smesh,time = tmesh),
              samplers = samplers,
              family = family, options = options)
