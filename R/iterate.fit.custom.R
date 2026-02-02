@@ -39,7 +39,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
     initial.linpoint <- log(logit.nest(exp(prior.mean), exp(initial.growth), exp(initial.carry.cap), tmesh$n)$x)
   }
   if(!is.matrix(initial.linpoint)) initial.linpoint <- as.matrix(initial.linpoint, ncol = 1)
-  fit.list <- list()
+  fit_list <- list()
   #Set up initial model
   if(method == "rgeneric"){
     log_growth_model <- define.loggrow.model(linpoint = initial.linpoint, 
@@ -69,9 +69,9 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
              samplers = samplers,
              family = family, options = options)
   if(saveall){
-    fit.list[[1]]<-fit
+    fit_list[[1]]<-fit
   }else{
-    fit.list <- fit
+    fit_list <- fit
   }
   n.nodes <- fit$misc$configs$nconfig
   nodes <- data.frame(log.prob=rep(NA,n.nodes))
@@ -101,7 +101,8 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
     new.linpoint <- (1-gamma)*initial.linpoint +gamma*new.mean
   }
   
-  print("Calcualted new linpoint")
+  print("Calculated new linpoint")
+  print(summary(exp(new.linpoint)))
   lp.mat <- cbind(initial.linpoint,new.linpoint)
   n <- 2
   #print(fit$summary.hyperpar$mean)
@@ -136,9 +137,9 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
                family = family, options = options)
     print(paste("Fitted new model", n))
     if(saveall){
-      fit.list[[n]]<-fit
+      fit_list[[n]]<-fit
     }else{
-      fit.list <- fit
+      fit_list <- fit
     }
     n.nodes <- fit$misc$configs$nconfig
     if(!is.numeric(n.nodes)){
@@ -189,6 +190,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
     
     lp.mat <- cbind(lp.mat,new.linpoint)
     print("Updated linpoint")
+    print(summary(exp(new.linpoint)))
     n <- n+1
     if(saveall){
       fit_list[[n]]<-fit
