@@ -25,17 +25,17 @@ Eigen::SparseMatrix<double> Q_sparse_cpp(
     //----------------------------------
     // Precompute Qblock = sigma^2 / h * (C + g G)
     //----------------------------------
-    SparseMatrix<double> Qblock = C + move_const * G;
+    Eigen::SparseMatrix<double> Qblock = C + move_const * G;
     Qblock *= (sigma * sigma / timestep);
 
     //----------------------------------
     // Precompute main spatial block:
     // (1/h) I + g CinvG
     //----------------------------------
-    SparseMatrix<double> I(ns, ns);
+    Eigen::SparseMatrix<double> I(ns, ns);
     I.setIdentity();
 
-    SparseMatrix<double> MainBlock =
+    Eigen::SparseMatrix<double> MainBlock =
         (1.0 / timestep) * I + move_const * CinvG;
 
     //----------------------------------
@@ -68,17 +68,17 @@ Eigen::SparseMatrix<double> Q_sparse_cpp(
         if (t > 0) {
 
             // L_t = MainBlock + diag(a_t)
-            SparseMatrix<double> Lt = MainBlock;
+            Eigen::SparseMatrix<double> Lt = MainBlock;
 
             for (int i = 0; i < ns; i++) {
                 Lt.coeffRef(i, i) += a(row_offset + i);
             }
 
-            SparseMatrix<double> temp = Qblock * Lt;
-            SparseMatrix<double> Qt = Lt.transpose() * temp;
+            Eigen::SparseMatrix<double> temp = Qblock * Lt;
+            Eigen::SparseMatrix<double> Qt = Lt.transpose() * temp;
 
             for (int k = 0; k < Qt.outerSize(); ++k)
-                for (SparseMatrix<double>::InnerIterator it(Qt, k); it; ++it)
+                for (Eigen::SparseMatrix<double>::InnerIterator it(Qt, k); it; ++it)
                     triplets.emplace_back(
                         row_offset + it.row(),
                         row_offset + it.col(),
@@ -88,7 +88,7 @@ Eigen::SparseMatrix<double> Q_sparse_cpp(
         else {
             // t = 0: prior precision only
             for (int k = 0; k < prior_precision.outerSize(); ++k)
-                for (SparseMatrix<double>::InnerIterator it(prior_precision, k); it; ++it)
+                for (Eigen::SparseMatrix<double>::InnerIterator it(prior_precision, k); it; ++it)
                     triplets.emplace_back(
                         it.row(),
                         it.col(),
@@ -102,14 +102,14 @@ Eigen::SparseMatrix<double> Q_sparse_cpp(
         if (t > 0) {
 
             // Subdiagonal: (-1/h) I
-            SparseMatrix<double> Sub(ns, ns);
+            Eigen::SparseMatrix<double> Sub(ns, ns);
             Sub.setIdentity();
             Sub *= (-1.0 / timestep);
 
-            SparseMatrix<double> temp = Qblock * Sub;
+            Eigen::SparseMatrix<double> temp = Qblock * Sub;
 
             for (int k = 0; k < temp.outerSize(); ++k)
-                for (SparseMatrix<double>::InnerIterator it(temp, k); it; ++it) {
+                for (Eigen::SparseMatrix<double>::InnerIterator it(temp, k); it; ++it) {
 
                     int i = row_offset + it.row();
                     int j = row_offset - ns + it.col();
@@ -123,7 +123,7 @@ Eigen::SparseMatrix<double> Q_sparse_cpp(
     //----------------------------------
     // Assemble sparse Q
     //----------------------------------
-    SparseMatrix<double> Q(N, N);
+    Eigen::SparseMatrix<double> Q(N, N);
     Q.setFromTriplets(triplets.begin(), triplets.end());
     Q.makeCompressed();
 

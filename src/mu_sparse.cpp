@@ -15,7 +15,7 @@ NumericVector mu_sparse_cpp(
     NumericVector prior_mean,
     int ns,
     int nt,
-    const SparseMatrix<double>& CinvG
+    const Eigen::SparseMatrix<double>& CinvG
 )
 {
     const int N = ns * nt;
@@ -54,10 +54,10 @@ NumericVector mu_sparse_cpp(
     //-----------------------------
     // Build main spatial block
     //-----------------------------
-    SparseMatrix<double> I(ns, ns);
+    Eigen::SparseMatrix<double> I(ns, ns);
     I.setIdentity();
 
-    SparseMatrix<double> MainBlock =
+    Eigen::SparseMatrix<double> MainBlock =
         (1.0 / timestep) * I + move_const * CinvG;
 
     //-----------------------------
@@ -75,7 +75,7 @@ NumericVector mu_sparse_cpp(
         int offset = t * ns;
 
         for (int k = 0; k < MainBlock.outerSize(); ++k)
-            for (SparseMatrix<double>::InnerIterator it(MainBlock, k); it; ++it)
+            for (Eigen::SparseMatrix<double>::InnerIterator it(MainBlock, k); it; ++it)
                 triplets.emplace_back(
                     offset + it.row(),
                     offset + it.col(),
@@ -94,14 +94,14 @@ NumericVector mu_sparse_cpp(
         }
     }
 
-    SparseMatrix<double> L(N, N);
+    Eigen::SparseMatrix<double> L(N, N);
     L.setFromTriplets(triplets.begin(), triplets.end());
     L.makeCompressed();
 
     //-----------------------------
     // Solve L * mu = r
     //-----------------------------
-    SparseQR<SparseMatrix<double>, COLAMDOrdering<int>> solver;
+    SparseQR<Eigen::SparseMatrix<double>, COLAMDOrdering<int>> solver;
     solver.compute(L);
 
     if (solver.info() != Success) {

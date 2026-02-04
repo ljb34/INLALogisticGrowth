@@ -34,7 +34,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // mu_sparse_cpp
-NumericVector mu_sparse_cpp(double growth, double carry_cap, double move_const, double timestep, NumericVector linpoint, NumericMatrix grad, NumericVector prior_mean, int ns, int nt, const SparseMatrix<double>& CinvG);
+NumericVector mu_sparse_cpp(double growth, double carry_cap, double move_const, double timestep, NumericVector linpoint, NumericMatrix grad, NumericVector prior_mean, int ns, int nt, const Eigen::SparseMatrix<double>& CinvG);
 RcppExport SEXP _INLAloggrowth_mu_sparse_cpp(SEXP growthSEXP, SEXP carry_capSEXP, SEXP move_constSEXP, SEXP timestepSEXP, SEXP linpointSEXP, SEXP gradSEXP, SEXP prior_meanSEXP, SEXP nsSEXP, SEXP ntSEXP, SEXP CinvGSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -48,7 +48,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type prior_mean(prior_meanSEXP);
     Rcpp::traits::input_parameter< int >::type ns(nsSEXP);
     Rcpp::traits::input_parameter< int >::type nt(ntSEXP);
-    Rcpp::traits::input_parameter< const SparseMatrix<double>& >::type CinvG(CinvGSEXP);
+    Rcpp::traits::input_parameter< const Eigen::SparseMatrix<double>& >::type CinvG(CinvGSEXP);
     rcpp_result_gen = Rcpp::wrap(mu_sparse_cpp(growth, carry_cap, move_const, timestep, linpoint, grad, prior_mean, ns, nt, CinvG));
     return rcpp_result_gen;
 END_RCPP
