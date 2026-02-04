@@ -50,7 +50,7 @@ simulate_cpp <- function(growth, carry.cap, movement, sigma,
   grad <- gradient_of_linpoint(linpoint, smesh, tmesh)#
   prior.precision <- as(initial_Q, "dgCMatrix")
   fem_matrices <- fmesher::fm_fem(smesh)
-  CinvG <-solve(fem_matrices$c1, fem_matrices$g1)
+  CinvG <-Matrix::solve(fem_matrices$c1, fem_matrices$g1)
   fem_matrices$c1 <- as(fem_matrices$c1, "dgCMatrix")
   fem_matrices$g1 <- as(fem_matrices$g1, "dgCMatrix")
   CinvG <- as(CinvG,"dgCMatrix")
