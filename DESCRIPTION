@@ -4,6 +4,9 @@ Title: Spatial Logistic Growth in INLA
 Version: 0.0.1.0
 RoxygenNote: 7.3.3
 Roxygen: list(markdown = TRUE, roclets = c("rd", "namespace"))
+LinkingTo: 
+  Rcpp,
+  RcppEigen
 Imports: 
     dplyr,
     fmesher,
@@ -11,7 +14,9 @@ Imports:
     parallel,
     sf,
     stringr,
-    spatstat
+    spatstat,
+    Rcpp,
+    RcppEigen
 Depends: 
     INLA,
     inlabru
