@@ -15,6 +15,9 @@
 #'@returns List containing underlying field (animal), observations (animal_obs), and 
 #'field defined on mesh nodes for debugging purposes (field). 
 #'
+#' @useDynLib INLAloggrowth, .registration = TRUE
+#' @importFrom Rcpp evalCpp
+#' 
 #'@export
 simulate_cpp <- function(growth, carry.cap, movement, sigma, 
                          initial.pop,initial.range, initial.sigma, 
