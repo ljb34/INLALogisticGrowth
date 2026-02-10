@@ -32,7 +32,8 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
                         prior.precision, max.iter = 100,gamma = 0.5,stop.crit = 0.05,
                         priors = NULL, initial.linpoint = NULL, initial.growth=0.5, 
                         initial.carry.cap=1000, initial.move.const = 0.5, initial.log.sigma = log(1.5),
-                        method = "cgeneric",update.rule = 2, debug = F, options = NULL, saveall = T){
+                        method = "cgeneric",update.rule = 2, debug = F, options = NULL, saveall = T,
+                        weights = NULL){
   #browser()
   step.size = (tmesh$interval[2]-tmesh$interval[1])/(tmesh$n-1) #calculate step size. -1 in denom due to fence post problem 
   if(is.null(initial.linpoint)){
@@ -67,7 +68,9 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
   fit <- bru(new.cmp,
              data = data, domain = list(geometry = smesh,time = tmesh),
              samplers = samplers,
-             family = family, options = options)
+             family = family, options = options,
+             weights = weights)
+  print("Fitted new model 1")
   if(saveall){
     fit_list[[1]]<-fit
   }else{
@@ -102,7 +105,6 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
   }
   
   print("Calculated new linpoint")
-  print(summary(exp(new.linpoint)))
   lp.mat <- cbind(initial.linpoint,new.linpoint)
   n <- 2
   #print(fit$summary.hyperpar$mean)
@@ -134,7 +136,8 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
     fit <- bru(new.cmp,
                data = data, domain = list(geometry = smesh,time = tmesh),
                samplers = samplers,
-               family = family, options = options)
+               family = family, options = options,
+               weights = weights)
     print(paste("Fitted new model", n))
     if(saveall){
       fit_list[[n]]<-fit
@@ -149,7 +152,8 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
                                            n = smesh$n*tmesh$n) -1,
                  data = data, domain = list(geometry = smesh,time = tmesh),
                  samplers = samplers,
-                 family = "cp", options = options)
+                 family = "cp", options = options,
+                 weights = weights)
       n.nodes <- fit$misc$configs$nconfig
       if(!is.numeric(fit$misc$configs$nconfig)){
         print("Failed again, returning model output")
@@ -224,6 +228,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
   final.fit <- bru(new.cmp,
              data = data, domain = list(geometry = smesh,time = tmesh),
              samplers = samplers,
-             family = family, options = options)
+             family = family, options = options,
+             weights = weights)
   return(list(fit = final.fit, n = n, linpoints = lp.mat, fit_list = fit_list))
 }
