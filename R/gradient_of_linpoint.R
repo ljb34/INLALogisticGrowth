@@ -21,12 +21,14 @@ gradient_of_linpoint <- function(linpoint,smesh, tmesh){
                            coords[near.neighbours[1,i],2]- coords[i,2],
                            coords[near.neighbours[j,i],1]- coords[i,1], 
                            coords[near.neighbours[j,i],2]- coords[i,2]),
+                         byrow = T, nrow = 2)
       while(abs(det(diffmat2)) <= .Machine$double.eps){
         j <- j+1
         diffmat2 <- matrix(c(coords[near.neighbours[1,i],1]- coords[i,1], 
                              coords[near.neighbours[1,i],2]- coords[i,2],
                              coords[near.neighbours[j,i],1]- coords[i,1], 
                              coords[near.neighbours[j,i],2]- coords[i,2]),
+                           byrow = T, nrow = 2)
         if(j == 9){
           warning(paste("Mesh behaving strangely. All nearest points to point", i, "lie on a straight line."))
           #browser()
@@ -52,7 +54,6 @@ gradient_of_linpoint <- function(linpoint,smesh, tmesh){
                                  linpoint[near.neighbours[2,i]+t*ns]- linpoint[i + t*ns]))
       }
     }
-    
-  }
+    }
   return(grad)
 }
