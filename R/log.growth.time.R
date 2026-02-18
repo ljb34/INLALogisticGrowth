@@ -48,7 +48,6 @@ log_growth_time =  function(
   }
   
   graph = function() {
-    #print("It's graph time")
     return (Q())
   }
   Q = function(){

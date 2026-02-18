@@ -1,5 +1,5 @@
 library(tidyverse)
-k <- seq(500,1500, length.out = 1001)
+k <- seq(0,2000, length.out = 1001)
 k.df <- data.frame(k = rep(k,times = 5), shape = rep(c(0.5,1,1.5,2,2.5), each = length(k)))
 
 k.df %>% 
@@ -10,10 +10,10 @@ k.df %>%
 
 
 
-k.ln <- data.frame(k = rep(k,times = 10), sd = rep(seq(0.1,1,by = 0.1), each = length(k)))
+k.ln <- data.frame(k = rep(k,times = 5), sd = rep(c(0.2,0.4,0.6,0.8,1), each = length(k)))
 
 
-k.ln %>% mutate(mu = log(1000)-0.5*sd*sd) %>%
+k.ln %>% mutate(mu = log(1000)) %>%
   mutate(value = dnorm(log(k), mu, sd))%>%
   ggplot()+
   geom_line(aes(x = k, y = value, colour = as.factor(sd)))
