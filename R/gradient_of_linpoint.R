@@ -39,6 +39,7 @@ gradient_of_linpoint <- function(linpoint,smesh, tmesh){
                            coords[near.neighbours[j,i],2]- coords[i,2]),
                          byrow = T, nrow = 2)
       diffmat2[which(abs(diffmat2) < .Machine$double.eps, arr.ind = T)] <- 0
+      print(det(diffmat2))
       for(t in 0:(nt-1)){
         grad[t*ns+i,] <- solve(diffmat2,
                                c(linpoint[near.neighbours[1,i]+t*ns] - linpoint[i + t*ns],
