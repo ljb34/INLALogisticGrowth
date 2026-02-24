@@ -21,7 +21,7 @@
 #'@export
 iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
                                    prior.precision, max.iter = 100,gamma = 0.5,stop.crit = 0.05,
-                                   priors = NULL, initial.linpoint = NULL, initial.growth=1, 
+                                   domain = NULL, priors = NULL, initial.linpoint = NULL, initial.growth=1, 
                                    initial.carry.cap=100, initial.move.const = 1, initial.log.sigma = log(1.5),
                                     debug = NULL, saveall = T, options = list(verbose = F,control.vb = list(enable = T, emergency =25)),
                                    update.rule = 2){
@@ -31,6 +31,9 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
     initial.linpoint <- log(logit.nest(exp(prior.mean), exp(initial.growth), exp(initial.carry.cap), tmesh$n)$x)
   }
   if(!is.matrix(initial.linpoint)) initial.linpoint <- as.matrix(initial.linpoint, ncol = 1)
+  if(is.null(domain)){
+    domain = list(geometry = smesh, time = tmesh)
+  }
   #Set up initial model
   fit_list <- list()
   log_growth_model <- define.cgeneric.loggrow.model(linpoint = initial.linpoint, 
@@ -44,7 +47,7 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
   fit <- bru(geometry + time ~ loggrow(list(space = geometry, time = time), 
                                        model = log_growth_model, 
                                        n = smesh$n*tmesh$n) -1,
-             data = data, domain = list(geometry = smesh,time = tmesh),
+             data = data, domain = domain,
              samplers = samplers,
              family = "cp", options = options)
   if(saveall){
@@ -102,7 +105,7 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
     fit <- bru(geometry + time ~ loggrow(list(space = geometry, time = time), 
                                          model = log_growth_model, 
                                          n = smesh$n*tmesh$n) -1,
-               data = data, domain = list(geometry = smesh,time = tmesh),
+               data = data, domain = domain,
                samplers = samplers,
                family = "cp", options = options)
     print(paste("Fitted new model", n))
@@ -113,7 +116,7 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
       fit <- bru(geometry + time ~ loggrow(list(space = geometry, time = time), 
                                            model = log_growth_model, 
                                            n = smesh$n*tmesh$n) -1,
-                 data = data, domain = list(geometry = smesh,time = tmesh),
+                 data = data, domain = domain,
                  samplers = samplers,
                  family = "cp", options = options)
       n.nodes <- fit$misc$configs$nconfig
@@ -180,7 +183,7 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
   final.fit <- bru(geometry + time ~ loggrow(list(space = geometry, time = time), 
                                              model = log_growth_model, 
                                              n = smesh$n*tmesh$n) -1,
-                   data = data, domain = list(geometry = smesh,time = tmesh),
+                   data = data, domain = domain,
                    samplers = samplers,
                    family = "cp", options = options)
   return(list(fit = final.fit, n = n, linpoints = lp.mat, fit_list = fit_list))
