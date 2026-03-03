@@ -190,32 +190,16 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
       }
     }
   }else if(sample.type == "LGCP"){
-    lambda_func <- function(x,y){
-      points_sf <- st_as_sf(data.frame(x = x, y = y), coords = c("x","y"))
-      field_values <- fmesher::fm_evaluate(
-        smesh,
-        loc = points_sf,
-        field = field$field[field$time == 0])
-      return(exp(field_values))
-    }
-    spatstat_sim <- spatstat.random::rpoispp(lambda = lambda_func, win = spatstat.geom::owin(boundaries,boundaries))
-    spatstat_df <- data.frame(x = spatstat_sim$x, y = spatstat_sim$y, time = rep(0, length(spatstat_sim$x)))
-    animal_obs <- st_as_sf(spatstat_df, coords = c("x","y"))
+    points <- st_as_sf(sample.lgcp(smesh, field$field[field$time == 0], samplers = bnd_inner),
+                       coords = c("x","y"))
+    animal_obs <- dplyr::mutate(points, time = 0)
     
     for(i in 1:timesteps){
-      lambda_func_i <- function(x,y){
-        points_sf <- st_as_sf(data.frame(x = x, y = y), coords = c("x","y"))
-        field_values <- fmesher::fm_evaluate(
-          smesh,
-          loc = points_sf,
-          field = field$field[field$time == i])
-        return(exp(field_values))
-      }
-      spatstat_sim_i <- spatstat.random::rpoispp(lambda = lambda_func_i, win = spatstat.geom::owin(boundaries,boundaries))
-      spatstat_df_i <- data.frame(x = spatstat_sim_i$x, y = spatstat_sim_i$y, time = rep(i, length(spatstat_sim_i$x)))
-      spatstat_sf_i <- st_as_sf(spatstat_df_i, coords = c("x","y"))
-      animal_obs <- rbind(animal_obs, spatstat_sf_i)
-      rm(spatstat_sim_i, spatstat_df_i, spatstat_sf_i)
+      pointsi <- dplyr::mutate(st_as_sf(sample.lgcp(smesh, field$field[field$time == i], samplers = bnd_inner),
+                                        coords = c("x","y")),
+                               time = i)
+      animal_obs <- rbind(animal_obs, pointsi)
+      rm(pointsi)
     }
     
   }else if(sample.type == "Poisson"){
