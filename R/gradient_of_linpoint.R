@@ -14,7 +14,7 @@ gradient_of_linpoint <- function(linpoint,smesh, tmesh){
                         coords[near.neighbours[2,i],2]- coords[i,2]),
                       byrow = T, nrow = 2)
     diffmat[which(abs(diffmat) < .Machine$double.eps, arr.ind = T)] <- 0
-    if(abs(Matrix::det(diffmat))<=.Machine$double.eps){ # if both nearest neighbours are exactly horizontal or both vertical from point, then go to 
+    if(kappa(diffmat) > 1e12){ # if both nearest neighbours are exactly horizontal or both vertical from point, then go to 
       #1st and 3rd near neighbours
       j <-3
       diffmat2 <- matrix(c(coords[near.neighbours[1,i],1]- coords[i,1], 
@@ -22,7 +22,7 @@ gradient_of_linpoint <- function(linpoint,smesh, tmesh){
                            coords[near.neighbours[j,i],1]- coords[i,1], 
                            coords[near.neighbours[j,i],2]- coords[i,2]),
                          byrow = T, nrow = 2)
-      while(abs(det(diffmat2)) <= .Machine$double.eps){
+      while(kappa(diffmat2) > 1e12){
         j <- j+1
         diffmat2 <- matrix(c(coords[near.neighbours[1,i],1]- coords[i,1], 
                              coords[near.neighbours[1,i],2]- coords[i,2],
