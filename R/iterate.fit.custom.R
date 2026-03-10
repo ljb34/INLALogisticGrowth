@@ -33,7 +33,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
                         priors = NULL, initial.linpoint = NULL, initial.growth=0.5, 
                         initial.carry.cap=1000, initial.move.const = 0.5, initial.log.sigma = log(1.5),
                         method = "cgeneric",update.rule = 2, debug = F, options = NULL, saveall = T,
-                        weights = NULL){
+                        weights = NULL, ...){
   #browser()
   step.size = (tmesh$interval[2]-tmesh$interval[1])/(tmesh$n-1) #calculate step size. -1 in denom due to fence post problem 
   if(is.null(initial.linpoint)){
@@ -69,7 +69,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
              data = data, domain = list(geometry = smesh,time = tmesh),
              samplers = samplers,
              family = family, options = options,
-             weights = weights)
+             weights = weights, ...)
   print("Fitted new model 1")
   if(saveall){
     fit_list[[1]]<-fit
@@ -137,7 +137,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
                data = data, domain = list(geometry = smesh,time = tmesh),
                samplers = samplers,
                family = family, options = options,
-               weights = weights)
+               weights = weights, ...)
     print(paste("Fitted new model", n))
     if(saveall){
       fit_list[[n]]<-fit
@@ -153,7 +153,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
                  data = data, domain = list(geometry = smesh,time = tmesh),
                  samplers = samplers,
                  family = "cp", options = options,
-                 weights = weights)
+                 weights = weights, ... )
       n.nodes <- fit$misc$configs$nconfig
       if(!is.numeric(fit$misc$configs$nconfig)){
         print("Failed again, returning model output")
@@ -229,6 +229,6 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
              data = data, domain = list(geometry = smesh,time = tmesh),
              samplers = samplers,
              family = family, options = options,
-             weights = weights)
+             weights = weights, ...)
   return(list(fit = final.fit, n = n, linpoints = lp.mat, fit_list = fit_list))
 }
