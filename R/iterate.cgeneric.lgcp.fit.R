@@ -45,8 +45,7 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
                                            initial.move.const = initial.move.const,
                                            initial.log.sigma = initial.log.sigma, debug = debug)
   fit <- bru(geometry + time ~ loggrow(list(space = geometry, time = time), 
-                                       model = log_growth_model, 
-                                       n = smesh$n*tmesh$n) -1,
+                                       model = log_growth_model) -1,
              data = data, domain = domain,
              samplers = samplers,
              family = "cp", options = options)
@@ -103,8 +102,7 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
                                              debug = debug)
     print("Defined new model")
     fit <- bru(geometry + time ~ loggrow(list(space = geometry, time = time), 
-                                         model = log_growth_model, 
-                                         n = smesh$n*tmesh$n) -1,
+                                         model = log_growth_model) -1,
                data = data, domain = domain,
                samplers = samplers,
                family = "cp", options = options)
@@ -181,8 +179,7 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
                                            debug = debug)
   print("Defined final model")
   final.fit <- bru(geometry + time ~ loggrow(list(space = geometry, time = time), 
-                                             model = log_growth_model, 
-                                             n = smesh$n*tmesh$n) -1,
+                                             model = log_growth_model) -1,
                    data = data, domain = domain,
                    samplers = samplers,
                    family = "cp", options = options)
