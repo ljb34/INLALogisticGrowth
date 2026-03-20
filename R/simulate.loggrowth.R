@@ -117,7 +117,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
   hex_points <- fm_hexagon_lattice(bnd = bnd_extended, edge_len = 0.9*max.edge)
   smesh <- fmesher::fm_mesh_2d_inla(loc = hex_points, boundary = bnd_extended,
                                    max.edge = c(max.edge*1.1, 2*max.edge),
-                                   offset = c(-0.01, (boundaries[2]-boundaries[1])/2))
+                                   offset = c(-0.01, (boundaries[2]-boundaries[1])))
   tmesh <- fmesher::fm_mesh_1d(loc = 0:timesteps)
   step.size <- 1
   if(debug) print("set up finished, generating first year")
