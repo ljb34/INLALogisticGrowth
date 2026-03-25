@@ -7,7 +7,7 @@
 #'@export
 logit.growth <- function(x,r,k) {
   x[x<0] <- 0
-  xnew <- x*exp(r*(1-(x/k)))
+  xnew <- x*k*exp(r)/(k-x + x*exp(r))
   return(xnew)
 }
 #'Nested logistic growth
@@ -27,3 +27,6 @@ logit.nest <- function(x0,r,k,n){
   }
   return(df)
 }
+
+
+
