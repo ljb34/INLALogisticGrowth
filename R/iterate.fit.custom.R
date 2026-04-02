@@ -33,7 +33,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
                         priors = NULL, initial.linpoint = NULL, initial.growth=0.5, 
                         initial.carry.cap=1000, initial.move.const = 0.5, initial.log.sigma = log(1.5),
                         method = "cgeneric",update.rule = 2, debug = F, options = NULL, saveall = T,
-                        weights = NULL, ...){
+                        weights = NULL, early.stop = F, ...){
   #browser()
   step.size = (tmesh$interval[2]-tmesh$interval[1])/(tmesh$n-1) #calculate step size. -1 in denom due to fence post problem 
   if(is.null(initial.linpoint)){
@@ -75,6 +75,9 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
     fit_list[[1]]<-fit
   }else{
     fit_list <- fit
+  }
+  if(early.stop){
+    return(list(fit = fit, linpoints = initial.linpoint))
   }
   n.nodes <- fit$misc$configs$nconfig
   nodes <- data.frame(log.prob=rep(NA,n.nodes))
