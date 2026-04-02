@@ -14,6 +14,7 @@ iterate.cgeneric.fit.lgcp(
   max.iter = 100,
   gamma = 0.5,
   stop.crit = 0.05,
+  domain = NULL,
   priors = NULL,
   initial.linpoint = NULL,
   initial.growth = 1,

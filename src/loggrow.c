@@ -258,9 +258,10 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         // return c(-1, M, Qij) in the same order as defined in INLA_CGENERIC_GRAPH
         if (debug > 0) {
             printf("INLA_CGENERIC_Q\n");
+            printf("nrow = %f\n", N);
         }
         int M = 2 * ns * ns + ns + (nt - 2) * (ns * ns + ns * (ns + 1) / 2);
-        //printf("M: %d\n", M);
+        if (debug > 0) printf("M: %d\n", M);
         ret = Calloc(2 +M, double);
 
         inla_cgeneric_mat_tp* L_mat = malloc(sizeof(inla_cgeneric_mat_tp));
@@ -354,6 +355,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 			double* temp = malloc(ns * ns * sizeof(double));
 			char transA = 'N';
 			char transB = 'N';
+            
 			dgemm_(&transA, &transB, &ns, &ns, &ns, &one, Qblock, &ns, Lblock, &ns, &zero, temp, &ns);
             for (int i = 0; i < ns; i++) {
                 for (int j = 0; j < ns; j++) {
@@ -381,6 +383,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         double* out = calloc(N * N, sizeof(double));
         char transL = 'T';
 		char transB = 'N';
+        if (debug > 0) printf("dgemm step");
         dgemm_(&transL, &transB, &N, &N, &N, &one, L_mat->x, &lda, B, &ldb, &zero, out, &N);
 
         free(L_mat->x);
@@ -459,7 +462,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         double* B = malloc(N * sizeof(double));
 		memcpy(A, L_mat->x, N* N * sizeof(double));
         memcpy(B, rvector->doubles, N * sizeof(double));
-
+        if (debug > 0) printf("dgesv step");
         dgesv_(&N, &nrhs, A, &lda, ipiv, B, &ldb, &info);
         if (info != 0) {
             printf("dgesv failed, info = %d\n", info);

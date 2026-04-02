@@ -26,7 +26,9 @@ iterate.fit.custom(
   update.rule = 2,
   debug = F,
   options = NULL,
-  saveall = T
+  saveall = T,
+  weights = NULL,
+  ...
 )
 }
 \arguments{

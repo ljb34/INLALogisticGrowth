@@ -92,6 +92,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
   nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
     dplyr::mutate(weight.prob = weight/sum(weight))
   if(update.rule == 2){
+    print("Performing type II update")
     #Type II update
     P <- Reduce("+", Map(function(m, w) m * w, mat_list, nodes$weight.prob))
     weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
@@ -101,6 +102,8 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
     #Type I
     weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
     new.mean <- Reduce("+", weighted.means)
+    print(length(new.mean))
+    print(length(initial.linpoint))
     new.linpoint <- (1-gamma)*initial.linpoint +gamma*new.mean
   }
   
