@@ -33,7 +33,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
                         priors = NULL, initial.linpoint = NULL, initial.growth=0.5, 
                         initial.carry.cap=1000, initial.move.const = 0.5, initial.log.sigma = log(1.5),
                         method = "cgeneric",update.rule = 2, debug = F, options = NULL, saveall = T,
-                        weights = NULL, early.stop = F, ...){
+                        weights = NULL,domain = NULL, early.stop = F, ...){
   #browser()
   step.size = (tmesh$interval[2]-tmesh$interval[1])/(tmesh$n-1) #calculate step size. -1 in denom due to fence post problem 
   if(is.null(initial.linpoint)){
@@ -41,6 +41,9 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
   }
   if(!is.matrix(initial.linpoint)) initial.linpoint <- as.matrix(initial.linpoint, ncol = 1)
   fit_list <- list()
+  if(is.null(domain)){
+    domain = list(geometry = smesh, time = tmesh)
+  }
   #Set up initial model
   if(method == "rgeneric"){
     log_growth_model <- define.loggrow.model(linpoint = initial.linpoint, 
@@ -66,7 +69,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
   environment(new.cmp) <- environment()
   
   fit <- bru(new.cmp,
-             data = data, domain = list(geometry = smesh,time = tmesh),
+             data = data, domain = domain,
              samplers = samplers,
              family = family, options = options,
              weights = weights, ...)
@@ -140,7 +143,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
                                                model = log_growth_model, n = smesh$n * tmesh$n))
     environment(new.cmp) <- environment()
     fit <- bru(new.cmp,
-               data = data, domain = list(geometry = smesh,time = tmesh),
+               data = data, domain = domain,
                samplers = samplers,
                family = family, options = options,
                weights = weights, ...)
@@ -156,7 +159,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
       fit <- bru(geometry + time ~ loggrow(list(space = geometry, time = time), 
                                            model = log_growth_model, 
                                            n = smesh$n*tmesh$n) -1,
-                 data = data, domain = list(geometry = smesh,time = tmesh),
+                 data = data, domain = domain,
                  samplers = samplers,
                  family = "cp", options = options,
                  weights = weights, ... )
@@ -232,7 +235,7 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
                                              model = log_growth_model, n = smesh$n * tmesh$n))
   environment(new.cmp) <- environment()
   final.fit <- bru(new.cmp,
-             data = data, domain = list(geometry = smesh,time = tmesh),
+             data = data, domain = domain,
              samplers = samplers,
              family = family, options = options,
              weights = weights, ...)
