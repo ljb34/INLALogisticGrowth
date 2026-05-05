@@ -28,6 +28,8 @@ iterate.fit.custom(
   options = NULL,
   saveall = T,
   weights = NULL,
+  domain = NULL,
+  early.stop = F,
   ...
 )
 }

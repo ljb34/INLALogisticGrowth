@@ -14,26 +14,26 @@
 #define iszero(x) (((__typeof(x))(x)) == 0)
 #endif
 #endif
-
 extern void dgesv_(int* n, int* nrhs, double* A, int* lda,
-	int* ipiv, double* B, int* ldb, int* info);
+    int* ipiv, double* B, int* ldb, int* info);
 
 extern void dgemm_(const char* TRANSA, const char* TRANSB,
-	const int* M, const int* N, const int* K,
-	const double* alpha,
-	const double* A, const int* lda,
-	const double* B, const int* ldb,
-	const double* beta,
-	double* C, const int* ldc);
+    const int* M, const int* N, const int* K,
+    const double* alpha,
+    const double* A, const int* lda,
+    const double* B, const int* ldb,
+    const double* beta,
+    double* C, const int* ldc);
 
-void a_func(double growth, double carry_cap,
+
+void a_func_vary(double* growth, double* carry_cap,
 	double* linpoint, int ns, int nt, double* result) { /*important! must give pointer for where to export result*/
 	for (int i = 0; i < ns * nt; i++) {
-		result[i] = growth * exp(linpoint[i]) / carry_cap;
+		result[i] = growth[i] * exp(linpoint[i]) / carry_cap[i];
 	}
 }
 
-void Lmat(double growth, double carry_cap, double move_const, double timestep,
+void Lmat_vary(double* growth, double* carry_cap, double* move_const, double timestep,
 	double* linpoint, int ns, int nt, inla_cgeneric_smat_tp* CinvG, double* result) { /* result is nsnt x nsnt double matrix in inla_cgeneric_mat_tp form*/
 	//identity sub matrix in first block
 	int ntotal = ns * nt;
@@ -43,7 +43,7 @@ void Lmat(double growth, double carry_cap, double move_const, double timestep,
 
 	//main diagonal
 	double* a_array = malloc(ntotal * sizeof(double));
-	a_func(growth, carry_cap,
+	a_func_vary(growth, carry_cap,
 		linpoint, ns, nt, a_array);
 	for (int i = ns; i < ntotal; i++) {
 		result[i * ntotal + i] = a_array[i] + (1 /timestep);
@@ -60,7 +60,7 @@ void Lmat(double growth, double carry_cap, double move_const, double timestep,
             int i = CinvG->i[idx];
             int j = CinvG->j[idx];
             for (int t = 1; t < nt; t++) {
-                result[(ns * t + j) * ntotal + t * ns + i] += move_const * CinvG->x[idx];
+                result[(ns * t + j) * ntotal + t * ns + i] += move_const[t*ntotal + j] * CinvG->x[idx];
             }
 		}
     }
@@ -68,7 +68,7 @@ void Lmat(double growth, double carry_cap, double move_const, double timestep,
         for (int t = 1; t < nt; t++) {
             for (int j = 0; j < ns; j++) {
                 for (int i = 0; i < ns; i++) {
-					result[(ns * t + j) * ntotal + t * ns + i] += move_const * CinvG->x[j * ns + i]; //Lmat is col-major but CinvG is row-major
+					result[(ns * t + j) * ntotal + t * ns + i] += move_const[t * ntotal + j] * CinvG->x[j * ns + i]; //Lmat is col-major but CinvG is row-major
                 }
             }
         }
@@ -77,14 +77,14 @@ void Lmat(double growth, double carry_cap, double move_const, double timestep,
 
 }
 
-void r_vector(double growth, double carry_cap, double move_const,
+void r_vector_vary(double* growth, double* carry_cap, double* move_const,
     double* linpoint, double* mag_grad_sq, int ns, int nt, double* result) {
     for (int i = 0; i < ns; i++) {
         for (int t = 0; t < nt; t++) {
             int idx = t * ns + i;
             //mag_grad_sq = grad[2 * idx] * grad[2 * idx] + grad[2 * idx + 1] * grad[2 * idx + 1];
             double lp = linpoint[idx];
-            result[idx] = growth * exp(lp) * (lp - 1) / carry_cap + growth - move_const * mag_grad_sq[idx];
+            result[idx] = growth[idx] * exp(lp) * (lp - 1) / carry_cap[idx] + growth[idx] - move_const[idx] * mag_grad_sq[idx];
         }
     }
 }
@@ -92,9 +92,9 @@ void r_vector(double growth, double carry_cap, double move_const,
 
 
 
-double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inla_cgeneric_data_tp* data) {
+double* inla_cgeneric_loggrow_vary_model(inla_cgeneric_cmd_tp cmd, double* theta, inla_cgeneric_data_tp* data) {
     // this reimplement `inla.rgeneric.iid.model` using cgeneric
-    double* ret = NULL, growth = (theta ? exp(theta[0]) : NAN), carry_cap = (theta ? exp(theta[1]) : NAN), move_const = (theta ? exp(theta[2]) : NAN), sigma = (theta ? exp(theta[3]) : NAN); //interpret.theta equivalent
+    double* ret = NULL;
     assert(!strcasecmp(data->ints[0]->name, "n")); // this will always be the case
     int N = data->ints[0]->ints[0]; // this will always be the case
     assert(N > 0);
@@ -121,14 +121,6 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     inla_cgeneric_vec_tp* linpoint = data->doubles[1];
     assert(linpoint->len == ns * nt);
 
-    /*assert(!strcasecmp(data->doubles[2]->name, "CinvG"));
-    inla_cgeneric_mat_tp* CinvG = data->doubles[2];
-    assert(CinvG->nrow == ns);
-
-    assert(!strcasecmp(data->doubles[3]->name, "prior_variance"));
-    inla_cgeneric_mat_tp* prior_variance = data->doubles[3];
-    assert(prior_variance->nrow == ns);*/ //matrices not doubles
-
     assert(!strcasecmp(data->doubles[2]->name, "mag_grad_sq"));
     inla_cgeneric_vec_tp* mag_grad_sq = data->doubles[2];
     assert(mag_grad_sq->len == ns * nt);
@@ -136,38 +128,6 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     assert(!strcasecmp(data->doubles[3]->name, "prior_mean"));
     inla_cgeneric_vec_tp* prior_mean = data->doubles[3];
     assert(prior_mean->len == ns);
-
-    //initial values
-    assert(!strcasecmp(data->doubles[4]->name, "initial_growth"));
-    double initial_growth = data->doubles[4]->doubles[0];
-
-    assert(!strcasecmp(data->doubles[5]->name, "initial_carry_cap"));
-    double initial_carry_cap = data->doubles[5]->doubles[0];
-
-    assert(!strcasecmp(data->doubles[6]->name, "initial_move_const"));
-    double initial_move_const = data->doubles[6]->doubles[0];
-
-    assert(!strcasecmp(data->doubles[7]->name, "initial_sigma"));
-    double initial_sigma = data->doubles[7]->doubles[0];
-
-
-
-    //prior paramters
-    assert(!strcasecmp(data->doubles[8]->name, "pgrowth"));
-    inla_cgeneric_vec_tp* pgrowth = data->doubles[8];
-    assert(pgrowth->len == 2);
-
-    assert(!strcasecmp(data->doubles[9]->name, "pcc"));
-    inla_cgeneric_vec_tp* pcc = data->doubles[9];
-    assert(pcc->len == 2);
-
-    assert(!strcasecmp(data->doubles[10]->name, "pmove"));
-    inla_cgeneric_vec_tp* pmove = data->doubles[10];
-    assert(pmove->len == 2);
-
-    assert(!strcasecmp(data->doubles[11]->name, "psigma"));
-    inla_cgeneric_vec_tp* psigma = data->doubles[11];
-    assert(psigma->len == 2);
 
 	//matrices
     assert(!strcasecmp(data->smats[0]->name, "CinvG"));
@@ -185,6 +145,88 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     assert(!strcasecmp(data->smats[3]->name, "G"));
     inla_cgeneric_smat_tp* G = data->smats[3];
     assert(G->nrow == ns);
+
+
+	//Set up parameters
+    assert(!strcasecmp(data->ints[4]->name, "ngrowth"));
+    int ngrowth = data->ints[4]->ints[0];
+
+    assert(!strcasecmp(data->ints[5]->name, "ncarry"));
+    int ncarry = data->ints[5]->ints[0];
+
+    assert(!strcasecmp(data->ints[4]->name, "nmove"));
+    int nmove = data->ints[6]->ints[0];
+
+    //initial values
+    assert(!strcasecmp(data->doubles[4]->name, "initial_growth"));
+    inla_cgeneric_vec_tp* initial_growth = data->doubles[4];
+	assert(initial_growth->len == ngrowth);
+
+    assert(!strcasecmp(data->doubles[5]->name, "initial_carry_cap"));
+    inla_cgeneric_vec_tp* initial_carry_cap = data->doubles[5];
+	assert(initial_carry_cap->len == ncarry);
+
+    assert(!strcasecmp(data->doubles[6]->name, "initial_move_const"));
+    inla_cgeneric_vec_tp* initial_move_const = data->doubles[6];
+	assert(initial_move_const->len == nmove);
+
+    assert(!strcasecmp(data->doubles[7]->name, "initial_sigma"));
+    double initial_sigma = data->doubles[7]->doubles[0];
+
+    //prior paramters
+    assert(!strcasecmp(data->doubles[8]->name, "pgrowth"));
+    inla_cgeneric_vec_tp* pgrowth = data->doubles[8];
+    assert(pgrowth->len == 2*ngrowth);
+
+    assert(!strcasecmp(data->doubles[9]->name, "pcc"));
+    inla_cgeneric_vec_tp* pcc = data->doubles[9];
+    assert(pcc->len == 2*ncarry);
+
+    assert(!strcasecmp(data->doubles[10]->name, "pmove"));
+    inla_cgeneric_vec_tp* pmove = data->doubles[10];
+    assert(pmove->len == 2*nmove);
+
+    assert(!strcasecmp(data->doubles[11]->name, "psigma"));
+    inla_cgeneric_vec_tp* psigma = data->doubles[11];
+    assert(psigma->len == 2);
+
+    //Covariate info
+    assert(!strcasecmp(data->doubles[12]->name, "growth_cov"));
+	inla_cgeneric_vec_tp* growth_cov = data->doubles[12];
+	assert(growth_cov->len == ns * nt * ngrowth);
+
+	assert(!strcasecmp(data->doubles[13]->name, "carry_cov"));
+	inla_cgeneric_vec_tp* carry_cov = data->doubles[13];
+	assert(carry_cov->len == ns * nt * ncarry);
+
+	assert(!strcasecmp(data->doubles[14]->name, "move_cov"));
+	inla_cgeneric_vec_tp* move_cov = data->doubles[14];
+	assert(move_cov->len == ns * nt * nmove);
+
+    double* beta_growth = theta;
+    double* beta_carry = theta + ngrowth;
+    double* beta_move = theta + ngrowth + ncarry;
+    double sigma = (theta ? exp(theta[ngrowth + ncarry + nmove]) : NAN); //interpret.theta equivalent
+
+	//Calculate growth, carry_cap, move_const from covariates and beta
+	for (int i = 0; i < ns * nt; i++) {
+		growth_cov->doubles[i] = 0;
+		carry_cov->doubles[i] = 0;
+		move_cov->doubles[i] = 0;
+		for (int j = 0; j < ngrowth; j++) {
+			growth_cov->doubles[i] += beta_growth[j] * data->doubles[12]->doubles[i + j * ns * nt];
+		}
+		for (int j = 0; j < ncarry; j++) {
+			carry_cov->doubles[i] += beta_carry[j] * data->doubles[13]->doubles[i + j * ns * nt];
+		}
+		for (int j = 0; j < nmove; j++) {
+			move_cov->doubles[i] += beta_move[j] * data->doubles[14]->doubles[i + j * ns * nt];
+		}
+		//exponentiate to get parameters in original scale
+		growth_cov->doubles[i] = exp(growth_cov->doubles[i]);
+		carry_cov->doubles[i] = exp(carry_cov->doubles[i]);
+		move_cov->doubles[i] = exp(move_cov->doubles[i]);
+	}
 
     //different outputs for the commands supplied
     switch (cmd) { 
@@ -255,7 +297,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         // return c(-1, M, Qij) in the same order as defined in INLA_CGENERIC_GRAPH
         if (debug > 0) {
             printf("INLA_CGENERIC_Q\n");
-            printf("nrow = %f\n", N);
+            printf("nrow = %d\n", N);
         }
         int M = 2 * ns * ns + ns + (nt - 2) * (ns * ns + ns * (ns + 1) / 2);
         if (debug > 0) printf("M: %d\n", M);
@@ -265,7 +307,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         L_mat->x = calloc(N * N, sizeof(double));
         L_mat->nrow = N;
         L_mat->ncol = N;
-        Lmat(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, L_mat->x);
+        Lmat_vary(growth_cov->doubles, carry_cov->doubles, move_cov->doubles, timestep, linpoint->doubles, ns, nt, CinvG, L_mat->x);
 
         int* ipiv = malloc(ns * nt * sizeof(int));
         int lda = N;
@@ -296,16 +338,12 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         /*Rest of B=Q*L */
         double one = 1, zero = 0;
         //Calculate sigma**2/h * (C+gG)
-        double* a_array = malloc(ns*nt * sizeof(double));
-        /*a_func(growth, carry_cap, linpoint->doubles, ns, nt, a_array);
-		double mean_a = 0.0;
-        for (int i = 0; i < ns*nt; i++) {
-            mean_a += a_array[i];
-        }
-        mean_a = mean_a/(ns*nt);
-		free(a_array);
-		double g = move_const / mean_a; */
-        double g = move_const;
+        //double* a_array = malloc(ns*nt * sizeof(double));
+        
+        double g = 0;
+        for(int i = 0; i < ns * nt; i++) {
+            g += move_cov->doubles[i]/(ns*nt);
+		}
 		double* Qblock = calloc(ns * ns, sizeof(double));
 		if ((C->n == ns) & (G->n == ns)) { //if dense C and G
             for (int i = 0; i < ns; i++) {
@@ -439,12 +477,12 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         L_mat->x = calloc(N * N, sizeof(double));
         L_mat->nrow = N;
         L_mat->ncol = N;
-        Lmat(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, L_mat->x);
+        Lmat_vary(growth_cov->doubles, carry_cov->doubles, move_cov->doubles, timestep, linpoint->doubles, ns, nt, CinvG, L_mat->x);
 
         inla_cgeneric_vec_tp* rvector = malloc(sizeof(inla_cgeneric_vec_tp));
         rvector->doubles = calloc(N, sizeof(double));
         rvector->len = N;
-        r_vector(growth, carry_cap, move_const, linpoint->doubles, mag_grad_sq->doubles, ns, nt, rvector->doubles);
+        r_vector_vary(growth_cov->doubles, carry_cov->doubles, move_cov->doubles, linpoint->doubles, mag_grad_sq->doubles, ns, nt, rvector->doubles);
         for (int i = 0; i < ns; i++) {
             rvector->doubles[i] = prior_mean->doubles[i];
         }
@@ -489,28 +527,48 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         if(debug>0) {
             printf("INLA_CGENERIC_INITIAL\n");
 		}
-        ret = Calloc(5, double);
-        ret[0] = 4;
+        ret = Calloc(2 + ngrowth + ncarry + nmove, double);
+        ret[0] = 1 + ngrowth + ncarry + nmove;
 
-        if (iszero(initial_growth)) {
-            ret[1] = 1;
-        }
-        else {
-            ret[1] = initial_growth;
-        }
+        for(int i = 1; i < 1 + ngrowth; i++) {
+            if (iszero(initial_growth->doubles[i-1])) {
+                if (i == 1) {
+                    ret[i] = log(1);
+                }
+                else {
+                    ret[i] = -400;
+                }
+            }
+            else {
+                ret[i] = initial_growth->doubles[i-1];
+            }
+		}
 
-        if (iszero(initial_carry_cap)) {
-            ret[2] = log(100);
+        for (int i = 1; i < 1 + ncarry; i++) {
+            if (iszero(initial_carry_cap->doubles[i - 1])) {
+                if (i == 1) {
+                    ret[ngrowth + i] = log(100);
+                }
+                else {
+                    ret[ngrowth + i] = -400;
+                }
+            }
+            else {
+                ret[ngrowth + i] = initial_carry_cap->doubles[i - 1];
+            }
         }
-        else {
-            ret[2] = initial_carry_cap;
-        }
-
-        if (iszero(initial_move_const)) {
-            ret[3] = 1;
-        }
-        else {
-            ret[3] = initial_move_const;
+        for (int i = 1; i < 1 + nmove; i++) {
+            if(iszero(initial_move_const->doubles[i - 1])) {
+                if (i == 1) {
+                    ret[ngrowth + ncarry + i] = log(1);
+                }
+                else {
+                    ret[ngrowth + ncarry + i] = -400;
+                }
+            }
+            else {
+                ret[ngrowth + ncarry + i] = initial_move_const->doubles[i - 1];
+			}
         }
 
         if (iszero(initial_sigma)) {
@@ -527,12 +585,17 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         if (debug > 0) {
             printf("INLA_CGENERIC_LOG_PRIOR\n");
         }
-        ret = Calloc(1, double);
-
-        ret[0] = normal_pdf_log(theta[0], pgrowth->doubles[0], pgrowth->doubles[1]) +
-            normal_pdf_log(theta[1], pcc->doubles[0], pcc->doubles[1]) + 
-            normal_pdf_log(theta[2], pmove->doubles[0], pmove->doubles[1]) +
-            normal_pdf_log(theta[3], psigma->doubles[0],psigma->doubles[1]);
+		double ret = 0;
+        for (int i = 0; i < ngrowth; i++) {
+            ret += normal_pdf_log(theta[i], pgrowth->doubles[2*i], pgrowth->doubles[2*i + 1]);
+        }
+        for (int i = 0; i < ncarry; i++) {
+            ret += normal_pdf_log(theta[ngrowth + i], pcc->doubles[2 * i], pcc->doubles[2 * i +1]);
+        }
+        for (int i = 0; i < nmove; i++) {
+            ret += normal_pdf_log(theta[ngrowth + ncarry + i], pmove->doubles[2 * i], pmove->doubles[2 * i + 1]);
+        }
+		ret += normal_pdf_log(theta[ngrowth + ncarry + nmove], psigma->doubles[0], psigma->doubles[1]);
     }
     break;
 
