@@ -35,35 +35,62 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
   mesh_df$x <- coords[mesh_df$space, 1]
   mesh_df$y <- coords[mesh_df$space, 2]
   
+  #prevent NA issues by filling in nearest neighbours
+  fill_na_nearest <- function(r) {
+    # repeat focal until no NA remain
+    repeat {
+      na_before <- global(is.na(r), "sum", na.rm = TRUE)[1,1]
+      
+      # fill NA using nearest non-NA in a 3×3 window
+      r <- terra::focal(r, w = 3, fun = function(x, ...) {
+        if (is.na(x[5])) {  # center cell is NA
+          # return first non-NA neighbour
+          nn <- x[!is.na(x)]
+          if (length(nn) == 0) return(NA)
+          return(nn[1])
+        } else {
+          return(x[5])
+        }
+      }, na.policy = "all", fillvalue = NA)
+      
+      na_after <- global(is.na(r), "sum", na.rm = TRUE)[1,1]
+      if (na_after == 0 || na_after == na_before) break
+    }
+    
+    r
+  }
+
+  
   for (v in all_vars) {
+    
     r <- covariates[[v]]
     
-    if (inherits(r, "SpatRaster")) {
+    if (!inherits(r, "SpatRaster")) {
+      stop(paste("Covariate", v, "is not a SpatRaster"))
+    }
+    
+    
+    r <- fill_na_nearest(r)
+    
+    if (terra::nlyr(r) == 1) {
+      # spatial-only → repeat across time
+      vals <- terra::extract(r, coords)
+      mesh_df[[v]] <- vals[mesh_df$space, 1]
       
-      if (terra::nlyr(r) == 1) {
-        # spatial-only → repeat across time
-        vals <- terra::extract(r, coords)[,2]
-        mesh_df[[v]] <- vals[mesh_df$space]
-        
-      } else if (terra::nlyr(r) == nt) {
-        # space-time raster (layers = time)
-        
-        vals_mat <- matrix(NA, ns, nt)
-        
-        for (t in 1:nt) {
-          vals_mat[, t] <- terra::extract(r[[t]], coords)[,2]
-        }
-        
-        mesh_df[[v]] <- vals_mat[
-          cbind(mesh_df$space, mesh_df$time)
-        ]
-        
-      } else {
-        stop(paste("Raster", v, "has incompatible number of layers"))
+    } else if (terra::nlyr(r) == nt) {
+      # space-time raster (layers = time)
+      vals_mat <- matrix(NA, ns, nt)
+      
+      for (t in 1:nt) {
+        vals_mat[, t] <- terra::extract(r[[t]], coords)
       }
       
+      mesh_df[[v]] <- vals_mat[
+        cbind(mesh_df$space, mesh_df$time)
+      ]
+      
     } else {
-      stop(paste("Covariate", v, "is not a SpatRaster"))
+      stop(paste("Raster", v, "has incompatible number of layers"))
     }
   }
   growth_cov <- as.vector(model.matrix(growth.formula, data = mesh_df))
