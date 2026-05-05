@@ -67,7 +67,7 @@ define.varying.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.s
   stopifnot(file.exists(libpath))
   n <- smesh$n*tmesh$n
   if(is.null(debug)) debug = 0
-  args0 <- list(model = "inla_cgeneric_loggrow_model",
+  args0 <- list(model = "inla_cgeneric_loggrow_vary_model",
                 shlib = libpath,
                 n = as.integer(n),
                 debug = as.integer(debug))
