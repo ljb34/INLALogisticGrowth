@@ -212,13 +212,5 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
               animal_obs = animal_obs[animal_obs$time != 0,], mesh = smesh, covaraiates = cov.grid))
 }
 
-test <- simulate_loggrowth_vary(log(1.5), 0.1, log(1000),0.15, 0.2, 0.05, 20,
-                                    0.2, 1,
-                                    550,0.25, 0.05,4, debug = T, max.edge = 0.25,
-                                same.cov = F)
-ggplot()+gg(test$animal, aes(fill = exp(field)), geom = "tile")+
-  facet_wrap(~time)+
-  scale_fill_viridis_c()
 
-ggplot()+gg(test$covaraiates, aes(fill = movement), geom = "tile")
 
