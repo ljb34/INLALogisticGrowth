@@ -153,7 +153,7 @@ double* inla_cgeneric_loggrow_vary_model(inla_cgeneric_cmd_tp cmd, double* theta
     assert(!strcasecmp(data->ints[5]->name, "ncarry"));
     int ncarry = data->ints[5]->ints[0];
 
-    assert(!strcasecmp(data->ints[4]->name, "nmove"));
+    assert(!strcasecmp(data->ints[6]->name, "nmove"));
     int nmove = data->ints[6]->ints[0];
 
     //initial values
@@ -207,25 +207,26 @@ double* inla_cgeneric_loggrow_vary_model(inla_cgeneric_cmd_tp cmd, double* theta
     double* beta_move = theta + ngrowth + ncarry;
     double sigma = (theta ? exp(theta[ngrowth + ncarry + nmove]) : NAN); //interpret.theta equivalent
 
+    double* growth = calloc(ns * nt, sizeof(double));
+    double* carry = calloc(ns * nt, sizeof(double));
+    double* move = calloc(ns * nt, sizeof(double));
+
+    for (int i = 0; i < ns * nt; i++) {
+        for (int j = 0; j < ngrowth; j++) {
+            growth[i] += beta_growth[j] * growth_cov->doubles[i + j * ns * nt];
+        }
+        for (int j = 0; j < ncarry; j++) {
+            carry[i] += beta_carry[j] * carry_cov->doubles[i + j * ns * nt];
+        }
+        for (int j = 0; j < nmove; j++) {
+            move[i] += beta_move[j] * move_cov->doubles[i + j * ns * nt];
+        }
+
+        growth[i] = exp(growth[i]);
+        carry[i] = exp(carry[i]);
+        move[i] = exp(move[i]);
+    }
 	//Calculate growth, carry_cap, move_const from covariates and beta
-	for (int i = 0; i < ns * nt; i++) {
-		growth_cov->doubles[i] = 0;
-		carry_cov->doubles[i] = 0;
-		move_cov->doubles[i] = 0;
-		for (int j = 0; j < ngrowth; j++) {
-			growth_cov->doubles[i] += beta_growth[j] * data->doubles[12]->doubles[i + j * ns * nt];
-		}
-		for (int j = 0; j < ncarry; j++) {
-			carry_cov->doubles[i] += beta_carry[j] * data->doubles[13]->doubles[i + j * ns * nt];
-		}
-		for (int j = 0; j < nmove; j++) {
-			move_cov->doubles[i] += beta_move[j] * data->doubles[14]->doubles[i + j * ns * nt];
-		}
-		//exponentiate to get parameters in original scale
-		growth_cov->doubles[i] = exp(growth_cov->doubles[i]);
-		carry_cov->doubles[i] = exp(carry_cov->doubles[i]);
-		move_cov->doubles[i] = exp(move_cov->doubles[i]);
-	}
 
     //different outputs for the commands supplied
     switch (cmd) { 
@@ -306,7 +307,7 @@ double* inla_cgeneric_loggrow_vary_model(inla_cgeneric_cmd_tp cmd, double* theta
         L_mat->x = calloc(N * N, sizeof(double));
         L_mat->nrow = N;
         L_mat->ncol = N;
-        Lmat_vary(growth_cov->doubles, carry_cov->doubles, move_cov->doubles, timestep, linpoint->doubles, ns, nt, CinvG, L_mat->x);
+        Lmat_vary(growth, carry, move, timestep, linpoint->doubles, ns, nt, CinvG, L_mat->x);
 
         int* ipiv = malloc(ns * nt * sizeof(int));
         int lda = N;
@@ -341,7 +342,7 @@ double* inla_cgeneric_loggrow_vary_model(inla_cgeneric_cmd_tp cmd, double* theta
         
         double g = 0;
         for(int i = 0; i < ns * nt; i++) {
-            g += move_cov->doubles[i]/(ns*nt);
+            g += move[i]/(ns*nt);
 		}
 		double* Qblock = calloc(ns * ns, sizeof(double));
 		if ((C->n == ns) & (G->n == ns)) { //if dense C and G
@@ -476,12 +477,12 @@ double* inla_cgeneric_loggrow_vary_model(inla_cgeneric_cmd_tp cmd, double* theta
         L_mat->x = calloc(N * N, sizeof(double));
         L_mat->nrow = N;
         L_mat->ncol = N;
-        Lmat_vary(growth_cov->doubles, carry_cov->doubles, move_cov->doubles, timestep, linpoint->doubles, ns, nt, CinvG, L_mat->x);
+        Lmat_vary(growth, carry, move, timestep, linpoint->doubles, ns, nt, CinvG, L_mat->x);
 
         inla_cgeneric_vec_tp* rvector = malloc(sizeof(inla_cgeneric_vec_tp));
         rvector->doubles = calloc(N, sizeof(double));
         rvector->len = N;
-        r_vector_vary(growth_cov->doubles, carry_cov->doubles, move_cov->doubles, linpoint->doubles, mag_grad_sq->doubles, ns, nt, rvector->doubles);
+        r_vector_vary(growth, carry, move, linpoint->doubles, mag_grad_sq->doubles, ns, nt, rvector->doubles);
         for (int i = 0; i < ns; i++) {
             rvector->doubles[i] = prior_mean->doubles[i];
         }
