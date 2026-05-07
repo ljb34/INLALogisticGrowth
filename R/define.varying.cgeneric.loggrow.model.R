@@ -35,8 +35,8 @@ define.varying.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.s
   }
   
   fem.matrices <- fmesher::fm_fem(smesh)
-  C <- fem.matrices$c1
-  G <- fem.matrices$g1
+  C <- Matrix::drop0(fem.matrices$c1, tol = 1e-12)
+  G <- Matrix::drop0(fem.matrices$g1,  tol = 1e-12)
   CinvG <- Matrix::solve(fem.matrices$c1, fem.matrices$g1)
   #browser()
   INLAversion <- INLAtools::packageCheck(
@@ -96,7 +96,7 @@ define.varying.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.s
                               growth_cov = as.double(growth_cov),
                               carry_cov = as.double(carry_cov),
                               move_cov = as.double(move_cov),
-                              CinvG = CinvG,
+                              CinvG = Matrix::Drop0(CinvG, tol = 1e-12),
                               prior_precision = Matrix::Matrix(prior.precision, sparse = T),
                               C = C,
                               G = G)))
