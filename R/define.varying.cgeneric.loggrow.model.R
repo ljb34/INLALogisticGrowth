@@ -96,7 +96,7 @@ define.varying.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.s
                               growth_cov = as.double(growth_cov),
                               carry_cov = as.double(carry_cov),
                               move_cov = as.double(move_cov),
-                              CinvG = Matrix::Drop0(CinvG, tol = 1e-12),
+                              CinvG = Matrix::drop0(CinvG, tol = 1e-12),
                               prior_precision = Matrix::Matrix(prior.precision, sparse = T),
                               C = C,
                               G = G)))
