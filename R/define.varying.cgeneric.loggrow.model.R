@@ -99,7 +99,7 @@ define.varying.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.s
                               CinvG = Matrix::drop0(CinvG, tol = 1e-12),
                               prior_precision = Matrix::Matrix(prior.precision, sparse = T),
                               C = C,
-                              G = G)))
+                              G = as(G, "dgCMatrix"))))
   
   class(the_model) <- c("log_growth_model", class(the_model))
   the_model[["smesh"]] <- smesh
