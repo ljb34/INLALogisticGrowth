@@ -357,9 +357,9 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             }
         }
 
-        if (debug > 0) {
-            printf("fT max asymmetry = %.15e\n", max_asym_fT);
-        }
+        
+        printf("fT max asymmetry = %.15e\n", max_asym_fT);
+        
 		//calculate fT*Q and store in QfT
 		double* QfT= calloc(ns * ns, sizeof(double));
 		char transA = 'N';
@@ -372,6 +372,18 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             Qblock, &ns,
             &zero,
             QfT, &ns);
+        max_asym = 0.0;
+
+        for (int i = 0; i < ns; i++) {
+            for (int j = i + 1; j < ns; j++) {
+                double a = QfT[i * ns + j];
+                double b = QfT[j * ns + i];
+                double diff = fabs(a - b);
+                if (diff > max_asym) max_asym = diff;
+            }
+        }
+
+        printf("QfT max asymmetry = %.16e\n", max_asym);
 		//start filling in ret in order of GRAPH
         int idx = 2;
         for(int i = 0; i < ns; i++) {
@@ -387,6 +399,18 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 
         //blocks 1 to nt-1
         for (int k = 1; k < nt - 1; k++) {
+            max_asym = 0.0;
+
+            for (int i = 0; i < ns; i++) {
+                for (int j = i + 1; j < ns; j++) {
+                    double a = QfT[i * ns + j];
+                    double b = QfT[j * ns + i];
+                    double diff = fabs(a - b);
+                    if (diff > max_asym) max_asym = diff;
+                }
+            }
+
+            printf("QfT max asymmetry = %.16e\n", max_asym);
 			//calc f(T+1) = CinvG + diag(a) - 1/timestep*I
             double* fTplus1 = calloc(ns * ns, sizeof(double));
             for (int i = 0; i < ns; i++) {
