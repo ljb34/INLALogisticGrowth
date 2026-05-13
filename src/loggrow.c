@@ -298,6 +298,9 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 double cv = C->x[k];
                 Qblock[jj * ns + ii] = cv;
 				Qblock[ii * ns + jj] = cv; //symmetric
+                if (jj < ii) {
+                    printf("C has non upper triangular entry at (%d, %d), problem!\n", ii, jj);
+                }
             }
             //then add gG to Qblock
             for (int k = 0; k < G->n; k++) {
@@ -306,23 +309,11 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 double gv = G->x[k];
                 Qblock[jj * ns + ii] += g * gv;
 				Qblock[ii * ns + jj] = Qblock[jj * ns + ii]; //symmetric
+                if(jj < ii) {
+                    printf("G has non upper triangular entry at (%d, %d), problem!\n", ii, jj);
+				}
             } 
         }
-
-        double max_asym = 0.0;
-
-        for (int i = 0; i < ns; i++) {
-            for (int j = 0; j < ns; j++) {
-                double a = Qblock[j * ns + i];
-                double b = Qblock[i * ns + j];
-                double diff = fabs(a - b);
-                if (diff > max_asym) max_asym = diff;
-            }
-        }
-
-        
-        printf("Qblock max asymmetry = %.15e\n", max_asym);
-        
 
         double one = 1, zero = 0;
         double* a_array = malloc(ns*nt * sizeof(double));
@@ -366,23 +357,14 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 
             fT[j * ns + i] += move_const * v;
 			fT[i * ns + j] = fT[j * ns + i]; //symmetric
+            if (j < i) {
+				printf("CinvG has non upper triangular entry at (%d, %d), problem!\n", i, j);
+            }
         }
         for (int i = 0; i < ns; i++) {
             fT[i * ns + i] += a_array[i] - 1.0 / timestep;
         }
-        double max_asym_fT = 0.0;
-
-        for (int i = 0; i < ns; i++) {
-            for (int j = 0; j < ns; j++) {
-                double a = fT[j * ns + i];
-                double b = fT[i * ns + j];
-                double diff = fabs(a - b);
-                if (diff > max_asym_fT) max_asym_fT = diff;
-            }
-        }
-
-        
-        printf("fT max asymmetry = %.15e\n", max_asym_fT);
+       
         
 		//calculate Q*fT and store in QfT
 		double* QfT= calloc(ns * ns, sizeof(double));
@@ -396,18 +378,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             fT, &ns,
             &zero,
             QfT, &ns);
-        max_asym = 0.0;
-
-        for (int i = 0; i < ns; i++) {
-            for (int j = i + 1; j < ns; j++) {
-                double a = QfT[i * ns + j];
-                double b = QfT[j * ns + i];
-                double diff = fabs(a - b);
-                if (diff > max_asym) max_asym = diff;
-            }
-        }
-
-        printf("QfT max asymmetry = %.16e\n", max_asym);
+        
 		//start filling in ret in order of GRAPH
         int idx = 2;
         double val = 0.0;
@@ -438,21 +409,14 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 
                 fTplus1[j * ns + i] += move_const * v;
 				fTplus1[i * ns + j] = fTplus1[j * ns + i]; //symmetric
+                if (j < i) {
+                    printf("CinvG has non upper triangular entry at (%d, %d), problem!\n", i, j);
+				}
             }
             for (int i = 0; i < ns; i++) {
                 fTplus1[i * ns + i] += a_array[k * ns + i] - 1.0 / timestep;
             }
-			max_asym_fT = 0.0;
-            for (int i = 0; i < ns; i++) {
-                for (int j = 0; j < ns; j++) {
-                    double a = fTplus1[j * ns + i];
-                    double b = fTplus1[i * ns + j];
-                    double diff = fabs(a - b);
-                    if (diff > max_asym_fT) max_asym_fT = diff;
-                }
-            }
-            
-			printf("fTplus1 max asymmetry = %.15e\n", max_asym_fT);
+			
 
 			//calc Qblock*f(T+1) and store in QfTplus1
             double* QfTplus1 = calloc(ns * ns, sizeof(double));
@@ -508,7 +472,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         free(fT);
         free(QfT);
 		free(fTQfT);
-        printf("Q idx=%d expected=%d\n", idx - 2, M);
+        
         assert(idx == M + 2);
     }
     break;
