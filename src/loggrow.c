@@ -329,8 +329,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             }
         }
 
-		//calculate fT*Q and store in FtQ
-		double* FtQ= calloc(ns * ns, sizeof(double));
+		//calculate fT*Q and store in QfT
+		double* QfT= calloc(ns * ns, sizeof(double));
 		char transA = 'N';
 		char transB = 'N';
 		if (debug > 0) printf("dgemm step");
@@ -340,7 +340,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             fT, &ns,
             Qblock, &ns,
             &zero,
-            FtQ, &ns);
+            QfT, &ns);
 		//start filling in ret in order of GRAPH
         int idx = 2;
         for(int i = 0; i < ns; i++) {
@@ -349,7 +349,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 					ret[idx++] += sigma * sigma / (timestep * timestep * timestep) * Qblock[j * ns + i];
                 }
 				else { // second block -sigma**2/h**2*Qblock*ft2
-					ret[idx++] += -sigma * sigma / (timestep * timestep) * FtQ[(j - ns) * ns + i];
+					ret[idx++] += -sigma * sigma / (timestep * timestep) * QfT[(j - ns) * ns + i];
                 }
             }
 		}
@@ -366,8 +366,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                     }
                 }
             }
-			//calc Qblock*f(T+1) and store in FtQplus1
-            double* FtQplus1 = calloc(ns * ns, sizeof(double));
+			//calc Qblock*f(T+1) and store in QfTplus1
+            double* QfTplus1 = calloc(ns * ns, sizeof(double));
 			if (debug > 0) printf("dgemm step");
             dgemm_("T", "N",
                 &ns, &ns, &ns,
@@ -375,22 +375,22 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 fTplus1, &ns,
                 Qblock, &ns,
                 &zero,
-                FtQplus1, &ns);
+                QfTplus1, &ns);
 
-			//calc trans(fT)*FtQ and store in fTFtQ
-			double* fTFtQ = calloc(ns * ns, sizeof(double));
+			//calc trans(fT)*QfT and store in fTQfT
+			double* fTQfT = calloc(ns * ns, sizeof(double));
 			char transfT = 'T';
 			if (debug > 0) printf("dgemm step");
-			dgemm_(&transfT, &transB, &ns, &ns, &ns, &one, fT, &ns, FtQ, &ns, &zero, fTFtQ, &ns);
+			dgemm_(&transfT, &transB, &ns, &ns, &ns, &one, fT, &ns, QfT, &ns, &zero, fTQfT, &ns);
 
             //fill in ret for block k in order of GRAPH
             for (int i = k * ns; i < (k + 1) * ns; i++) {
                 for (int j = i; j < (k + 2) * ns; j++) {
-					if (j < (k + 1) * ns) { // block k: sigma**2/h *fTFtQ + sigma**2/h**3*Qblock
-						ret[idx++] += sigma * sigma / timestep * fTFtQ[(j - k * ns) * ns + (i - k * ns)] + sigma * sigma / (timestep * timestep * timestep) * Qblock[j * ns + i - k * ns];
+					if (j < (k + 1) * ns) { // block k: sigma**2/h *fTQfT + sigma**2/h**3*Qblock
+						ret[idx++] += sigma * sigma / timestep * fTQfT[(j - k * ns) * ns + (i - k * ns)] + sigma * sigma / (timestep * timestep * timestep) * Qblock[(j - k * ns) * ns + (i - k * ns)];
                     }
                     else { // block k+1: -sigma**2/h**2*Qblock*f(T+1)
-                        ret[idx++] += -sigma * sigma / (timestep * timestep) * FtQplus1[(j - (k + 1) * ns) * ns + (i - k * ns)];
+                        ret[idx++] += -sigma * sigma / (timestep * timestep) * QfTplus1[(j - (k + 1) * ns) * ns + (i - k * ns)];
                     }
                 }
             }
@@ -398,28 +398,28 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 			double* temp = fT;
 			fT = fTplus1;
 			fTplus1 = temp;
-			double* temp2 = FtQ;
-			FtQ = FtQplus1;
-            FtQplus1 = temp2;
-			free(FtQplus1);
+			double* temp2 = QfT;
+			QfT = QfTplus1;
+            QfTplus1 = temp2;
+			free(QfTplus1);
 			free(fTplus1);
         }
 		//final block nt-1
-        //calc trans(fT)*FtQ and store in fTFtQ
-        double* fTFtQ = calloc(ns * ns, sizeof(double));
+        //calc trans(fT)*QfT and store in fTQfT
+        double* fTQfT = calloc(ns * ns, sizeof(double));
         char transfT = 'T';
         if (debug > 0) printf("dgemm step");
-        dgemm_(&transfT, &transB, &ns, &ns, &ns, &one, fT, &ns, FtQ, &ns, &zero, fTFtQ, &ns);
+        dgemm_(&transfT, &transB, &ns, &ns, &ns, &one, fT, &ns, QfT, &ns, &zero, fTQfT, &ns);
         for (int i = (nt - 1) * ns; i < nt * ns; i++) {
             for (int j = i; j < nt * ns; j++) {
-                ret[idx++] += sigma * sigma / timestep * fTFtQ[(j - (nt - 1) * ns) * ns + (i - (nt - 1) * ns)];
+                ret[idx++] += sigma * sigma / timestep * fTQfT[(j - (nt - 1) * ns) * ns + (i - (nt - 1) * ns)];
             }
 		}
         
         free(Qblock);
         free(fT);
-        free(FtQ);
-		free(fTFtQ);
+        free(QfT);
+		free(fTQfT);
         printf("Q idx=%d expected=%d\n", idx - 2, M);
         assert(idx == M + 2);
     }
