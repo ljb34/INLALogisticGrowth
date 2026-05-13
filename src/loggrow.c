@@ -356,10 +356,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             double v = CinvG->x[k];
 
             fT[j * ns + i] += move_const * v;
-			fT[i * ns + j] = fT[j * ns + i]; //symmetric
-            if (j < i) {
-				printf("CinvG has non upper triangular entry at (%d, %d), problem!\n", i, j);
-            }
+            
         }
         for (int i = 0; i < ns; i++) {
             fT[i * ns + i] += a_array[i] - 1.0 / timestep;
@@ -408,10 +405,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 double v = CinvG->x[k];
 
                 fTplus1[j * ns + i] += move_const * v;
-				fTplus1[i * ns + j] = fTplus1[j * ns + i]; //symmetric
-                if (j < i) {
-                    printf("CinvG has non upper triangular entry at (%d, %d), problem!\n", i, j);
-				}
+                
             }
             for (int i = 0; i < ns; i++) {
                 fTplus1[i * ns + i] += a_array[k * ns + i] - 1.0 / timestep;
