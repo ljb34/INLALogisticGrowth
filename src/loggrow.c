@@ -89,7 +89,24 @@ void r_vector(double growth, double carry_cap, double move_const,
     }
 }
 
+double sparse_get(
+    int row,
+    int col,
+    int n_entries,
+    int* I,
+    int* J,
+    double* X)
+{
+    for (int k = 0; k < n_entries; k++) {
+        if (I[k] == row && J[k] == col)
+            return X[k];
 
+        // if symmetric storage:
+        if (I[k] == col && J[k] == row)
+            return X[k];
+    }
+    return 0.0;
+}
 
 
 double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inla_cgeneric_data_tp* data) {
@@ -315,14 +332,13 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         //1st block
         // 
 		//Copy Prior precision to ret in order of GRAPH
-        if (prior_precision->n != ns * ns) {
+        /*if (prior_precision->n != ns * ns) {
             // sparse prior_precision: apply its nonzeros 
             for (int k = 0; k < prior_precision->n; k++) {
                 int ii = prior_precision->i[k];
                 int jj = prior_precision->j[k];
                 double pv = prior_precision->x[k];
                 ret[2 + (ii * 2*ns + jj - ii)] = pv;
-				ret[2 + (jj * 2 * ns + ii - jj)] = pv; //symmetric
             }
         }
         else { //if dense prior precision
@@ -332,7 +348,10 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 }
             }
 		}
-        
+        */
+
+
+
         if (CinvG->n != ns * ns) {
 			printf("CinvG is sparse, problem!\n");
         }
@@ -391,14 +410,20 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         printf("QfT max asymmetry = %.16e\n", max_asym);
 		//start filling in ret in order of GRAPH
         int idx = 2;
+        double val = 0.0;
         for(int i = 0; i < ns; i++) {
             for (int j = i; j < 2*ns; j++) {
-                if (j < ns) { // first block P + sigma**2/h**3*Qblock
-					ret[idx++] += sigma * sigma / (timestep * timestep * timestep) * Qblock[j * ns + i];
+                val = 0;
+                if (j < ns) {// first block P + sigma**2/h**3*Qblock
+                    val = sparse_get(i, j,
+                        prior_precision->n,
+                        prior_precision->i,
+                        prior_precision->j,
+                        prior_precision->x) + sigma * sigma / (timestep * timestep * timestep) * Qblock[j * ns + i];
+                } else { // second block -sigma**2/h**2*Qblock*ft2
+					val = -sigma * sigma / (timestep * timestep) * QfT[(j - ns) * ns + i];
                 }
-				else { // second block -sigma**2/h**2*Qblock*ft2
-					ret[idx++] += -sigma * sigma / (timestep * timestep) * QfT[(j - ns) * ns + i];
-                }
+				ret[idx++] = val;
             }
 		}
 
