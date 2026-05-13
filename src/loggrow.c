@@ -280,6 +280,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 int jj = C->j[k];
                 double cv = C->x[k];
                 Qblock[jj * ns + ii] = cv;
+				Qblock[ii * ns + jj] = cv; //symmetric
             }
             //then add gG to Qblock
             for (int k = 0; k < G->n; k++) {
@@ -287,8 +288,25 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 int jj = G->j[k];
                 double gv = G->x[k];
                 Qblock[jj * ns + ii] += g * gv;
+				Qblock[ii * ns + jj] += g * gv; //symmetric
             } 
         }
+
+        double max_asym = 0.0;
+
+        for (int i = 0; i < ns; i++) {
+            for (int j = 0; j < ns; j++) {
+                double a = Qblock[j * ns + i];
+                double b = Qblock[i * ns + j];
+                double diff = fabs(a - b);
+                if (diff > max_asym) max_asym = diff;
+            }
+        }
+
+        
+        printf("Qblock max asymmetry = %.15e\n", max_asym);
+        
+
         double one = 1, zero = 0;
         double* a_array = malloc(ns*nt * sizeof(double));
         a_func(growth, carry_cap,
@@ -328,7 +346,20 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 }
             }
         }
+        double max_asym_fT = 0.0;
 
+        for (int i = 0; i < ns; i++) {
+            for (int j = 0; j < ns; j++) {
+                double a = fT[j * ns + i];
+                double b = fT[i * ns + j];
+                double diff = fabs(a - b);
+                if (diff > max_asym_fT) max_asym_fT = diff;
+            }
+        }
+
+        if (debug > 0) {
+            printf("fT max asymmetry = %.15e\n", max_asym_fT);
+        }
 		//calculate fT*Q and store in QfT
 		double* QfT= calloc(ns * ns, sizeof(double));
 		char transA = 'N';
