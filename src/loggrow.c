@@ -44,7 +44,7 @@ void Lmat(double growth, double carry_cap, double move_const, double timestep,
 	//main diagonal
 	double* a_array = malloc(ntotal * sizeof(double));
 	a_func(growth, carry_cap,
-		linpoint, ns, nt, a_array);
+        linpoint, ns, nt, a_array);
 	for (int i = ns; i < ntotal; i++) {
 		result[i * ntotal + i] = a_array[i] + (1 /timestep);
 	}
@@ -261,56 +261,12 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         if (debug > 0) printf("M: %d\n", M);
         ret = Calloc(2 +M, double);
 
-        inla_cgeneric_mat_tp* L_mat = malloc(sizeof(inla_cgeneric_mat_tp));
-        L_mat->x = calloc(N * N, sizeof(double));
-        L_mat->nrow = N;
-        L_mat->ncol = N;
-        Lmat(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, L_mat->x);
-
-        int* ipiv = malloc(ns * nt * sizeof(int));
-        int lda = N;
-        int ldb = N;
-        int nrhs = N;
-        int info;
-
-        double* B = calloc(N * N, sizeof(double));
-        //Compute Noise * L
-		//initial ns x ns prior_precision block - prior precision * identity so can just copy prior_precision to B
-		//if sparse prior_precision
-        if (prior_precision->n != ns * ns) {
-            // sparse prior_precision: apply its nonzeros 
-            for (int k = 0; k < prior_precision->n; k++) {
-                int ii = prior_precision->i[k]; 
-                int jj = prior_precision->j[k]; 
-                double pv = prior_precision->x[k];
-				B[jj * N + ii] = pv;
-            }
-        }
-        else { //if dense prior precision
-            for (int i = 0; i < ns; i++) {
-                for (int j = 0; j < ns; j++) {
-					B[j * N + i] = prior_precision->x[j * ns + i]; 
-                }
-            }
-        }
-        /*Rest of B=Q*L */
-        double one = 1, zero = 0;
-        //Calculate sigma**2/h * (C+gG)
-        double* a_array = malloc(ns*nt * sizeof(double));
-        /*a_func(growth, carry_cap, linpoint->doubles, ns, nt, a_array);
-		double mean_a = 0.0;
-        for (int i = 0; i < ns*nt; i++) {
-            mean_a += a_array[i];
-        }
-        mean_a = mean_a/(ns*nt);
-		free(a_array);
-		double g = move_const / mean_a; */
         double g = move_const;
-		double* Qblock = calloc(ns * ns, sizeof(double));
-		if ((C->n == ns) & (G->n == ns)) { //if dense C and G
+        double* Qblock = calloc(ns * ns, sizeof(double));
+        if ((C->n == ns*ns) & (G->n == ns*ns)) { //if dense C and G
             for (int i = 0; i < ns; i++) {
                 for (int j = 0; j < ns; j++) {
-                    Qblock[j * ns + i] = sigma * sigma * (C->x[j * ns + i] + g * G->x[j * ns + i]) / timestep;
+                    Qblock[j * ns + i] = C->x[j * ns + i] + g * G->x[j * ns + i];
                 }
             }
         }
@@ -329,100 +285,124 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 int jj = G->j[k];
                 double gv = G->x[k];
                 Qblock[jj * ns + ii] += g * gv;
-            }
-            //finally scale by sigma^2 / timestep
-            for (int i = 0; i < ns; i++) {
-                for (int j = 0; j < ns; j++) {
-                    Qblock[j * ns + i] = sigma * sigma * Qblock[j * ns + i] / timestep;
-                }
-			}
+            } 
         }
+        double one = 1, zero = 0;
+        double* a_array = malloc(ns*nt * sizeof(double));
+        a_func(growth, carry_cap,
+            linpoint->doubles, ns, nt, a_array);
+
+        //1st block
+        // 
+		//Copy Prior precision to ret in order of GRAPH
+        if (prior_precision->n != ns * ns) {
+            // sparse prior_precision: apply its nonzeros 
+            for (int k = 0; k < prior_precision->n; k++) {
+                int ii = prior_precision->i[k];
+                int jj = prior_precision->j[k];
+                double pv = prior_precision->x[k];
+                ret[2 + (ii * 2*ns + jj - ii)] = pv;
+            }
+        }
+        else { //if dense prior precision
+            for (int i = 0; i < ns; i++) {
+                for (int j = i; j < ns; j++) {
+                    ret[2 + (i * 2*ns + j - i)] = prior_precision->x[j * ns + i];
+                }
+            }
+		}
         
-		//main diagonal blocks
-        for (int t = 1; t < nt; t++) {
-
-			//extract t-th block of L
-			double* Lblock = malloc(ns * ns * sizeof(double));
-            for (int i = 0; i < ns; i++) {
-                for (int j = 0; j < ns; j++) {
-                    Lblock[j * ns + i] = L_mat->x[(t * ns + j) * N + t * ns + i];
-                }
-            }
-			//multiply Qblock * Lblock and store in B
-			double* temp = malloc(ns * ns * sizeof(double));
-			char transA = 'N';
-			char transB = 'N';
-            
-			dgemm_(&transA, &transB, &ns, &ns, &ns, &one, Qblock, &ns, Lblock, &ns, &zero, temp, &ns);
-            for (int i = 0; i < ns; i++) {
-                for (int j = 0; j < ns; j++) {
-                    B[(t * ns + j) * N + t * ns + i] = temp[j * ns + i];
-                }
-            }
-
-			//clear memory
-			free(Lblock);
-			free(temp);
-        }
-
-		//sub diagonal blocks -1/timestep*Qblock
-        for (int t = 1; t < nt - 1; t++) {
-            for(int i = 0; i < ns; i++) {
-                for (int j = 0; j < ns; j++) {
-                    B[(t * ns + j) * N + (t + 1) * ns + i] = -1.0 / timestep * Qblock[j * ns + i];
-                }
-			}
-        }
-
-		free(Qblock);
-
-        /* Now compute out = L_mat^T * B */
-        double* out = calloc(N * N, sizeof(double));
-        char transL = 'T';
-		char transB = 'N';
-        if (debug > 0) printf("dgemm step");
-        dgemm_(&transL, &transB, &N, &N, &N, &one, L_mat->x, &lda, B, &ldb, &zero, out, &N);
-
-        free(L_mat->x);
-        free(L_mat);
-        free(B);
-        free(ipiv);
-
-        ret[0] = -1; /* REQUIRED! */
-        ret[1] = M; 
-
-		//fill in ret with non zero parts of out 
-
-
-		int idx = 2; // Start after -1 and M
-		//first year only has two blocks
+        
+      
+        //copy CinvG to new matrix and add -1/timestep to diagonal
+		double* fT = calloc(ns * ns, sizeof(double));
         for (int i = 0; i < ns; i++) {
-            for (int j = i; j < 2*ns; j++) {
-                ret[idx++] = out[j * N + i];
+            for (int j = 0; j < ns; j++) {
+                fT[j * ns + i] = move_const * CinvG->x[j * ns + i];
+                if (i == j) {
+                    fT[j * ns + i] += a_array[i] - 1 / timestep;
+                }
             }
         }
-		//middle years have three blocks
+
+		//calculate Qblock*ft and store in QfT
+		double* QfT= calloc(ns * ns, sizeof(double));
+		char transA = 'N';
+		char transB = 'N';
+		if (debug > 0) printf("dgemm step");
+		dgemm_(&transA, &transB, &ns, &ns, &ns, &one, Qblock, &ns, fT, &ns, &zero, QfT, &ns);
+		//start filling in ret in order of GRAPH
+        for(int i = 0; i < ns; i++) {
+            for (int j = i; j < 2*ns; j++) {
+                if (j < ns) { // first block P + sigma**2/h**3*Qblock
+					ret[2 + (i * 2 * ns + j - i)] += sigma * sigma / (timestep * timestep * timestep) * Qblock[j * ns + i];
+                }
+				else { // second block -sigma**2/h**2*Qblock*ft2
+					ret[2 + (i * 2 * ns + j - i)] += -sigma * sigma / (timestep * timestep) * QfT[(j - ns) * ns + i];
+                }
+            }
+		}
+
+        //blocks 1 to nt-1
         for (int k = 1; k < nt - 1; k++) {
+			//calc f(T+1) = CinvG + diag(a) - 1/timestep*I
+            double* fTplus1 = calloc(ns * ns, sizeof(double));
+            for (int i = 0; i < ns; i++) {
+                for (int j = 0; j < ns; j++) {
+                    fTplus1[j * ns + i] = move_const * CinvG->x[j * ns + i];
+                    if (i == j) {
+                        fTplus1[j * ns + i] += a_array[k * ns + i] - 1 / timestep;
+                    }
+                }
+            }
+			//calc Qblock*f(T+1) and store in QfTplus1
+            double* QfTplus1 = calloc(ns * ns, sizeof(double));
+			if (debug > 0) printf("dgemm step");
+			dgemm_(&transA, &transB, &ns, &ns, &ns, &one, Qblock, &ns, fTplus1, &ns, &zero, QfTplus1, &ns);
+
+			//calc trans(fT)*QfT and store in fTQfT
+			double* fTQfT = calloc(ns * ns, sizeof(double));
+			char transfT = 'T';
+			if (debug > 0) printf("dgemm step");
+			dgemm_(&transfT, &transB, &ns, &ns, &ns, &one, fT, &ns, QfT, &ns, &zero, fTQfT, &ns);
+
+            //fill in ret for block k in order of GRAPH
             for (int i = k * ns; i < (k + 1) * ns; i++) {
                 for (int j = i; j < (k + 2) * ns; j++) {
-                    ret[idx++] = out[j * N + i];
+                    if (j < (k + 1) * ns) { // block k: sigma**2/h *fTQfT 
+                        ret[2 + (i * 2 * ns + j - i - k * ns)] += sigma * sigma / timestep * fTQfT[(j - k * ns) * ns + (i - k * ns)];
+                    }
+                    else { // block k+1: -sigma**2/h**2*Qblock*f(T+1)
+                        ret[2 + (i * 2 * ns + j - i - k * ns)] += -sigma * sigma / (timestep * timestep) * QfTplus1[(j - (k + 1) * ns) * ns + (i - k * ns)];
+                    }
                 }
             }
+			//copy f(T+1) to fT for next iteration
+			double* temp = fT;
+			fT = fTplus1;
+			fTplus1 = temp;
+			double* temp2 = QfT;
+			QfT = QfTplus1;
+            QfTplus1 = temp2;
+			free(QfTplus1);
+			free(fTplus1);
         }
-
-        //final year has two blocks
-        
+		//final block nt-1
+        //calc trans(fT)*QfT and store in fTQfT
+        double* fTQfT = calloc(ns * ns, sizeof(double));
+        char transfT = 'T';
+        if (debug > 0) printf("dgemm step");
+        dgemm_(&transfT, &transB, &ns, &ns, &ns, &one, fT, &ns, QfT, &ns, &zero, fTQfT, &ns);
         for (int i = (nt - 1) * ns; i < nt * ns; i++) {
             for (int j = i; j < nt * ns; j++) {
-                ret[idx++] = out[j * N + i];
+                ret[2 + (i * 2 * ns + j - i - (nt - 1) * ns)] += sigma * sigma / timestep * fTQfT[(j - (nt - 1) * ns) * ns + (i - (nt - 1) * ns)];
             }
-        }
-		free(out);
-
-        if (idx - 2 != M) {
-            fprintf(stderr, "Q filled %d values, expected %d\n", idx - 2, M);
-            abort();
-        }
+		}
+        
+        free(Qblock);
+        free(fT);
+        free(QfT);
+		free(fTQfT);
     }
     break;
     case INLA_CGENERIC_MU:
