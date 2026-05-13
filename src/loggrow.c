@@ -338,13 +338,16 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
       
         //copy CinvG to new matrix and add -1/timestep to diagonal
 		double* fT = calloc(ns * ns, sizeof(double));
+        
+        for (int k = 0; k < CinvG->n; k++) {
+            int i = CinvG->i[k];
+            int j = CinvG->j[k];
+            double v = CinvG->x[k];
+
+            fT[j * ns + i] += move_const * v;
+        }
         for (int i = 0; i < ns; i++) {
-            for (int j = 0; j < ns; j++) {
-                fT[j * ns + i] = move_const * CinvG->x[j * ns + i];
-                if (i == j) {
-                    fT[j * ns + i] += a_array[i] - 1 / timestep;
-                }
-            }
+            fT[i * ns + i] += a_array[i] - 1.0 / timestep;
         }
         double max_asym_fT = 0.0;
 
@@ -399,28 +402,30 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 
         //blocks 1 to nt-1
         for (int k = 1; k < nt - 1; k++) {
-            max_asym = 0.0;
-
-            for (int i = 0; i < ns; i++) {
-                for (int j = i + 1; j < ns; j++) {
-                    double a = QfT[i * ns + j];
-                    double b = QfT[j * ns + i];
-                    double diff = fabs(a - b);
-                    if (diff > max_asym) max_asym = diff;
-                }
-            }
-
-            printf("QfT max asymmetry = %.16e\n", max_asym);
 			//calc f(T+1) = CinvG + diag(a) - 1/timestep*I
             double* fTplus1 = calloc(ns * ns, sizeof(double));
+            for (int k = 0; k < CinvG->n; k++) {
+                int i = CinvG->i[k];
+                int j = CinvG->j[k];
+                double v = CinvG->x[k];
+
+                fTplus1[j * ns + i] += move_const * v;
+            }
+            for (int i = 0; i < ns; i++) {
+                fTplus1[i * ns + i] += a_array[k * ns + i] - 1.0 / timestep;
+            }
+			max_asym_fT = 0.0;
             for (int i = 0; i < ns; i++) {
                 for (int j = 0; j < ns; j++) {
-                    fTplus1[j * ns + i] = move_const * CinvG->x[j * ns + i];
-                    if (i == j) {
-                        fTplus1[j * ns + i] += a_array[k * ns + i] - 1 / timestep;
-                    }
+                    double a = fTplus1[j * ns + i];
+                    double b = fTplus1[i * ns + j];
+                    double diff = fabs(a - b);
+                    if (diff > max_asym_fT) max_asym_fT = diff;
                 }
             }
+            
+			printf("fTplus1 max asymmetry = %.15e\n", max_asym_fT);
+
 			//calc Qblock*f(T+1) and store in QfTplus1
             double* QfTplus1 = calloc(ns * ns, sizeof(double));
 			if (debug > 0) printf("dgemm step");
