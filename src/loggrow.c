@@ -297,10 +297,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 int jj = C->j[k];
                 double cv = C->x[k];
                 Qblock[jj * ns + ii] = cv;
-				Qblock[ii * ns + jj] = cv; //symmetric
-                if (jj < ii) {
-                    printf("C has non upper triangular entry at (%d, %d), problem!\n", ii, jj);
-                }
+                
             }
             //then add gG to Qblock
             for (int k = 0; k < G->n; k++) {
@@ -308,10 +305,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 int jj = G->j[k];
                 double gv = G->x[k];
                 Qblock[jj * ns + ii] += g * gv;
-				Qblock[ii * ns + jj] = Qblock[jj * ns + ii]; //symmetric
-                if(jj < ii) {
-                    printf("G has non upper triangular entry at (%d, %d), problem!\n", ii, jj);
-				}
+                
             } 
         }
 
