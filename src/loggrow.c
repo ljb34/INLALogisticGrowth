@@ -322,6 +322,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 int jj = prior_precision->j[k];
                 double pv = prior_precision->x[k];
                 ret[2 + (ii * 2*ns + jj - ii)] = pv;
+				ret[2 + (jj * 2 * ns + ii - jj)] = pv; //symmetric
             }
         }
         else { //if dense prior precision
@@ -369,7 +370,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 		char transA = 'N';
 		char transB = 'N';
 		if (debug > 0) printf("dgemm step");
-        dgemm_("T", "N",
+        dgemm_("N", "N",
             &ns, &ns, &ns,
             &one,
             Qblock, &ns,
@@ -431,7 +432,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 			//calc Qblock*f(T+1) and store in QfTplus1
             double* QfTplus1 = calloc(ns * ns, sizeof(double));
 			if (debug > 0) printf("dgemm step");
-            dgemm_("T", "N",
+            dgemm_("N", "N",
                 &ns, &ns, &ns,
                 &one,
                 Qblock, &ns,
