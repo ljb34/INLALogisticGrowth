@@ -360,7 +360,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         
         printf("fT max asymmetry = %.15e\n", max_asym_fT);
         
-		//calculate fT*Q and store in QfT
+		//calculate Q*fT and store in QfT
 		double* QfT= calloc(ns * ns, sizeof(double));
 		char transA = 'N';
 		char transB = 'N';
@@ -368,8 +368,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         dgemm_("T", "N",
             &ns, &ns, &ns,
             &one,
-            fT, &ns,
             Qblock, &ns,
+            fT, &ns,
             &zero,
             QfT, &ns);
         max_asym = 0.0;
