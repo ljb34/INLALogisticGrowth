@@ -374,8 +374,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             //fill in ret for block k in order of GRAPH
             for (int i = k * ns; i < (k + 1) * ns; i++) {
                 for (int j = i; j < (k + 2) * ns; j++) {
-                    if (j < (k + 1) * ns) { // block k: sigma**2/h *fTQfT 
-                        ret[idx++] += sigma * sigma / timestep * fTQfT[(j - k * ns) * ns + (i - k * ns)];
+					if (j < (k + 1) * ns) { // block k: sigma**2/h *fTQfT + sigma**2/h**3*Qblock
+						ret[idx++] += sigma * sigma / timestep * fTQfT[(j - k * ns) * ns + (i - k * ns)] + sigma * sigma / (timestep * timestep * timestep) * Qblock[j * ns + i - k * ns];
                     }
                     else { // block k+1: -sigma**2/h**2*Qblock*f(T+1)
                         ret[idx++] += -sigma * sigma / (timestep * timestep) * QfTplus1[(j - (k + 1) * ns) * ns + (i - k * ns)];
