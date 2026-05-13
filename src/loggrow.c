@@ -260,6 +260,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         int M = 2 * ns * ns + ns + (nt - 2) * (ns * ns + ns * (ns + 1) / 2);
         if (debug > 0) printf("M: %d\n", M);
         ret = Calloc(2 +M, double);
+        ret[0] = -1; /* REQUIRED! */
+        ret[1] = M;
 
         double g = move_const;
         double* Qblock = calloc(ns * ns, sizeof(double));
