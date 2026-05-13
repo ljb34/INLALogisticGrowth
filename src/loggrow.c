@@ -372,8 +372,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             dgemm_("T", "N",
                 &ns, &ns, &ns,
                 &one,
-                fTplus1, &ns,
                 Qblock, &ns,
+                fTplus1, &ns,
                 &zero,
                 QfTplus1, &ns);
 
