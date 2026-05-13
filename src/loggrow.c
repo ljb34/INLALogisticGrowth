@@ -288,7 +288,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 int jj = G->j[k];
                 double gv = G->x[k];
                 Qblock[jj * ns + ii] += g * gv;
-				Qblock[ii * ns + jj] += g * gv; //symmetric
+				Qblock[ii * ns + jj] = Qblock[jj * ns + ii]; //symmetric
             } 
         }
 
@@ -346,7 +346,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             double v = CinvG->x[k];
 
             fT[j * ns + i] += move_const * v;
-			fT[i * ns + j] += move_const * v; //symmetric
+			fT[i * ns + j] = fT[j * ns + i]; //symmetric
         }
         for (int i = 0; i < ns; i++) {
             fT[i * ns + i] += a_array[i] - 1.0 / timestep;
@@ -412,7 +412,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 double v = CinvG->x[k];
 
                 fTplus1[j * ns + i] += move_const * v;
-				fTplus1[i * ns + j] += move_const * v; //symmetric
+				fTplus1[i * ns + j] = fTplus1[j * ns + i]; //symmetric
             }
             for (int i = 0; i < ns; i++) {
                 fTplus1[i * ns + i] += a_array[k * ns + i] - 1.0 / timestep;
