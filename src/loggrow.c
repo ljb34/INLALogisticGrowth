@@ -336,7 +336,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 		if (debug > 0) printf("dgemm step");
 		dgemm_(&transA, &transB, &ns, &ns, &ns, &one, Qblock, &ns, fT, &ns, &zero, QfT, &ns);
 		//start filling in ret in order of GRAPH
-        int idx = 0;
+        int idx = 2;
         for(int i = 0; i < ns; i++) {
             for (int j = i; j < 2*ns; j++) {
                 if (j < ns) { // first block P + sigma**2/h**3*Qblock
