@@ -325,7 +325,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 double a = Qblock[j * ns + i];
                 double b = Qblock[i * ns + j];
                 if(a != b) {
-                    printf("Warning: Qblock not symmetric at (%d, %d): %f vs %f. Enforcing symmetry.\n", i, j, a, b);
+                    //printf("Warning: Qblock not symmetric at (%d, %d): %f vs %f. Enforcing symmetry.\n", i, j, a, b);
                     double s = 0.5 * (a + b);
 
                     Qblock[j * ns + i] = s;
@@ -368,7 +368,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                     double a = fT[j * ns + i];
                     double b = fT[i * ns + j];
                     if(a != b) {
-                        if(debug>0) printf("Warning: fT not symmetric at (%d, %d): %f vs %f. Enforcing symmetry.\n", i, j, a, b);
+                        printf("Warning: fT not symmetric at (%d, %d): %f vs %f. Enforcing symmetry.\n", i, j, a, b);
                         double s = 0.5 * (a + b);
                         fT[j * ns + i] = s;
                         fT[i * ns + j] = s;
@@ -430,7 +430,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                     double a = fTplus1[j * ns + i];
                     double b = fTplus1[i * ns + j];
                     if(a != b) {
-                        if(debug>0) printf("Warning: fTplus not symmetric at (%d, %d): %f vs %f. Enforcing symmetry.\n", i, j, a, b);
+                         printf("Warning: fTplus not symmetric at (%d, %d): %f vs %f. Enforcing symmetry.\n", i, j, a, b);
                         double s = 0.5 * (a + b);
 
                         fTplus1[j * ns + i] = s;
