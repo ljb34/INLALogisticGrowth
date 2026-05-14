@@ -343,7 +343,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             
         }
         for (int i = 0; i < ns; i++) {
-            fT[i * ns + i] += a_array[i] + 1.0 / timestep;
+            fT[i * ns + i] += a_array[ns + i] + 1.0 / timestep;
         }
         
         //calculate Q*fT and store in QfT
@@ -391,7 +391,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 
             }
             for (int i = 0; i < ns; i++) {
-                fTplus1[i * ns + i] += a_array[t * ns + i] + 1.0 / timestep;
+                fTplus1[i * ns + i] += a_array[(t+1) * ns + i] + 1.0 / timestep;
             }
 			
 			
