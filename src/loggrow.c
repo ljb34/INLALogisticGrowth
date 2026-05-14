@@ -326,12 +326,13 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 double b = Qblock[i * ns + j];
                 if(a != b) {
                     printf("Warning: Qblock not symmetric at (%d, %d): %f vs %f. Enforcing symmetry.\n", i, j, a, b);
+                    double s = 0.5 * (a + b);
+
+                    Qblock[j * ns + i] = s;
+                    Qblock[i * ns + j] = s;
                     
 				}
-                double s = 0.5 * (a + b);
-
-                Qblock[j * ns + i] = s;
-                Qblock[i * ns + j] = s;
+                
             }
         }
         double one = 1, zero = 0;
@@ -545,7 +546,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         g = move_const;
 		free(Qblock);
         Qblock = calloc(ns * ns, sizeof(double));
-        if ((C->n == ns) & (G->n == ns)) { //if dense C and G
+        if ((C->n == ns*ns) & (G->n == ns*ns)) { //if dense C and G
             for (int i = 0; i < ns; i++) {
                 for (int j = 0; j < ns; j++) {
                     Qblock[j * ns + i] = sigma * sigma * (C->x[j * ns + i] + g * G->x[j * ns + i]) / timestep;
