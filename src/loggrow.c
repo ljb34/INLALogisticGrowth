@@ -383,7 +383,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         }
 		//check symmetry of fT
 
-        for (int i = 0; i < ns; i++) {
+        /*for (int i = 0; i < ns; i++) {
                for (int j = i + 1; j < ns; j++) {
                     double a = fT[j * ns + i];
                     double b = fT[i * ns + j];
@@ -394,7 +394,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                         fT[i * ns + j] = s;
                     }
                 }
-	    }
+	    }*/
         
         //calculate Q*fT and store in QfT
         double* QfT = calloc(ns * ns, sizeof(double));
@@ -444,7 +444,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 fTplus1[i * ns + i] += a_array[k * ns + i] + 1.0 / timestep;
             }
 			//Check symmetry of fTplus1
-            for (int i = 0; i < ns; i++) {
+            /*for (int i = 0; i < ns; i++) {
                 for (int j = i + 1; j < ns; j++) {
 
                     double a = fTplus1[j * ns + i];
@@ -459,7 +459,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                     }
 
                 }
-            }
+            }*/
 			
             //calc Qblock*f(T+1) and store in QfTplus1
             double* QfTplus1 = calloc(ns * ns, sizeof(double));
