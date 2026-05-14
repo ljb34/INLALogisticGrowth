@@ -303,7 +303,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 if (isnan(cv)) {
                     printf("Warning: NaN in C at (%d, %d)\n", ii, jj);
                 }
-                Qblock[jj * ns + ii] = cv;
+                Qblock[ii * ns + jj] = cv;
                 
             }
             //then add gG to Qblock
@@ -314,7 +314,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 if (isnan(gv)) {
                     printf("Warning: NaN in G at (%d, %d)\n", ii, jj);
 				}
-                Qblock[jj * ns + ii] += g * gv;
+                Qblock[ii * ns + jj] += g * gv;
                 
             } 
         }
