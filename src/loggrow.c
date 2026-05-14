@@ -281,7 +281,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         ret[1] = M;
 
         double g = move_const;
-		printf("move_const: %f\n", move_const);
+        printf("move_const: %f\n", move_const);
         double* Qblock = calloc(ns * ns, sizeof(double));
         if ((C->n == ns*ns) && (G->n == ns*ns)) { //if dense C and G
             for (int i = 0; i < ns; i++) {
@@ -406,9 +406,9 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                         prior_precision->n,
                         prior_precision->i,
                         prior_precision->j,
-                        prior_precision->x) + sigma * sigma / (timestep * timestep * timestep) * Qblock[j * ns + i];
+                        prior_precision->x) + (sigma * sigma / (timestep * timestep * timestep)) * Qblock[j * ns + i];
                 } else { // second block -sigma**2/h**2*Qblock*ft2
-					val = -sigma * sigma / (timestep * timestep) * QfT[(j - ns) * ns + i];
+					val = ( - sigma * sigma / (timestep * timestep)) * QfT[(j - ns) * ns + i];
                 }
 				ret[idx++] = val;
             }
@@ -455,10 +455,10 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             for (int i = k * ns; i < (k + 1) * ns; i++) {
                 for (int j = i; j < (k + 2) * ns; j++) {
 					if (j < (k + 1) * ns) { // block k: sigma**2/h *fTQfT + sigma**2/h**3*Qblock
-						ret[idx++] += sigma * sigma / timestep * fTQfT[(j - k * ns) * ns + (i - k * ns)] + sigma * sigma / (timestep * timestep * timestep) * Qblock[(j - k * ns) * ns + (i - k * ns)];
+						ret[idx++] = (sigma * sigma / timestep) * fTQfT[(j - k * ns) * ns + (i - k * ns)] + sigma * sigma / (timestep * timestep * timestep) * Qblock[(j - k * ns) * ns + (i - k * ns)];
                     }
                     else { // block k+1: -sigma**2/h**2*Qblock*f(T+1)
-                        ret[idx++] += -sigma * sigma / (timestep * timestep) * QfTplus1[(j - (k + 1) * ns) * ns + (i - k * ns)];
+                        ret[idx++] = ( - sigma * sigma / (timestep * timestep))* QfTplus1[(j - (k + 1) * ns) * ns + (i - k * ns)];
                     }
                 }
             }
@@ -480,7 +480,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         dgemm_(&transfT, &transB, &ns, &ns, &ns, &one, fT, &ns, QfT, &ns, &zero, fTQfT, &ns);
         for (int i = (nt - 1) * ns; i < nt * ns; i++) {
             for (int j = i; j < nt * ns; j++) {
-                ret[idx++] += sigma * sigma / timestep * fTQfT[(j - (nt - 1) * ns) * ns + (i - (nt - 1) * ns)];
+                ret[idx++] = (sigma * sigma / timestep) * fTQfT[(j - (nt - 1) * ns) * ns + (i - (nt - 1) * ns)];
             }
 		}
         
