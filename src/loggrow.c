@@ -281,7 +281,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         ret[1] = M;
 
         double g = move_const;
-        printf("move_const: %f\n", move_const);
+        //printf("move_const: %f\n", move_const);
         double* Qblock = calloc(ns * ns, sizeof(double));
         if ((C->n == ns*ns) && (G->n == ns*ns)) { //if dense C and G
             for (int i = 0; i < ns; i++) {
@@ -324,14 +324,14 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 
                 double a = Qblock[j * ns + i];
                 double b = Qblock[i * ns + j];
-                if(a != b) {
+                /*if(a != b) {
                     printf("Warning: Qblock not symmetric at (%d, %d): %f vs %f. Enforcing symmetry.\n", i, j, a, b);
                     double s = 0.5 * (a + b);
 
                     Qblock[j * ns + i] = s;
                     Qblock[i * ns + j] = s;
                     
-				}
+				}*/
                 
             }
         }
@@ -430,7 +430,23 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             for (int i = 0; i < ns; i++) {
                 fTplus1[i * ns + i] += a_array[k * ns + i] - 1.0 / timestep;
             }
-			
+			//Check symmetry of fTplus1
+            for (int i = 0; i < ns; i++) {
+                for (int j = i + 1; j < ns; j++) {
+
+                    double a = fTplus1[j * ns + i];
+                    double b = fTplus1[i * ns + j];
+                    if(a != b) {
+                        printf("Warning: Qblock not symmetric at (%d, %d): %f vs %f. Enforcing symmetry.\n", i, j, a, b);
+                        double s = 0.5 * (a + b);
+
+                        fTplus1[j * ns + i] = s;
+                        fTplus1[i * ns + j] = s;
+
+                    }
+
+                }
+            }
 			
             //calc Qblock*f(T+1) and store in QfTplus1
             double* QfTplus1 = calloc(ns * ns, sizeof(double));
