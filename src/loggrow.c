@@ -318,23 +318,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 
             } 
         }
-        /* enforce symmetry */
-        for (int i = 0; i < ns; i++) {
-            for (int j = i + 1; j < ns; j++) {
-
-                double a = Qblock[j * ns + i];
-                double b = Qblock[i * ns + j];
-                if(a != b) {
-                    //printf("Warning: Qblock not symmetric at (%d, %d): %f vs %f. Enforcing symmetry.\n", i, j, a, b);
-                    double s = 0.5 * (a + b);
-
-                    Qblock[j * ns + i] = s;
-                    Qblock[i * ns + j] = s;
-                    
-				}
-                
-            }
-        }
+        
         double one = 1, zero = 0;
         double* a_array = malloc(ns*nt * sizeof(double));
         a_func(growth, carry_cap,
@@ -361,20 +345,6 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         for (int i = 0; i < ns; i++) {
             fT[i * ns + i] += a_array[i] + 1.0 / timestep;
         }
-		//check symmetry of fT
-
-        for (int i = 0; i < ns; i++) {
-               for (int j = i + 1; j < ns; j++) {
-                    double a = fT[j * ns + i];
-                    double b = fT[i * ns + j];
-                    if(a != b) {
-                        printf("Warning: fT not symmetric at (%d, %d): %f vs %f. Enforcing symmetry.\n", i, j, a, b);
-                        double s = 0.5 * (a + b);
-                        fT[j * ns + i] = s;
-                        fT[i * ns + j] = s;
-                    }
-                }
-	    }
         
         //calculate Q*fT and store in QfT
         double* QfT = calloc(ns * ns, sizeof(double));
@@ -423,23 +393,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             for (int i = 0; i < ns; i++) {
                 fTplus1[i * ns + i] += a_array[t * ns + i] + 1.0 / timestep;
             }
-			//Check symmetry of fTplus1
-            for (int i = 0; i < ns; i++) {
-                for (int j = i + 1; j < ns; j++) {
-
-                    double a = fTplus1[j * ns + i];
-                    double b = fTplus1[i * ns + j];
-                    if(a != b) {
-                         printf("Warning: fTplus not symmetric at (%d, %d): %f vs %f. Enforcing symmetry.\n", i, j, a, b);
-                        double s = 0.5 * (a + b);
-
-                        fTplus1[j * ns + i] = s;
-                        fTplus1[i * ns + j] = s;
-
-                    }
-
-                }
-            }
+			
 			
             //calc Qblock*f(T+1) and store in QfTplus1
             double* QfTplus1 = calloc(ns * ns, sizeof(double));
