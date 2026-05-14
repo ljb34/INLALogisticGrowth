@@ -375,7 +375,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             int j = CinvG->j[k];
             double v = CinvG->x[k];
 
-            fT[i * ns + j] = move_const * v;
+            fT[j * ns + i] = move_const * v;
             
         }
         for (int i = 0; i < ns; i++) {
@@ -424,8 +424,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 int j = CinvG->j[k];
                 double v = CinvG->x[k];
 
-                fTplus1[i * ns + j] = move_const * v;
-				printf("CinvG entry (%d, %d) with value %f contributes %f to fTplus1\n", i, j, v, move_const* v);
+                fTplus1[j * ns + i] = move_const * v;
                 
             }
             for (int i = 0; i < ns; i++) {
@@ -547,7 +546,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         g = move_const;
 		free(Qblock);
         Qblock = calloc(ns * ns, sizeof(double));
-        if ((C->n == ns*ns) & (G->n == ns*ns)) { //if dense C and G
+        if ((C->n == ns*ns) && (G->n == ns*ns)) { //if dense C and G
             for (int i = 0; i < ns; i++) {
                 for (int j = 0; j < ns; j++) {
                     Qblock[j * ns + i] = sigma * sigma * (C->x[j * ns + i] + g * G->x[j * ns + i]) / timestep;
@@ -668,7 +667,9 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             double d = ret[i + 2];
             double d_dense = ret_dense[i + 2];
             if (fabs(d - d_dense) > 1e-6) {
-                printf("Warning: Q mismatch at index %d: %f vs %f\n", i, d, d_dense);
+                if (debug > 0) {
+                    printf("Warning: Q mismatch at index %d: %f vs %f\n", i, d, d_dense);
+                }
             }
 		}
     }
