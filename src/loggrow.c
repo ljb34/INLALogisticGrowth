@@ -286,6 +286,9 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             for (int i = 0; i < ns; i++) {
                 for (int j = 0; j < ns; j++) {
                     Qblock[j * ns + i] = C->x[j * ns + i] + g * G->x[j * ns + i];
+                    if(isnan(Qblock[j * ns + i])) {
+                        printf("Warning: NaN in Qblock at (%d, %d) from C and G values %f and %f\n", i, j, C->x[j * ns + i], G->x[j * ns + i]);
+					}
                 }
             }
         }
@@ -296,6 +299,9 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 int ii = C->i[k];
                 int jj = C->j[k];
                 double cv = C->x[k];
+                if (isnan(cv)) {
+                    printf("Warning: NaN in C at (%d, %d)\n", ii, jj);
+                }
                 Qblock[jj * ns + ii] = cv;
                 
             }
@@ -304,6 +310,9 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 int ii = G->i[k];
                 int jj = G->j[k];
                 double gv = G->x[k];
+                if (isnan(gv)) {
+                    printf("Warning: NaN in G at (%d, %d)\n", ii, jj);
+				}
                 Qblock[jj * ns + ii] += g * gv;
                 
             } 
