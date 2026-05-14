@@ -379,7 +379,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             
         }
         for (int i = 0; i < ns; i++) {
-            fT[i * ns + i] += a_array[i] - 1.0 / timestep;
+            fT[i * ns + i] += a_array[i] + 1.0 / timestep;
         }
 		//check symmetry of fT
 
@@ -441,7 +441,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 
             }
             for (int i = 0; i < ns; i++) {
-                fTplus1[i * ns + i] += a_array[k * ns + i] - 1.0 / timestep;
+                fTplus1[i * ns + i] += a_array[k * ns + i] + 1.0 / timestep;
             }
 			//Check symmetry of fTplus1
             for (int i = 0; i < ns; i++) {
@@ -691,16 +691,18 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             fprintf(stderr, "Q filled %d values, expected %d\n", idx - 2, M);
             abort();
         }
-
+		double mean_diff = 0.0;
         for(int i = 0; i < M; i++) {
             double d = ret[i + 2];
             double d_dense = ret_dense[i + 2];
             if (fabs(d - d_dense) > 1e-6) {
+				mean_diff += fabs(d - d_dense);
                 if (debug > 0) {
                     printf("Warning: Q mismatch at index %d: %f vs %f\n", i, d, d_dense);
                 }
             }
 		}
+		printf("Mean absolute difference between sparse and dense Q: %e\n", mean_diff / M);
     }
     break;
     case INLA_CGENERIC_MU:
