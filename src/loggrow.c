@@ -451,7 +451,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 		//final block nt-1
         //calc trans(fT)*QfT and store in fTQfT
         double* fTQfT = calloc(ns * ns, sizeof(double));
-        char transfT = 'T';
+        char transfT = 'N';
         if (debug > 0) printf("dgemm step");
         dgemm_(&transfT, &transB, &ns, &ns, &ns, &one, ftQ, &ns, fT, &ns, &zero, fTQfT, &ns);
         for (int i = (nt - 1) * ns; i < nt * ns; i++) {
