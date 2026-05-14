@@ -375,7 +375,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             int j = CinvG->j[k];
             double v = CinvG->x[k];
 
-            fT[j * ns + i] += move_const * v;
+            fT[i * ns + j] = move_const * v;
             
         }
         for (int i = 0; i < ns; i++) {
@@ -424,7 +424,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 int j = CinvG->j[k];
                 double v = CinvG->x[k];
 
-                fTplus1[j * ns + i] += move_const * v;
+                fTplus1[i * ns + j] = move_const * v;
 				printf("CinvG entry (%d, %d) with value %f contributes %f to fTplus1\n", i, j, v, move_const* v);
                 
             }
