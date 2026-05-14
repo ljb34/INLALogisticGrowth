@@ -319,48 +319,28 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             } 
         }
         /* enforce symmetry */
-        for (int i = 0; i < ns; i++) {
+        /*for (int i = 0; i < ns; i++) {
             for (int j = i + 1; j < ns; j++) {
 
                 double a = Qblock[j * ns + i];
                 double b = Qblock[i * ns + j];
-                /*if(a != b) {
+                if(a != b) {
                     printf("Warning: Qblock not symmetric at (%d, %d): %f vs %f. Enforcing symmetry.\n", i, j, a, b);
                     double s = 0.5 * (a + b);
 
                     Qblock[j * ns + i] = s;
                     Qblock[i * ns + j] = s;
                     
-				}*/
+				}
                 
             }
-        }
+        }*/
         double one = 1, zero = 0;
         double* a_array = malloc(ns*nt * sizeof(double));
         a_func(growth, carry_cap,
             linpoint->doubles, ns, nt, a_array);
 
-        //1st block
-        // 
-		//Copy Prior precision to ret in order of GRAPH
-        /*if (prior_precision->n != ns * ns) {
-            // sparse prior_precision: apply its nonzeros 
-            for (int k = 0; k < prior_precision->n; k++) {
-                int ii = prior_precision->i[k];
-                int jj = prior_precision->j[k];
-                double pv = prior_precision->x[k];
-                ret[2 + (ii * 2*ns + jj - ii)] = pv;
-            }
-        }
-        else { //if dense prior precision
-            for (int i = 0; i < ns; i++) {
-                for (int j = i; j < ns; j++) {
-                    ret[2 + (i * 2*ns + j - i)] = prior_precision->x[j * ns + i];
-                }
-            }
-		}
-        */
-
+  
 
 
         if (CinvG->n != ns * ns) {
@@ -429,7 +409,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 		}
 
         //blocks 1 to nt-1
-        for (int k = 1; k < nt - 1; k++) {
+        for (int t = 1; t < nt - 1; t++) {
 			//calc f(T+1) = CinvG + diag(a) - 1/timestep*I
             double* fTplus1 = calloc(ns * ns, sizeof(double));
             for (int k = 0; k < CinvG->n; k++) {
@@ -441,7 +421,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 
             }
             for (int i = 0; i < ns; i++) {
-                fTplus1[i * ns + i] += a_array[k * ns + i] + 1.0 / timestep;
+                fTplus1[i * ns + i] += a_array[t * ns + i] + 1.0 / timestep;
             }
 			//Check symmetry of fTplus1
             /*for (int i = 0; i < ns; i++) {
@@ -481,14 +461,14 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 
 			
 
-            //fill in ret for block k in order of GRAPH
-            for (int i = k * ns; i < (k + 1) * ns; i++) {
-                for (int j = i; j < (k + 2) * ns; j++) {
-					if (j < (k + 1) * ns) { // block k: sigma**2/h *fTQfT + sigma**2/h**3*Qblock
-						ret[idx++] = (sigma * sigma / timestep) * fTQfT[(j - k * ns) * ns + (i - k * ns)] + sigma * sigma / (timestep * timestep * timestep) * Qblock[(j - k * ns) * ns + (i - k * ns)];
+            //fill in ret for block t in order of GRAPH
+            for (int i = t * ns; i < (t + 1) * ns; i++) {
+                for (int j = i; j < (t + 2) * ns; j++) {
+					if (j < (t + 1) * ns) { // block k: sigma**2/h *fTQfT + sigma**2/h**3*Qblock
+						ret[idx++] = (sigma * sigma / timestep) * fTQfT[(j - t * ns) * ns + (i - t * ns)] + sigma * sigma / (timestep * timestep * timestep) * Qblock[(j - t * ns) * ns + (i - t * ns)];
                     }
                     else { // block k+1: -sigma**2/h**2*Qblock*f(T+1)
-                        ret[idx++] = ( - sigma * sigma / (timestep * timestep))* QfTplus1[(j - (k + 1) * ns) * ns + (i - k * ns)];
+                        ret[idx++] = ( - sigma * sigma / (timestep * timestep))* QfTplus1[(j - (t + 1) * ns) * ns + (i - t * ns)];
                     }
                 }
             }
