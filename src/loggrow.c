@@ -339,7 +339,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             int j = CinvG->j[k];
             double v = CinvG->x[k];
 
-            fT[j * ns + i] = move_const * v;
+            fT[j * ns + i] += move_const * v;
             
         }
         for (int i = 0; i < ns; i++) {
@@ -387,7 +387,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 int j = CinvG->j[k];
                 double v = CinvG->x[k];
 
-                fTplus1[j * ns + i] = move_const * v;
+                fTplus1[j * ns + i] += move_const * v;
                 
             }
             for (int i = 0; i < ns; i++) {
@@ -626,6 +626,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             abort();
         }
 		double mean_diff = 0.0;
+		double max_diff = 0.0;
+		double max_loc = 0;
         for(int i = 0; i < M; i++) {
             double d = ret[i + 2];
             double d_dense = ret_dense[i + 2];
@@ -635,8 +637,14 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                     printf("Warning: Q mismatch at index %d: %f vs %f\n", i, d, d_dense);
                 }
             }
+            if(fabs(d- d_dense) > max_diff) {
+                max_diff = fabs(d - d_dense);
+				max_loc = i;
+			}
 		}
 		printf("Mean absolute difference between sparse and dense Q: %e\n", mean_diff / M);
+        printf("Max absolute difference between sparse and dense Q: %e at index %f\n", max_diff, max_loc);
+		free(ret_dense);
     }
     break;
     case INLA_CGENERIC_MU:
