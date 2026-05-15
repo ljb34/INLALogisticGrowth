@@ -339,7 +339,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             int j = CinvG->j[k];
             double v = CinvG->x[k];
 
-            fT[j * ns + i] += move_const * v;
+            fT[j * ns + i] = move_const * v;
             
         }
         for (int i = 0; i < ns; i++) {
@@ -387,7 +387,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 int j = CinvG->j[k];
                 double v = CinvG->x[k];
 
-                fTplus1[j * ns + i] += move_const * v;
+                fTplus1[j * ns + i] = move_const * v;
                 
             }
             for (int i = 0; i < ns; i++) {
@@ -412,7 +412,23 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             if (debug > 0) printf("dgemm step");
             dgemm_(&transfT, &transB, &ns, &ns, &ns, &one, fT, &ns, QfT, &ns, &zero, fTQfT, &ns);
                 
+            //Check symmetry
+            double max_asym = 0.0;
 
+            for (int i = 0; i < ns; i++) {
+                for (int j = i + 1; j < ns; j++) {
+
+                    double a = fTQfT[j * ns + i];
+                    double b = fTQfT[i * ns + j];
+
+                    double diff = fabs(a - b);
+
+                    if (diff > max_asym)
+                        max_asym = diff;
+                }
+            }
+
+            printf("max asymmetry in fTQfT = %.12e\n", max_asym);
 			
 
             //fill in ret for block t in order of GRAPH
