@@ -370,9 +370,9 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                         prior_precision->n,
                         prior_precision->i,
                         prior_precision->j,
-                        prior_precision->x) + (sigma * sigma / (timestep * timestep * timestep)) * Qblock[i * ns + j];
+                        prior_precision->x) + (sigma * sigma / (timestep * timestep * timestep)) * Qblock[j * ns + i];
                 } else { // second block -sigma**2/h**2*Qblock*ft2
-					val = ( - sigma * sigma / (timestep * timestep)) * QfT[(i - ns) * ns + j];
+					val = ( - sigma * sigma / (timestep * timestep)) * QfT[(j - ns) * ns + i];
                 }
 				ret[idx++] = val;
             }
@@ -419,10 +419,10 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             for (int i = t * ns; i < (t + 1) * ns; i++) {
                 for (int j = i; j < (t + 2) * ns; j++) {
 					if (j < (t + 1) * ns) { // block k: sigma**2/h *fTQfT + sigma**2/h**3*Qblock
-						ret[idx++] = (sigma * sigma / timestep) * fTQfT[(i - t * ns) * ns + (j - t * ns)] + sigma * sigma / (timestep * timestep * timestep) * Qblock[(i - t * ns) * ns + (j - t * ns)];
+						ret[idx++] = (sigma * sigma / timestep) * fTQfT[(j - t * ns) * ns + (i - t * ns)] + sigma * sigma / (timestep * timestep * timestep) * Qblock[(j - t * ns) * ns + (i - t * ns)];
                     }
                     else { // block k+1: -sigma**2/h**2*Qblock*f(T+1)
-                        ret[idx++] = ( - sigma * sigma / (timestep * timestep))* QfTplus1[(i - (t + 1) * ns) * ns + (j - t * ns)];
+                        ret[idx++] = ( - sigma * sigma / (timestep * timestep))* QfTplus1[(j - (t + 1) * ns) * ns + (i - t * ns)];
                     }
                 }
             }
@@ -444,7 +444,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         dgemm_(&transfT, &transB, &ns, &ns, &ns, &one, fT, &ns, QfT, &ns, &zero, fTQfT, &ns);
         for (int i = (nt - 1) * ns; i < nt * ns; i++) {
             for (int j = i; j < nt * ns; j++) {
-                ret[idx++] = (sigma * sigma / timestep) * fTQfT[(i - (nt - 1) * ns) * ns + (j - (nt - 1) * ns)];
+                ret[idx++] = (sigma * sigma / timestep) * fTQfT[(j - (nt - 1) * ns) * ns + (i - (nt - 1) * ns)];
             }
 		}
         
