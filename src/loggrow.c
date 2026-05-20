@@ -370,7 +370,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                         prior_precision->n,
                         prior_precision->i,
                         prior_precision->j,
-                        prior_precision->x); //+ (sigma * sigma / (timestep * timestep * timestep)) * Qblock[j * ns + i];
+                        prior_precision->x) + (sigma * sigma / (timestep * timestep * timestep)) * Qblock[j * ns + i];
                 } else { // second block -sigma**2/h**2*Qblock*ft2
 					val = ( - sigma * sigma / (timestep * timestep)) * QfT[(j - ns) * ns + i];
                 }
@@ -412,10 +412,10 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             if (debug > 0) printf("dgemm step");
             dgemm_(&transfT, &transB, &ns, &ns, &ns, &one, fT, &ns, QfT, &ns, &zero, fTQfT, &ns);
                 
-            //Check symmetry - was around 10^-13 so not problem
-            //double max_asym = 0.0;
+            //Check symmetry
+            double max_asym = 0.0;
 
-            /*for (int i = 0; i < ns; i++) {
+            for (int i = 0; i < ns; i++) {
                 for (int j = i + 1; j < ns; j++) {
 
                     double a = fTQfT[j * ns + i];
@@ -428,14 +428,14 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 }
             }
 
-            printf("max asymmetry in fTQfT = %.12e\n", max_asym);*/
+            printf("max asymmetry in fTQfT = %.12e\n", max_asym);
 			
 
             //fill in ret for block t in order of GRAPH
             for (int i = t * ns; i < (t + 1) * ns; i++) {
                 for (int j = i; j < (t + 2) * ns; j++) {
 					if (j < (t + 1) * ns) { // block k: sigma**2/h *fTQfT + sigma**2/h**3*Qblock
-                        ret[idx++] = (sigma * sigma / timestep) * fTQfT[(j - t * ns) * ns + (i - t * ns)]; //+ sigma * sigma / (timestep * timestep * timestep) * Qblock[(j - t * ns) * ns + (i - t * ns)];
+						ret[idx++] = (sigma * sigma / timestep) * fTQfT[(j - t * ns) * ns + (i - t * ns)] + sigma * sigma / (timestep * timestep * timestep) * Qblock[(j - t * ns) * ns + (i - t * ns)];
                     }
                     else { // block k+1: -sigma**2/h**2*Qblock*f(T+1)
                         ret[idx++] = ( - sigma * sigma / (timestep * timestep))* QfTplus1[(j - (t + 1) * ns) * ns + (i - t * ns)];
