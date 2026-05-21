@@ -323,13 +323,6 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         double* a_array = malloc(ns*nt * sizeof(double));
         a_func(growth, carry_cap,
             linpoint->doubles, ns, nt, a_array);
-
-  
-
-
-        if (CinvG->n != ns * ns) {
-			printf("CinvG is sparse, problem!\n");
-        }
       
         //copy CinvG to new matrix and add -1/timestep to diagonal
 		double* fT = calloc(ns * ns, sizeof(double));
