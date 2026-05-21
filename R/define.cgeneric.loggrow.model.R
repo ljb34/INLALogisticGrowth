@@ -32,7 +32,7 @@ define.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.size,
   }
   
   fem.matrices <- fmesher::fm_fem(smesh)
-  C <- fem.matrices$c1
+  C <- fem.matrices$c0
   G <- fem.matrices$g1
   CinvG <- Matrix::solve(fem.matrices$c1, fem.matrices$g1)
   #browser()
