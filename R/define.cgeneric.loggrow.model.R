@@ -32,9 +32,9 @@ define.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.size,
   }
   
   fem.matrices <- fmesher::fm_fem(smesh)
-  C <- fem.matrices$c0
-  G <- fem.matrices$g1
-  CinvG <- Matrix::solve(fem.matrices$c1, fem.matrices$g1)
+  C <- INLAtools::Sparse(fem.matrices$c0)
+  G <- INLAtools::Sparse(fem.matrices$g1)
+  CinvG <- INLAtools::Sparse(Matrix::solve(fem.matrices$c0, fem.matrices$g1))
   #browser()
   INLAversion <- INLAtools::packageCheck(
     name = "INLA",
@@ -86,7 +86,7 @@ define.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.size,
                               pmove = as.double(priors$move),
                               psigma = as.double(priors$sigma),
                               CinvG = CinvG,
-                              prior_precision = Matrix::Matrix(prior.precision, sparse = T),
+                              prior_precision = INLAtools::Sparse(Matrix::Matrix(prior.precision, sparse = T)),
                               C = C,
                               G = G)))
   
