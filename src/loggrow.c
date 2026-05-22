@@ -585,17 +585,17 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         if (debug > 0) {
             printf("INLA_CGENERIC_MU\n");
         }
-        ret = Calloc(1 + N, double);
+        ret = calloc(1 + N, sizeof(double));
         assert(ret);
         ret[0] = N; /* dimension */
 
-        inla_cgeneric_mat_tp* L_mat = malloc(sizeof(inla_cgeneric_mat_tp));
+        inla_cgeneric_mat_tp* L_mat = calloc(1, sizeof(inla_cgeneric_mat_tp));
         L_mat->x = calloc(N * N, sizeof(double));
         L_mat->nrow = N;
         L_mat->ncol = N;
         Lmat(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, L_mat->x);
 
-        inla_cgeneric_vec_tp* rvector = malloc(sizeof(inla_cgeneric_vec_tp));
+        inla_cgeneric_vec_tp* rvector = calloc(1, sizeof(inla_cgeneric_vec_tp));
         rvector->doubles = calloc(N, sizeof(double));
         rvector->len = N;
         r_vector(growth, carry_cap, move_const, linpoint->doubles, mag_grad_sq->doubles, ns, nt, rvector->doubles);
@@ -604,13 +604,13 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         }
 
         //calculate L_mat^-1 * rvector
-        int* ipiv = malloc(ns * nt * sizeof(int));
+        int* ipiv = calloc(ns * nt, sizeof(int));
         int lda = N;
         int ldb = N;
         int nrhs = 1;
         int info;
-        double* A = malloc(N * N * sizeof(double));
-        double* B = malloc(N * sizeof(double));
+        double* A = calloc(N * N,sizeof(double));
+        double* B = calloc(N, sizeof(double));
 		memcpy(A, L_mat->x, N* N * sizeof(double));
         memcpy(B, rvector->doubles, N * sizeof(double));
         if (debug > 0) printf("dgesv step");
