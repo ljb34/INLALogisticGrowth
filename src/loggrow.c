@@ -68,7 +68,7 @@ void Lmat(double growth, double carry_cap, double move_const, double timestep,
         for (int t = 1; t < nt; t++) {
             for (int j = 0; j < ns; j++) {
                 for (int i = 0; i < ns; i++) {
-					result[(ns * t + j) * ntotal + t * ns + i] += move_const * CinvG->x[j * ns + i]; //Lmat is col-major but CinvG is row-major
+					result[(ns * t + j) * ntotal + t * ns + i] += move_const * CinvG->x[j * ns + i]; 
                 }
             }
         }
@@ -128,6 +128,43 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     assert(!strcasecmp(data->ints[3]->name, "nt"));
     int nt = data->ints[3]->ints[0];
     assert(nt > 0);
+
+    assert(!strcasecmp(data->ints[4]->name, "Pn"));
+    int Pn = data->ints[4]->ints[0];
+    assert(Pn > 0);
+
+    assert(!strcasecmp(data->ints[5]->name, "offdn"));
+	int offdn = data->ints[5]->ints[0];
+	assert(offdn > 0);
+
+	assert(!strcasecmp(data->ints[6]->name, "diagn"));
+	int diagn = data->ints[6]->ints[0];
+	assert(diagn > 0);
+
+    //Non-zero locations
+    assert(!strcasecmp(data->ints[7]->name, "Pi"));
+    inla_cgeneric_vec_tp* Pi = data->ints[7];
+    assert(Pi->len == Pn);
+
+    assert(!strcasecmp(data->ints[8]->name, "Pj"));
+    inla_cgeneric_vec_tp* Pj = data->ints[8];
+    assert(Pj->len == Pn);
+
+    assert(!strcasecmp(data->ints[9]->name, "offdi"));
+    inla_cgeneric_vec_tp* offdi = data->ints[9];
+    assert(offdi->len == offdn);
+
+    assert(!strcasecmp(data->ints[10]->name, "offdj"));
+    inla_cgeneric_vec_tp* offdj = data->ints[10];
+    assert(offdj->len == offdn);
+
+    assert(!strcasecmp(data->ints[11]->name, "diagi"));
+    inla_cgeneric_vec_tp* diagi = data->ints[11];
+    assert(diagi->len == diagn);
+
+    assert(!strcasecmp(data->ints[12]->name, "diagj"));
+    inla_cgeneric_vec_tp* diagj = data->ints[12];
+    assert(diagj->len == diagn);
 
     //Pre calculated information
     assert(!strcasecmp(data->doubles[0]->name, "timestep"));
@@ -220,8 +257,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         // for j=i, ...
         // G_ij =
         // and M is the total length while N is the dimension
-        int M =  2* ns * ns + ns  +(nt-2)*(ns * ns + ns * (ns+1)/2);
-		//printf("M: %d\n", M);
+		int M = Pn + (nt - 1) * offdn + (nt - 1) * diagn; //total number of non zero entries in the precision matrix
         ret = calloc(2 + 2*M, sizeof(double));
         assert(ret);
         ret[0] = N; /* dimension */
@@ -229,37 +265,64 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         int idx = 2; // Start after N and M
         //first year only has two blocks
         for (int i = 0; i < ns;i++) {
-            for (int j = i; j < 2*ns; j++) {
-				ret[idx] = i; /* ii */
-				ret[M + idx] = j; /* jj */
-                idx++;
+			//for j in Pj[Pi == i]             
+            for (int k = 0; k < Pn; k++) {
+                if (Pi->ints[k] == i) {
+                    int j = Pj->ints[k];
+                    if (j >= i) { // only include upper triangle
+                        ret[idx] = i; /* ii */
+                        ret[M + idx] = j; /* jj */
+                        idx++;
+                    }
+                }
             }
+				//for j in offdj[offdi == i], need full matrix not just upper triangle
+                for (int k = 0; k < offdn; k++) {
+                    if (offdi->ints[k] == i) {
+                        int j = offdj->ints[k];
+                        ret[idx] = i; /* ii */
+                        ret[M + idx] = j; /* jj */
+                        idx++;
+                    }
+                }
         }
 		//middle years have three blocks
-        for (int k = 1; k < nt-1; k++) {
-            for(int i = k*ns; i < (k+1)*ns; i++) {
-                for(int j = i; j < (k+2)*ns; j++) {
-                    ret[idx] = i; /* ii */
-                    ret[M + idx] = j; /* jj */
-					idx++;
+                for (int t = 1; t < nt - 1; t++) {
+                    for (int i = t * ns; i < (t + 1) * ns; i++) {
+                        for(int k = 0; k < diagn; k++){
+                            if (diagi->ints[k] == i - t * ns) {
+                                int j = diagj->ints[k];
+                                if (j >= i) { // only include upper triangle
+                                    ret[idx] = i; /* ii */
+                                    ret[M + idx] = j; /* jj */
+                                    idx++;
+                                }
+                            }
+						}
+                        for (int k = 0; k < offdn; k++) {
+                            if (offdi->ints[k] == i - t * ns) {
+                                int j = offdj->ints[k];
+                                ret[idx] = i; /* ii */
+                                ret[M + idx] = j; /* jj */
+                                idx++;
+                            }
+                        }
+                    }
+                }
+
+		//final year only has two blocks
+        for (int i = (nt - 1) * ns; i < nt * ns; i++) {
+            for(int k = 0; k < diagn; k++){
+                if (diagi->ints[k] == i - (nt - 1) * ns) {
+                    int j = diagj->ints[k];
+                    if (j >= i - (nt - 1) * ns) { // only include upper triangle
+                        ret[idx] = i; /* ii */
+                        ret[M + idx] = j; /* jj */
+                        idx++;
+                    }
                 }
 			}
         }
-		//final year only has two blocks
-        for (int i = (nt - 1) * ns; i < nt * ns; i++) {
-            for (int j = i; j < nt * ns; j++) {
-                ret[idx] = i; /* ii */
-                ret[M + idx] = j; /* jj */
-                idx++;
-            }
-        }
-        //for (int i = 0; i < N; i++) {
-        //    for (int j = i; j < N; j++) {
-        //        ret[idx] = i; /* ii */
-        //        ret[N*(N+1)/2 + idx] = j; /* jj */
-        //        idx++;
-        //    }
-        //}
         if (idx - 2 != M) {
             fprintf(stderr, "GRAPH produced %d pairs, expected %d\n", idx - 2, M);
             abort();
@@ -274,7 +337,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             printf("INLA_CGENERIC_Q\n");
             printf("nrow = %f\n", N);
         }
-        int M = 2 * ns * ns + ns + (nt - 2) * (ns * ns + ns * (ns + 1) / 2);
+        int M = Pn + (nt - 1) * offdn + (nt - 1) * diagn;
         if (debug > 0) printf("M: %d\n", M);
         ret = Calloc(2 +M, double);
         ret[0] = -1; /* REQUIRED! */
@@ -355,20 +418,29 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
 		//start filling in ret in order of GRAPH
         int idx = 2;
         double val = 0.0;
+        //first year only has two blocks
         for(int i = 0; i < ns; i++) {
-            for (int j = i; j < 2*ns; j++) {
-                val = 0;
-                if (j < ns) {// first block P + sigma**2/h**3*Qblock
-                    val = sparse_get(i, j,
-                        prior_precision->n,
-                        prior_precision->i,
-                        prior_precision->j,
-                        prior_precision->x) + (sigma * sigma / (timestep * timestep * timestep)) * Qblock[j * ns + i];
-                } else { // second block -sigma**2/h**2*Qblock*ft2
-					val = ( - sigma * sigma / (timestep * timestep)) * QfT[(j - ns) * ns + i];
-                }
-				ret[idx++] = val;
+            //need to extract prior_precision->x[prior_precision->i == i] for all j, then QfT[j*ns + i] for all j, then i++
+            for (int k = 0; k < Pn; k++) {
+                if(Pi->ints[k] == i) {
+                    int j = Pj->ints[k];
+                    if (j >= i) { // only include upper triangle
+                        val = sparse_get(i, j,
+                            prior_precision->n,
+                            prior_precision->i,
+                            prior_precision->j,
+                            prior_precision->x) + (sigma * sigma / (timestep * timestep * timestep)) * Qblock[j * ns + i];
+                        ret[idx++] = val;
+                    }
+				}
             }
+            for(int k = 0; k < offdn; k++) {
+                if (offdi->ints[k] == i) {
+                    int j = offdj->ints[k];
+                    val = ( - sigma * sigma / (timestep * timestep)) * QfT[j * ns + i];
+                    ret[idx++] = val;
+                }
+			}
 		}
 
         //blocks 1 to nt-1
@@ -405,36 +477,28 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             if (debug > 0) printf("dgemm step");
             dgemm_(&transfT, &transB, &ns, &ns, &ns, &one, fT, &ns, QfT, &ns, &zero, fTQfT, &ns);
                 
-            ////Check symmetry
-            //double max_asym = 0.0;
-
-            //for (int i = 0; i < ns; i++) {
-            //    for (int j = i + 1; j < ns; j++) {
-
-            //        double a = fTQfT[j * ns + i];
-            //        double b = fTQfT[i * ns + j];
-
-            //        double diff = fabs(a - b);
-
-            //        if (diff > max_asym)
-            //            max_asym = diff;
-            //    }
-            //}
-
-            //printf("max asymmetry in fTQfT = %.12e\n", max_asym);
+           
 			
 
             //fill in ret for block t in order of GRAPH
+             
             for (int i = t * ns; i < (t + 1) * ns; i++) {
-                for (int j = i; j < (t + 2) * ns; j++) {
-					if (j < (t + 1) * ns) { // block k: sigma**2/h *fTQfT + sigma**2/h**3*Qblock
-						ret[idx++] = (sigma * sigma / timestep) * fTQfT[(j - t * ns) * ns + (i - t * ns)] + sigma * sigma / (timestep * timestep * timestep) * Qblock[(j - t * ns) * ns + (i - t * ns)];
-                    }
-                    else { // block k+1: -sigma**2/h**2*Qblock*f(T+1)
-                        ret[idx++] = ( - sigma * sigma / (timestep * timestep))* QfTplus1[(j - (t + 1) * ns) * ns + (i - t * ns)];
+                for (int k = 0; k < diagn; k++) {
+                    if (diagi->ints[k] == i - t * ns) {
+                        int j = diagj->ints[k];
+                        if (j >= i - t * ns) {
+							ret[idx++] = (sigma * sigma / timestep) * fTQfT[j * ns + i - t * ns] + (sigma * sigma / (timestep * timestep * timestep)) * Qblock[j * ns + i - t * ns];
+                        }
                     }
                 }
+                for (int k = 0; k < offdn; k++) {
+                    if (offdi->ints[k] == i - t * ns) {
+                        int j = offdj->ints[k];
+                        ret[idx++] = ( - sigma * sigma / (timestep * timestep)) * QfTplus1[j * ns + i - t * ns];
+                    }
+				}
             }
+            
 			//copy f(T+1) to fT for next iteration
 			double* temp = fT;
 			fT = fTplus1;
@@ -451,11 +515,23 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         char transfT = 'T';
         if (debug > 0) printf("dgemm step");
         dgemm_(&transfT, &transB, &ns, &ns, &ns, &one, fT, &ns, QfT, &ns, &zero, fTQfT, &ns);
-        for (int i = (nt - 1) * ns; i < nt * ns; i++) {
+
+        for(int i = (nt-1)*ns; i < nt*ns; i++) {
+            for (int k = 0; k < diagn; k++) {
+                if (diagi->ints[k] == i - (nt - 1) * ns) {
+                    int j = diagj->ints[k];
+                    if (j >= i - (nt - 1) * ns) {
+                        ret[idx++] = (sigma * sigma / timestep) * fTQfT[j * ns + i - (nt - 1) * ns] + (sigma * sigma / (timestep * timestep * timestep)) * Qblock[j * ns + i - (nt - 1) * ns];
+                    }
+                }
+            }
+		}
+
+        /*for (int i = (nt - 1) * ns; i < nt * ns; i++) {
             for (int j = i; j < nt * ns; j++) {
                 ret[idx++] = (sigma * sigma / timestep) * fTQfT[(j - (nt - 1) * ns) * ns + (i - (nt - 1) * ns)];
             }
-		}
+		}*/
         
         free(Qblock);
         free(fT);
@@ -464,196 +540,6 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         
         assert(idx == M + 2);
 
-		////compare to dense formulation for debugging
-  //      // ret_denseurn c(-1, M, Qij) in the same order as defined in INLA_CGENERIC_GRAPH
-  //      if (debug > 0) {
-  //          printf("INLA_CGENERIC_Q\n");
-  //          printf("nrow = %f\n", N);
-  //      }
-  //      if (debug > 0) printf("M: %d\n", M);
-  //      double* ret_dense = Calloc(2 + M, double);
-
-  //      inla_cgeneric_mat_tp* L_mat = malloc(sizeof(inla_cgeneric_mat_tp));
-  //      L_mat->x = calloc(N * N, sizeof(double));
-  //      L_mat->nrow = N;
-  //      L_mat->ncol = N;
-  //      Lmat(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, L_mat->x);
-
-  //      int* ipiv = malloc(ns * nt * sizeof(int));
-  //      int lda = N;
-  //      int ldb = N;
-  //      int nrhs = N;
-  //      int info;
-
-  //      double* B = calloc(N * N, sizeof(double));
-  //      //Compute Noise * L
-  //      //initial ns x ns prior_precision block - prior precision * identity so can just copy prior_precision to B
-  //      //if sparse prior_precision
-  //      if (prior_precision->n != ns * ns) {
-  //          // sparse prior_precision: apply its nonzeros 
-  //          for (int k = 0; k < prior_precision->n; k++) {
-  //              int ii = prior_precision->i[k];
-  //              int jj = prior_precision->j[k];
-  //              double pv = prior_precision->x[k];
-  //              B[jj * N + ii] = pv;
-  //          }
-  //      }
-  //      else { //if dense prior precision
-  //          for (int i = 0; i < ns; i++) {
-  //              for (int j = 0; j < ns; j++) {
-  //                  B[j * N + i] = prior_precision->x[j * ns + i];
-  //              }
-  //          }
-  //      }
-  //      /*Rest of B=Q*L */
-  //      //Calculate sigma**2/h * (C+gG)
-  //      /*a_func(growth, carry_cap, linpoint->doubles, ns, nt, a_array);
-  //      double mean_a = 0.0;
-  //      for (int i = 0; i < ns*nt; i++) {
-  //          mean_a += a_array[i];
-  //      }
-  //      mean_a = mean_a/(ns*nt);
-  //      free(a_array);
-  //      double g = move_const / mean_a; */
-  //      g = move_const;
-		//free(Qblock);
-  //      Qblock = calloc(ns * ns, sizeof(double));
-  //      if ((C->n == ns*ns) && (G->n == ns*ns)) { //if dense C and G
-  //          for (int i = 0; i < ns; i++) {
-  //              for (int j = 0; j < ns; j++) {
-  //                  Qblock[j * ns + i] = sigma * sigma * (C->x[j * ns + i] + g * G->x[j * ns + i]) / timestep;
-  //              }
-  //          }
-  //      }
-  //      else //C and G both sparse, non zero entries don't line up
-  //      { //calculate C+ gG
-  //          //first copy C to Qblock
-  //          for (int k = 0; k < C->n; k++) {
-  //              int ii = C->i[k];
-  //              int jj = C->j[k];
-  //              double cv = C->x[k];
-  //              Qblock[jj * ns + ii] = cv;
-  //          }
-  //          //then add gG to Qblock
-  //          for (int k = 0; k < G->n; k++) {
-  //              int ii = G->i[k];
-  //              int jj = G->j[k];
-  //              double gv = G->x[k];
-  //              Qblock[jj * ns + ii] += g * gv;
-  //          }
-  //          //finally scale by sigma^2 / timestep
-  //          for (int i = 0; i < ns; i++) {
-  //              for (int j = 0; j < ns; j++) {
-  //                  Qblock[j * ns + i] = sigma * sigma * Qblock[j * ns + i] / timestep;
-  //              }
-  //          }
-  //      }
-
-  //      //main diagonal blocks
-  //      for (int t = 1; t < nt; t++) {
-
-  //          //extract t-th block of L
-  //          double* Lblock = malloc(ns * ns * sizeof(double));
-  //          for (int i = 0; i < ns; i++) {
-  //              for (int j = 0; j < ns; j++) {
-  //                  Lblock[j * ns + i] = L_mat->x[(t * ns + j) * N + t * ns + i];
-  //              }
-  //          }
-  //          //multiply Qblock * Lblock and store in B
-  //          double* temp = malloc(ns * ns * sizeof(double));
-  //          char transA = 'N';
-  //          transB = 'N';
-
-  //          dgemm_(&transA, &transB, &ns, &ns, &ns, &one, Qblock, &ns, Lblock, &ns, &zero, temp, &ns);
-  //          for (int i = 0; i < ns; i++) {
-  //              for (int j = 0; j < ns; j++) {
-  //                  B[(t * ns + j) * N + t * ns + i] = temp[j * ns + i];
-  //              }
-  //          }
-
-  //          //clear memory
-  //          free(Lblock);
-  //          free(temp);
-  //      }
-
-  //      //sub diagonal blocks -1/timestep*Qblock
-  //      for (int t = 1; t < nt - 1; t++) {
-  //          for (int i = 0; i < ns; i++) {
-  //              for (int j = 0; j < ns; j++) {
-  //                  B[(t * ns + j) * N + (t + 1) * ns + i] = -1.0 / timestep * Qblock[j * ns + i];
-  //              }
-  //          }
-  //      }
-
-  //      free(Qblock);
-
-  //      /* Now compute out = L_mat^T * B */
-  //      double* out = calloc(N * N, sizeof(double));
-  //      char transL = 'T';
-  //      transB = 'N';
-  //      if (debug > 0) printf("dgemm step");
-  //      dgemm_(&transL, &transB, &N, &N, &N, &one, L_mat->x, &lda, B, &ldb, &zero, out, &N);
-
-  //      free(L_mat->x);
-  //      free(L_mat);
-  //      free(B);
-  //      free(ipiv);
-
-  //      ret_dense[0] = -1; /* REQUIRED! */
-  //      ret_dense[1] = M;
-
-  //      //fill in ret_dense with non zero parts of out 
-
-
-  //      idx = 2; // Start after -1 and M
-  //      //first year only has two blocks
-  //      for (int i = 0; i < ns; i++) {
-  //          for (int j = i; j < 2 * ns; j++) {
-  //              ret_dense[idx++] = out[j * N + i];
-  //          }
-  //      }
-  //      //middle years have three blocks
-  //      for (int k = 1; k < nt - 1; k++) {
-  //          for (int i = k * ns; i < (k + 1) * ns; i++) {
-  //              for (int j = i; j < (k + 2) * ns; j++) {
-  //                  ret_dense[idx++] = out[j * N + i];
-  //              }
-  //          }
-  //      }
-
-  //      //final year has two blocks
-
-  //      for (int i = (nt - 1) * ns; i < nt * ns; i++) {
-  //          for (int j = i; j < nt * ns; j++) {
-  //              ret_dense[idx++] = out[j * N + i];
-  //          }
-  //      }
-  //      free(out);
-
-  //      if (idx - 2 != M) {
-  //          fprintf(stderr, "Q filled %d values, expected %d\n", idx - 2, M);
-  //          abort();
-  //      }
-		//double mean_diff = 0.0;
-		//double max_diff = 0.0;
-		//double max_loc = 0;
-  //      for(int i = 0; i < M; i++) {
-  //          double d = ret[i + 2];
-  //          double d_dense = ret_dense[i + 2];
-  //          if (fabs(d - d_dense) > 1e-6) {
-		//		mean_diff += fabs(d - d_dense);
-  //              if (debug > 0) {
-  //                  printf("Warning: Q mismatch at index %d: %f vs %f\n", i, d, d_dense);
-  //              }
-  //          }
-  //          if(fabs(d- d_dense) > max_diff) {
-  //              max_diff = fabs(d - d_dense);
-		//		max_loc = i;
-		//	}
-		//}
-		//printf("Mean absolute difference between sparse and dense Q: %e\n", mean_diff / M);
-  //      printf("Max absolute difference between sparse and dense Q: %e at index %f\n", max_diff, max_loc);
-		//free(ret_dense);
     }
     break;
     case INLA_CGENERIC_MU:
