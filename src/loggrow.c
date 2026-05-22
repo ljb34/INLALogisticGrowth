@@ -294,7 +294,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                                 int j = diagj->ints[k];
                                 if (j >= i - t * ns) { // only include upper triangle
                                     ret[idx] = i; /* ii */
-                                    ret[M + idx] = j; /* jj */
+                                    ret[M + idx] = j + t*ns; /* jj */
                                     idx++;
                                 }
                             }
@@ -303,7 +303,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                             if (offdi->ints[k] == i - t * ns) {
                                 int j = offdj->ints[k];
                                 ret[idx] = i; /* ii */
-                                ret[M + idx] = j; /* jj */
+                                ret[M + idx] = j + (t+1)*ns; /* jj */
                                 idx++;
                             }
                         }
@@ -317,7 +317,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                     int j = diagj->ints[k];
                     if (j >= i - (nt - 1) * ns) { // only include upper triangle
                         ret[idx] = i; /* ii */
-                        ret[M + idx] = j; /* jj */
+                        ret[M + idx] = j + (nt-1)*ns; /* jj */
                         idx++;
                     }
                 }
