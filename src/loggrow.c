@@ -272,8 +272,8 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 if (Pi->ints[k] == i) {
                     int j = Pj->ints[k];
                     if (j >= i) { // only include upper triangle
-                        ret[idx] = i; /* ii */
-                        ret[M + idx] = j; /* jj */
+                        ret[idx] = i; 
+                        ret[M + idx] = j; 
                         idx++;
                         if (i < prev_i || (i == prev_i && j < prev_j)) {
                             printf("GRAPH ORDER VIOLATION: (%d,%d) after (%d,%d)\n",
@@ -289,10 +289,10 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 for (int k = 0; k < offdn; k++) {
                     if (offdi->ints[k] == i) {
                         int j = offdj->ints[k];
-                        ret[idx] = i; /* ii */
-                        ret[M + idx] = j + ns; /* jj */
+                        ret[idx] = i; 
+                        ret[M + idx] = j + ns; 
                         idx++;
-                        if (i < prev_i || (i == prev_i && j < prev_j)) {
+                        if (i < prev_i || (i == prev_i && j + ns < prev_j)) {
                             printf("GRAPH ORDER VIOLATION: (%d,%d) after (%d,%d)\n",
                                 i, j, prev_i, prev_j);
                         }
@@ -312,7 +312,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                                     ret[idx] = i; /* ii */
                                     ret[M + idx] = j + t*ns; /* jj */
                                     idx++;
-                                    if (i < prev_i || (i == prev_i && j < prev_j)) {
+                                    if (i < prev_i || (i == prev_i && j + t * ns < prev_j)) {
                                         printf("GRAPH ORDER VIOLATION: (%d,%d) after (%d,%d)\n",
                                             i, j, prev_i, prev_j);
                                     }
@@ -328,7 +328,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                                 ret[idx] = i; /* ii */
                                 ret[M + idx] = j + (t+1)*ns; /* jj */
                                 idx++;
-                                if (i < prev_i || (i == prev_i && j < prev_j)) {
+                                if (i < prev_i || (i == prev_i && j + (t+1) * ns < prev_j)) {
                                     printf("GRAPH ORDER VIOLATION: (%d,%d) after (%d,%d)\n",
                                         i, j, prev_i, prev_j);
                                 }
@@ -349,7 +349,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                         ret[idx] = i; /* ii */
                         ret[M + idx] = j + (nt-1)*ns; /* jj */
                         idx++;
-                        if (i < prev_i || (i == prev_i && j < prev_j)) {
+                        if (i < prev_i || (i == prev_i && j + (nt - 1) * ns < prev_j)) {
                             printf("GRAPH ORDER VIOLATION: (%d,%d) after (%d,%d)\n",
                                 i, j, prev_i, prev_j);
                         }
