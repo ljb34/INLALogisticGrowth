@@ -292,7 +292,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                         for(int k = 0; k < diagn; k++){
                             if (diagi->ints[k] == i - t * ns) {
                                 int j = diagj->ints[k];
-                                if (j >= i) { // only include upper triangle
+                                if (j >= i - t * ns) { // only include upper triangle
                                     ret[idx] = i; /* ii */
                                     ret[M + idx] = j; /* jj */
                                     idx++;
