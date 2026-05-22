@@ -290,7 +290,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                     if (offdi->ints[k] == i) {
                         int j = offdj->ints[k];
                         ret[idx] = i; /* ii */
-                        ret[M + idx] = j; /* jj */
+                        ret[M + idx] = j + ns; /* jj */
                         idx++;
                         if (i < prev_i || (i == prev_i && j < prev_j)) {
                             printf("GRAPH ORDER VIOLATION: (%d,%d) after (%d,%d)\n",
@@ -298,7 +298,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                         }
 
                         prev_i = i;
-                        prev_j = j;
+                        prev_j = j + ns;
                     }
                 }
         }
