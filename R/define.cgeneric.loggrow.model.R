@@ -103,7 +103,7 @@ define.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.size,
                               psigma = as.double(priors$sigma),
                               CinvG = INLAtools::Sparse(CinvG, zeros.rm = T),
                               prior_precision = P,
-                              C = INLAtools::SParse(C, zeros.rm = T),
+                              C = INLAtools::Sparse(C, zeros.rm = T),
                               G = G_sparse)))
   
   class(the_model) <- c("log_growth_model", class(the_model))
