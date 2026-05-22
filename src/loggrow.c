@@ -451,7 +451,6 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             fT, &ns,
             &zero,
             QfT, &ns);
-        
 		//start filling in ret in order of GRAPH
         int idx = 2;
         double val = 0.0;
@@ -475,6 +474,9 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 if (offdi->ints[k] == i) {
                     int j = offdj->ints[k];
                     val = ( - sigma * sigma / (timestep * timestep)) * QfT[j * ns + i];
+                    if (!isfinite(QfT[j * ns + i])) {
+                        printf("NaN in QfT\n");
+                    }
                     ret[idx++] = val;
                 }
 			}
@@ -507,7 +509,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 fTplus1, &ns,
                 &zero,
                 QfTplus1, &ns);
-
+            
             //calc trans(fT)*QfT and store in fTQfT
 			double* fTQfT = calloc(ns * ns, sizeof(double));
             char transfT = 'T';
@@ -532,6 +534,9 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                     if (offdi->ints[k] == i - t * ns) {
                         int j = offdj->ints[k];
                         ret[idx++] = ( - sigma * sigma / (timestep * timestep)) * QfTplus1[j * ns + i - t * ns];
+                        if (!isfinite(QfTplus1[j * ns + i])) {
+                            printf("NaN in QfT\n");
+                        }
                     }
 				}
             }
@@ -621,6 +626,11 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             free(L_mat->x); free(L_mat);
             free(rvector->doubles); free(rvector);
             return NULL;
+        }
+        for (int i = 0; i < N; i++) {
+            if (!isfinite(B[i])) {
+                printf("NaN in MU solution at %d\n", i);
+            }
         }
 
         for (int i = 0; i < N; i++) {
