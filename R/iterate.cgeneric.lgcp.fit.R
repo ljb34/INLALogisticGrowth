@@ -66,7 +66,7 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
     Q <- Q + Matrix::t(Q)
     Matrix::diag(Q) <- dQ
     mat_list[[i]] <- Q
-    mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean
+    mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean[1:(smesh$n*tmesh$n)]
   }
   nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
     dplyr::mutate(weight.prob = weight/sum(weight))
@@ -138,7 +138,7 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
       Q <- Q + Matrix::t(Q)
       Matrix::diag(Q) <- dQ
       mat_list[[i]] <- Q
-      mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean
+      mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean[1:(smesh$n*tmesh$n)]
     }
     nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
       dplyr::mutate(weight.prob = weight/sum(weight))
