@@ -72,9 +72,15 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
     dplyr::mutate(weight.prob = weight/sum(weight))
   if(update.rule == 2){
     #Type II update
+    print("Type 2")
     P <- Reduce("+", Map(function(m, w) m * w, mat_list, nodes$weight.prob))
+    print("calculated P")
+    print(dim(P))
     weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
     b <- Reduce("+", Map(function(m,w) m%*%w, mat_list,weighted.means))
+    print("calculated b")
+    print(dim(b))
+    print(dim(initial.linpoint))
     new.linpoint <- (1-gamma)*initial.linpoint +gamma*Matrix::solve(P,b)
   }else{
     #Type I
@@ -142,6 +148,7 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
     }
     nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
       dplyr::mutate(weight.prob = weight/sum(weight))
+    print(summary(nodes))
     if(update.rule == 2){
       #Type II update
       print("Type 2")
