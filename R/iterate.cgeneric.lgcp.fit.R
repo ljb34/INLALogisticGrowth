@@ -60,6 +60,7 @@ iterate.cgeneric.fit.lgcp<- function(data, smesh, tmesh, samplers,prior.mean,
   mat_list <- list()
   mean_list <- list()
   for(i in 1:n.nodes){
+    print(fit$misc$configs$config[[i]]$log.posterior)
     nodes[i,]<- fit$misc$configs$config[[i]]$log.posterior
     Q <- fit$misc$configs$config[[i]]$Q[1:(smesh$n*tmesh$n),1:(smesh$n*tmesh$n)]
     dQ <- Matrix::diag(Q)
