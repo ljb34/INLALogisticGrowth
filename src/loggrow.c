@@ -465,7 +465,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                             prior_precision->n,
                             prior_precision->i,
                             prior_precision->j,
-                            prior_precision->x) + (sigma * sigma / (timestep * timestep * timestep)) * Qblock[j * ns + i];
+                            prior_precision->x) + (1 / (sigma * sigma * timestep * timestep * timestep)) * Qblock[j * ns + i];
                         ret[idx++] = val;
                     }
 				}
@@ -473,7 +473,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             for(int k = 0; k < offdn; k++) {
                 if (offdi->ints[k] == i) {
                     int j = offdj->ints[k];
-                    val = ( - sigma * sigma / (timestep * timestep)) * QfT[j * ns + i];
+                    val = ( - 1 / (sigma * sigma * timestep * timestep)) * QfT[j * ns + i];
                     if (!isfinite(QfT[j * ns + i])) {
                         printf("NaN in QfT\n");
                     }
@@ -526,14 +526,14 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                     if (diagi->ints[k] == i - t * ns) {
                         int j = diagj->ints[k];
                         if (j >= i - t * ns) {
-							ret[idx++] = (sigma * sigma / timestep) * fTQfT[j * ns + i - t * ns] + (sigma * sigma / (timestep * timestep * timestep)) * Qblock[j * ns + i - t * ns];
+							ret[idx++] = (1 / (sigma * sigma * timestep)) * fTQfT[j * ns + i - t * ns] + (1 / (sigma * sigma * timestep * timestep * timestep)) * Qblock[j * ns + i - t * ns];
                         }
                     }
                 }
                 for (int k = 0; k < offdn; k++) {
                     if (offdi->ints[k] == i - t * ns) {
                         int j = offdj->ints[k];
-                        ret[idx++] = ( - sigma * sigma / (timestep * timestep)) * QfTplus1[j * ns + i - t * ns];
+                        ret[idx++] = ( - 1 / (sigma * sigma*timestep * timestep)) * QfTplus1[j * ns + i - t * ns];
                         if (!isfinite(QfTplus1[j * ns + i])) {
                             printf("NaN in QfT\n");
                         }
@@ -563,7 +563,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 if (diagi->ints[k] == i - (nt - 1) * ns) {
                     int j = diagj->ints[k];
                     if (j >= i - (nt - 1) * ns) {
-                        ret[idx++] = (sigma * sigma / timestep) * fTQfT[j * ns + i - (nt - 1) * ns] + (sigma * sigma / (timestep * timestep * timestep)) * Qblock[j * ns + i - (nt - 1) * ns];
+                        ret[idx++] = (1/(sigma * sigma * timestep)) * fTQfT[j * ns + i - (nt - 1) * ns] + (1 / (sigma * sigma * timestep * timestep * timestep)) * Qblock[j * ns + i - (nt - 1) * ns];
                     }
                 }
             }
