@@ -387,7 +387,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             for (int i = 0; i < ns; i++) {
                 for (int j = 0; j < ns; j++) {
                     Qblock[j * ns + i] = C->x[j * ns + i] + g * G->x[j * ns + i];
-                    if(isnan(Qblock[j * ns + i])) {
+                    if(isnan(Qblock[j * ns + i]) & debug > 0) {
                         printf("Warning: NaN in Qblock at (%d, %d) from C and G values %f and %f\n", i, j, C->x[j * ns + i], G->x[j * ns + i]);
 					}
                 }
@@ -400,7 +400,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 int ii = C->i[k];
                 int jj = C->j[k];
                 double cv = C->x[k];
-                if (isnan(cv)) {
+                if (isnan(cv) & debug > 0) {
                     printf("Warning: NaN in C at (%d, %d)\n", ii, jj);
                 }
                 Qblock[jj * ns + ii] = cv;
@@ -411,7 +411,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 int ii = G->i[k];
                 int jj = G->j[k];
                 double gv = G->x[k];
-                if (isnan(gv)) {
+                if (isnan(gv) & debug > 0) {
                     printf("Warning: NaN in G at (%d, %d)\n", ii, jj);
 				}
                 Qblock[jj * ns + ii] += g * gv;
@@ -474,7 +474,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 if (offdi->ints[k] == i) {
                     int j = offdj->ints[k];
                     val = ( - 1 / (sigma * sigma * timestep * timestep)) * QfT[j * ns + i];
-                    if (!isfinite(QfT[j * ns + i])) {
+                    if (!isfinite(QfT[j * ns + i]) & debug > 0) {
                         printf("NaN in QfT\n");
                     }
                     ret[idx++] = val;
@@ -534,7 +534,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                     if (offdi->ints[k] == i - t * ns) {
                         int j = offdj->ints[k];
                         ret[idx++] = ( - 1 / (sigma * sigma*timestep * timestep)) * QfTplus1[j * ns + i - t * ns];
-                        if (!isfinite(QfTplus1[j * ns + i])) {
+                        if (!isfinite(QfTplus1[j * ns + i]) & debug > 0) {
                             printf("NaN in QfT\n");
                         }
                     }
