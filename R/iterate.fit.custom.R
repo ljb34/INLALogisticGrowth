@@ -156,13 +156,11 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
     n.nodes <- fit$misc$configs$nconfig
     if(!is.numeric(n.nodes)){
       print("Failed to fit, trying again")
-      fit <- bru(geometry + time ~ loggrow(list(space = geometry, time = time), 
-                                           model = log_growth_model, 
-                                           n = smesh$n*tmesh$n) -1,
+      fit <- bru(new.cmp,
                  data = data, domain = domain,
                  samplers = samplers,
-                 family = "cp", options = options,
-                 weights = weights, ... )
+                 family = family, options = options,
+                 weights = weights, ...)
       n.nodes <- fit$misc$configs$nconfig
       if(!is.numeric(fit$misc$configs$nconfig)){
         print("Failed again, returning model output")
