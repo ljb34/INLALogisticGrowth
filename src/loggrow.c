@@ -628,7 +628,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             return NULL;
         }
         for (int i = 0; i < N; i++) {
-            if (!isfinite(B[i])) {
+            if (!isfinite(B[i]) & debug > 0) {
                 printf("NaN in MU solution at %d\n", i);
             }
         }

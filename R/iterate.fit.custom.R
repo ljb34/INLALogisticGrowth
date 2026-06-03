@@ -157,10 +157,10 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
     if(!is.numeric(n.nodes)){
       print("Failed to fit, trying again")
       fit <- bru(new.cmp,
-                 data = data, domain = domain,
-                 samplers = samplers,
-                 family = family, options = options,
-                 weights = weights, ...)
+               data = data, domain = domain,
+               samplers = samplers,
+               family = family, options = options,
+               weights = weights, ...)
       n.nodes <- fit$misc$configs$nconfig
       if(!is.numeric(fit$misc$configs$nconfig)){
         print("Failed again, returning model output")
