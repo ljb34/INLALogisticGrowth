@@ -44,7 +44,7 @@ void Lmat(double growth, double carry_cap, double move_const, double timestep,
 	//main diagonal
 	double* a_array = malloc(ntotal * sizeof(double));
 	a_func(growth, carry_cap,
-		linpoint, ns, nt, a_array);
+        linpoint, ns, nt, a_array);
 	for (int i = ns; i < ntotal; i++) {
 		result[i * ntotal + i] = a_array[i] + (1 /timestep);
 	}
@@ -68,7 +68,7 @@ void Lmat(double growth, double carry_cap, double move_const, double timestep,
         for (int t = 1; t < nt; t++) {
             for (int j = 0; j < ns; j++) {
                 for (int i = 0; i < ns; i++) {
-					result[(ns * t + j) * ntotal + t * ns + i] += move_const * CinvG->x[j * ns + i]; //Lmat is col-major but CinvG is row-major
+					result[(ns * t + j) * ntotal + t * ns + i] += move_const * CinvG->x[j * ns + i]; 
                 }
             }
         }
@@ -89,7 +89,24 @@ void r_vector(double growth, double carry_cap, double move_const,
     }
 }
 
+double sparse_get(
+    int row,
+    int col,
+    int n_entries,
+    int* I,
+    int* J,
+    double* X)
+{
+    for (int k = 0; k < n_entries; k++) {
+        if (I[k] == row && J[k] == col)
+            return X[k];
 
+        // if symmetric storage:
+        if (I[k] == col && J[k] == row)
+            return X[k];
+    }
+    return 0.0;
+}
 
 
 double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inla_cgeneric_data_tp* data) {
@@ -111,6 +128,43 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     assert(!strcasecmp(data->ints[3]->name, "nt"));
     int nt = data->ints[3]->ints[0];
     assert(nt > 0);
+
+    assert(!strcasecmp(data->ints[4]->name, "Pn"));
+    int Pn = data->ints[4]->ints[0];
+    assert(Pn > 0);
+
+    assert(!strcasecmp(data->ints[5]->name, "offdn"));
+	int offdn = data->ints[5]->ints[0];
+	assert(offdn > 0);
+
+	assert(!strcasecmp(data->ints[6]->name, "diagn"));
+	int diagn = data->ints[6]->ints[0];
+	assert(diagn > 0);
+
+    //Non-zero locations
+    assert(!strcasecmp(data->ints[7]->name, "Pi"));
+    inla_cgeneric_vec_tp* Pi = data->ints[7];
+    assert(Pi->len == Pn);
+
+    assert(!strcasecmp(data->ints[8]->name, "Pj"));
+    inla_cgeneric_vec_tp* Pj = data->ints[8];
+    assert(Pj->len == Pn);
+
+    assert(!strcasecmp(data->ints[9]->name, "offdi"));
+    inla_cgeneric_vec_tp* offdi = data->ints[9];
+    assert(offdi->len == offdn);
+
+    assert(!strcasecmp(data->ints[10]->name, "offdj"));
+    inla_cgeneric_vec_tp* offdj = data->ints[10];
+    assert(offdj->len == offdn);
+
+    assert(!strcasecmp(data->ints[11]->name, "diagi"));
+    inla_cgeneric_vec_tp* diagi = data->ints[11];
+    assert(diagi->len == diagn);
+
+    assert(!strcasecmp(data->ints[12]->name, "diagj"));
+    inla_cgeneric_vec_tp* diagj = data->ints[12];
+    assert(diagj->len == diagn);
 
     //Pre calculated information
     assert(!strcasecmp(data->doubles[0]->name, "timestep"));
@@ -194,7 +248,9 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
     }
     break;
     case INLA_CGENERIC_GRAPH:
-    {
+    {   
+        int prev_i = -1;
+        int prev_j = -1;
         // return a vector of indices with format
         // c(N, M, ii, jj)
         // where ii<=jj, ii is non-decreasing and jj is non-decreasing for the same ii
@@ -203,8 +259,7 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         // for j=i, ...
         // G_ij =
         // and M is the total length while N is the dimension
-        int M =  2* ns * ns + ns  +(nt-2)*(ns * ns + ns * (ns+1)/2);
-		//printf("M: %d\n", M);
+		int M = Pn + (nt - 1) * offdn + (nt - 1) * diagn; //total number of non zero entries in the precision matrix
         ret = calloc(2 + 2*M, sizeof(double));
         assert(ret);
         ret[0] = N; /* dimension */
@@ -212,37 +267,99 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         int idx = 2; // Start after N and M
         //first year only has two blocks
         for (int i = 0; i < ns;i++) {
-            for (int j = i; j < 2*ns; j++) {
-				ret[idx] = i; /* ii */
-				ret[M + idx] = j; /* jj */
-                idx++;
+			//for j in Pj[Pi == i]             
+            for (int k = 0; k < Pn; k++) {
+                if (Pi->ints[k] == i) {
+                    int j = Pj->ints[k];
+                    if (j >= i) { // only include upper triangle
+                        ret[idx] = i; 
+                        ret[M + idx] = j; 
+                        idx++;
+                        if (i < prev_i || (i == prev_i && j < prev_j)) {
+                            printf("GRAPH ORDER VIOLATION: (%d,%d) after (%d,%d)\n",
+                                i, j, prev_i, prev_j);
+                        }
+
+                        prev_i = i;
+                        prev_j = j;
+                    }
+                }
             }
+				//for j in offdj[offdi == i], need full matrix not just upper triangle
+                for (int k = 0; k < offdn; k++) {
+                    if (offdi->ints[k] == i) {
+                        int j = offdj->ints[k];
+                        ret[idx] = i; 
+                        ret[M + idx] = j + ns; 
+                        idx++;
+                        if (i < prev_i || (i == prev_i && j + ns < prev_j)) {
+                            printf("GRAPH ORDER VIOLATION: (%d,%d) after (%d,%d)\n",
+                                i, j, prev_i, prev_j);
+                        }
+
+                        prev_i = i;
+                        prev_j = j + ns;
+                    }
+                }
         }
 		//middle years have three blocks
-        for (int k = 1; k < nt-1; k++) {
-            for(int i = k*ns; i < (k+1)*ns; i++) {
-                for(int j = i; j < (k+2)*ns; j++) {
-                    ret[idx] = i; /* ii */
-                    ret[M + idx] = j; /* jj */
-					idx++;
+                for (int t = 1; t < nt - 1; t++) {
+                    for (int i = t * ns; i < (t + 1) * ns; i++) {
+                        for(int k = 0; k < diagn; k++){
+                            if (diagi->ints[k] == i - t * ns) {
+                                int j = diagj->ints[k];
+                                if (j >= i - t * ns) { // only include upper triangle
+                                    ret[idx] = i; /* ii */
+                                    ret[M + idx] = j + t*ns; /* jj */
+                                    idx++;
+                                    if (i < prev_i || (i == prev_i && j + t * ns < prev_j)) {
+                                        printf("GRAPH ORDER VIOLATION: (%d,%d) after (%d,%d)\n",
+                                            i, j, prev_i, prev_j);
+                                    }
+
+                                    prev_i = i;
+                                    prev_j = j + t * ns;
+                                }
+                            }
+						}
+                        for (int k = 0; k < offdn; k++) {
+                            if (offdi->ints[k] == i - t * ns) {
+                                int j = offdj->ints[k];
+                                ret[idx] = i; /* ii */
+                                ret[M + idx] = j + (t+1)*ns; /* jj */
+                                idx++;
+                                if (i < prev_i || (i == prev_i && j + (t+1) * ns < prev_j)) {
+                                    printf("GRAPH ORDER VIOLATION: (%d,%d) after (%d,%d)\n",
+                                        i, j, prev_i, prev_j);
+                                }
+
+                                prev_i = i;
+                                prev_j = j + (t+1) * ns;
+                            }
+                        }
+                    }
+                }
+
+		//final year only has two blocks
+        for (int i = (nt - 1) * ns; i < nt * ns; i++) {
+            for(int k = 0; k < diagn; k++){
+                if (diagi->ints[k] == i - (nt - 1) * ns) {
+                    int j = diagj->ints[k];
+                    if (j >= i - (nt - 1) * ns) { // only include upper triangle
+                        ret[idx] = i; /* ii */
+                        ret[M + idx] = j + (nt-1)*ns; /* jj */
+                        idx++;
+                        if (i < prev_i || (i == prev_i && j + (nt - 1) * ns < prev_j)) {
+                            printf("GRAPH ORDER VIOLATION: (%d,%d) after (%d,%d)\n",
+                                i, j, prev_i, prev_j);
+                        }
+
+                        prev_i = i;
+                        prev_j = j + (nt - 1) * ns;
+                    }
                 }
 			}
         }
-		//final year only has two blocks
-        for (int i = (nt - 1) * ns; i < nt * ns; i++) {
-            for (int j = i; j < nt * ns; j++) {
-                ret[idx] = i; /* ii */
-                ret[M + idx] = j; /* jj */
-                idx++;
-            }
-        }
-        //for (int i = 0; i < N; i++) {
-        //    for (int j = i; j < N; j++) {
-        //        ret[idx] = i; /* ii */
-        //        ret[N*(N+1)/2 + idx] = j; /* jj */
-        //        idx++;
-        //    }
-        //}
         if (idx - 2 != M) {
             fprintf(stderr, "GRAPH produced %d pairs, expected %d\n", idx - 2, M);
             abort();
@@ -257,60 +374,22 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             printf("INLA_CGENERIC_Q\n");
             printf("nrow = %f\n", N);
         }
-        int M = 2 * ns * ns + ns + (nt - 2) * (ns * ns + ns * (ns + 1) / 2);
+        int M = Pn + (nt - 1) * offdn + (nt - 1) * diagn;
         if (debug > 0) printf("M: %d\n", M);
         ret = Calloc(2 +M, double);
+        ret[0] = -1; /* REQUIRED! */
+        ret[1] = M;
 
-        inla_cgeneric_mat_tp* L_mat = malloc(sizeof(inla_cgeneric_mat_tp));
-        L_mat->x = calloc(N * N, sizeof(double));
-        L_mat->nrow = N;
-        L_mat->ncol = N;
-        Lmat(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, L_mat->x);
-
-        int* ipiv = malloc(ns * nt * sizeof(int));
-        int lda = N;
-        int ldb = N;
-        int nrhs = N;
-        int info;
-
-        double* B = calloc(N * N, sizeof(double));
-        //Compute Noise * L
-		//initial ns x ns prior_precision block - prior precision * identity so can just copy prior_precision to B
-		//if sparse prior_precision
-        if (prior_precision->n != ns * ns) {
-            // sparse prior_precision: apply its nonzeros 
-            for (int k = 0; k < prior_precision->n; k++) {
-                int ii = prior_precision->i[k]; 
-                int jj = prior_precision->j[k]; 
-                double pv = prior_precision->x[k];
-				B[jj * N + ii] = pv;
-            }
-        }
-        else { //if dense prior precision
-            for (int i = 0; i < ns; i++) {
-                for (int j = 0; j < ns; j++) {
-					B[j * N + i] = prior_precision->x[j * ns + i]; 
-                }
-            }
-        }
-        /*Rest of B=Q*L */
-        double one = 1, zero = 0;
-        //Calculate sigma**2/h * (C+gG)
-        double* a_array = malloc(ns*nt * sizeof(double));
-        /*a_func(growth, carry_cap, linpoint->doubles, ns, nt, a_array);
-		double mean_a = 0.0;
-        for (int i = 0; i < ns*nt; i++) {
-            mean_a += a_array[i];
-        }
-        mean_a = mean_a/(ns*nt);
-		free(a_array);
-		double g = move_const / mean_a; */
         double g = move_const;
-		double* Qblock = calloc(ns * ns, sizeof(double));
-		if ((C->n == ns) & (G->n == ns)) { //if dense C and G
+        //printf("move_const: %f\n", move_const);
+        double* Qblock = calloc(ns * ns, sizeof(double));
+        if ((C->n == ns*ns) && (G->n == ns*ns)) { //if dense C and G
             for (int i = 0; i < ns; i++) {
                 for (int j = 0; j < ns; j++) {
-                    Qblock[j * ns + i] = sigma * sigma * (C->x[j * ns + i] + g * G->x[j * ns + i]) / timestep;
+                    Qblock[j * ns + i] = C->x[j * ns + i] + g * G->x[j * ns + i];
+                    if(isnan(Qblock[j * ns + i]) & debug > 0) {
+                        printf("Warning: NaN in Qblock at (%d, %d) from C and G values %f and %f\n", i, j, C->x[j * ns + i], G->x[j * ns + i]);
+					}
                 }
             }
         }
@@ -321,108 +400,188 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
                 int ii = C->i[k];
                 int jj = C->j[k];
                 double cv = C->x[k];
+                if (isnan(cv) & debug > 0) {
+                    printf("Warning: NaN in C at (%d, %d)\n", ii, jj);
+                }
                 Qblock[jj * ns + ii] = cv;
+                
             }
             //then add gG to Qblock
             for (int k = 0; k < G->n; k++) {
                 int ii = G->i[k];
                 int jj = G->j[k];
                 double gv = G->x[k];
+                if (isnan(gv)) {
+                    printf("Warning: NaN in G at (%d, %d)\n", ii, jj);
+				}
                 Qblock[jj * ns + ii] += g * gv;
-            }
-            //finally scale by sigma^2 / timestep
-            for (int i = 0; i < ns; i++) {
-                for (int j = 0; j < ns; j++) {
-                    Qblock[j * ns + i] = sigma * sigma * Qblock[j * ns + i] / timestep;
-                }
-			}
+                
+            } 
         }
         
-		//main diagonal blocks
-        for (int t = 1; t < nt; t++) {
+        double one = 1, zero = 0;
+        double* a_array = malloc(ns*nt * sizeof(double));
+        a_func(growth, carry_cap,
+            linpoint->doubles, ns, nt, a_array);
+      
+        //copy CinvG to new matrix and add -1/timestep to diagonal
+		double* fT = calloc(ns * ns, sizeof(double));
+        
+        for (int k = 0; k < CinvG->n; k++) {
+            int i = CinvG->i[k];
+            int j = CinvG->j[k];
+            double v = CinvG->x[k];
 
-			//extract t-th block of L
-			double* Lblock = malloc(ns * ns * sizeof(double));
-            for (int i = 0; i < ns; i++) {
-                for (int j = 0; j < ns; j++) {
-                    Lblock[j * ns + i] = L_mat->x[(t * ns + j) * N + t * ns + i];
-                }
-            }
-			//multiply Qblock * Lblock and store in B
-			double* temp = malloc(ns * ns * sizeof(double));
-			char transA = 'N';
-			char transB = 'N';
+            fT[j * ns + i] = move_const * v;
             
-			dgemm_(&transA, &transB, &ns, &ns, &ns, &one, Qblock, &ns, Lblock, &ns, &zero, temp, &ns);
-            for (int i = 0; i < ns; i++) {
-                for (int j = 0; j < ns; j++) {
-                    B[(t * ns + j) * N + t * ns + i] = temp[j * ns + i];
-                }
-            }
-
-			//clear memory
-			free(Lblock);
-			free(temp);
         }
-
-		//sub diagonal blocks -1/timestep*Qblock
-        for (int t = 1; t < nt - 1; t++) {
-            for(int i = 0; i < ns; i++) {
-                for (int j = 0; j < ns; j++) {
-                    B[(t * ns + j) * N + (t + 1) * ns + i] = -1.0 / timestep * Qblock[j * ns + i];
+        for (int i = 0; i < ns; i++) {
+            fT[i * ns + i] += a_array[ns + i] + 1.0 / timestep;
+        }
+        
+        //calculate Q*fT and store in QfT
+        double* QfT = calloc(ns * ns, sizeof(double));
+        char transA = 'N';
+		char transB = 'N';
+		if (debug > 0) printf("dgemm step");
+        dgemm_(&transA, &transB,
+            &ns, &ns, &ns,
+            &one,
+            Qblock, &ns,
+            fT, &ns,
+            &zero,
+            QfT, &ns);
+		//start filling in ret in order of GRAPH
+        int idx = 2;
+        double val = 0.0;
+        //first year only has two blocks
+        for(int i = 0; i < ns; i++) {
+            //need to extract prior_precision->x[prior_precision->i == i] for all j, then QfT[j*ns + i] for all j, then i++
+            for (int k = 0; k < Pn; k++) {
+                if(Pi->ints[k] == i) {
+                    int j = Pj->ints[k];
+                    if (j >= i) { // only include upper triangle
+                        val = sparse_get(i, j,
+                            prior_precision->n,
+                            prior_precision->i,
+                            prior_precision->j,
+                            prior_precision->x) + (1 / (sigma * sigma * timestep * timestep * timestep)) * Qblock[j * ns + i];
+                        ret[idx++] = val;
+                    }
+				}
+            }
+            for(int k = 0; k < offdn; k++) {
+                if (offdi->ints[k] == i) {
+                    int j = offdj->ints[k];
+                    val = ( - 1 / (sigma * sigma * timestep * timestep)) * QfT[j * ns + i];
+                    if (!isfinite(QfT[j * ns + i]) & debug > 0) {
+                        printf("NaN in QfT\n");
+                    }
+                    ret[idx++] = val;
                 }
 			}
-        }
+		}
 
-		free(Qblock);
+        //blocks 1 to nt-1
+        for (int t = 1; t < nt - 1; t++) {
+			//calc f(T+1) = CinvG + diag(a) - 1/timestep*I
+            double* fTplus1 = calloc(ns * ns, sizeof(double));
+            for (int k = 0; k < CinvG->n; k++) {
+                int i = CinvG->i[k];
+                int j = CinvG->j[k];
+                double v = CinvG->x[k];
 
-        /* Now compute out = L_mat^T * B */
-        double* out = calloc(N * N, sizeof(double));
-        char transL = 'T';
-		char transB = 'N';
-        if (debug > 0) printf("dgemm step");
-        dgemm_(&transL, &transB, &N, &N, &N, &one, L_mat->x, &lda, B, &ldb, &zero, out, &N);
-
-        free(L_mat->x);
-        free(L_mat);
-        free(B);
-        free(ipiv);
-
-        ret[0] = -1; /* REQUIRED! */
-        ret[1] = M; 
-
-		//fill in ret with non zero parts of out 
-
-
-		int idx = 2; // Start after -1 and M
-		//first year only has two blocks
-        for (int i = 0; i < ns; i++) {
-            for (int j = i; j < 2*ns; j++) {
-                ret[idx++] = out[j * N + i];
+                fTplus1[j * ns + i] = move_const * v;
+                
             }
+            for (int i = 0; i < ns; i++) {
+                fTplus1[i * ns + i] += a_array[(t+1) * ns + i] + 1.0 / timestep;
+            }
+			
+			
+            //calc Qblock*f(T+1) and store in QfTplus1
+            double* QfTplus1 = calloc(ns * ns, sizeof(double));
+            if (debug > 0) printf("dgemm step");
+            dgemm_("N", "N",
+                &ns, &ns, &ns,
+                &one,
+                Qblock, &ns,
+                fTplus1, &ns,
+                &zero,
+                QfTplus1, &ns);
+            
+            //calc trans(fT)*QfT and store in fTQfT
+			double* fTQfT = calloc(ns * ns, sizeof(double));
+            char transfT = 'T';
+            if (debug > 0) printf("dgemm step");
+            dgemm_(&transfT, &transB, &ns, &ns, &ns, &one, fT, &ns, QfT, &ns, &zero, fTQfT, &ns);
+                
+           
+			
+
+            //fill in ret for block t in order of GRAPH
+             
+            for (int i = t * ns; i < (t + 1) * ns; i++) {
+                for (int k = 0; k < diagn; k++) {
+                    if (diagi->ints[k] == i - t * ns) {
+                        int j = diagj->ints[k];
+                        if (j >= i - t * ns) {
+							ret[idx++] = (1 / (sigma * sigma *timestep)) * fTQfT[j * ns + i - t * ns] + (sigma * sigma / (timestep * timestep * timestep)) * Qblock[j * ns + i - t * ns];
+                        }
+                    }
+                }
+                for (int k = 0; k < offdn; k++) {
+                    if (offdi->ints[k] == i - t * ns) {
+                        int j = offdj->ints[k];
+                        ret[idx++] = ( - 1 / (sigma * sigma*timestep * timestep)) * QfTplus1[j * ns + i - t * ns];
+                        if (!isfinite(QfTplus1[j * ns + i]) & debug > 0) {
+                            printf("NaN in QfT\n");
+                        }
+                    }
+				}
+            }
+            
+			//copy f(T+1) to fT for next iteration
+			double* temp = fT;
+			fT = fTplus1;
+			fTplus1 = temp;
+            double* temp2 = QfT;
+            QfT = QfTplus1;
+            QfTplus1 = temp2;
+            free(QfTplus1);
+			free(fTplus1);
         }
-		//middle years have three blocks
-        for (int k = 1; k < nt - 1; k++) {
-            for (int i = k * ns; i < (k + 1) * ns; i++) {
-                for (int j = i; j < (k + 2) * ns; j++) {
-                    ret[idx++] = out[j * N + i];
+		//final block nt-1
+        //calc trans(fT)*QfT and store in fTQfT
+        double* fTQfT = calloc(ns * ns, sizeof(double));
+        char transfT = 'T';
+        if (debug > 0) printf("dgemm step");
+        dgemm_(&transfT, &transB, &ns, &ns, &ns, &one, fT, &ns, QfT, &ns, &zero, fTQfT, &ns);
+
+        for(int i = (nt-1)*ns; i < nt*ns; i++) {
+            for (int k = 0; k < diagn; k++) {
+                if (diagi->ints[k] == i - (nt - 1) * ns) {
+                    int j = diagj->ints[k];
+                    if (j >= i - (nt - 1) * ns) {
+                        ret[idx++] = (1 / (sigma * sigma *timestep)) * fTQfT[j * ns + i - (nt - 1) * ns] + (1 / (sigma * sigma*timestep * timestep * timestep)) * Qblock[j * ns + i - (nt - 1) * ns];
+                    }
                 }
             }
-        }
+		}
 
-        //final year has two blocks
-        
-        for (int i = (nt - 1) * ns; i < nt * ns; i++) {
+        /*for (int i = (nt - 1) * ns; i < nt * ns; i++) {
             for (int j = i; j < nt * ns; j++) {
-                ret[idx++] = out[j * N + i];
+                ret[idx++] = (sigma * sigma / timestep) * fTQfT[(j - (nt - 1) * ns) * ns + (i - (nt - 1) * ns)];
             }
-        }
-		free(out);
+		}*/
+        
+        free(Qblock);
+        free(fT);
+        free(QfT);
+		free(fTQfT);
+        
+        assert(idx == M + 2);
 
-        if (idx - 2 != M) {
-            fprintf(stderr, "Q filled %d values, expected %d\n", idx - 2, M);
-            abort();
-        }
     }
     break;
     case INLA_CGENERIC_MU:
@@ -431,17 +590,17 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         if (debug > 0) {
             printf("INLA_CGENERIC_MU\n");
         }
-        ret = Calloc(1 + N, double);
+        ret = calloc(1 + N, sizeof(double));
         assert(ret);
         ret[0] = N; /* dimension */
 
-        inla_cgeneric_mat_tp* L_mat = malloc(sizeof(inla_cgeneric_mat_tp));
+        inla_cgeneric_mat_tp* L_mat = calloc(1, sizeof(inla_cgeneric_mat_tp));
         L_mat->x = calloc(N * N, sizeof(double));
         L_mat->nrow = N;
         L_mat->ncol = N;
         Lmat(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, L_mat->x);
 
-        inla_cgeneric_vec_tp* rvector = malloc(sizeof(inla_cgeneric_vec_tp));
+        inla_cgeneric_vec_tp* rvector = calloc(1, sizeof(inla_cgeneric_vec_tp));
         rvector->doubles = calloc(N, sizeof(double));
         rvector->len = N;
         r_vector(growth, carry_cap, move_const, linpoint->doubles, mag_grad_sq->doubles, ns, nt, rvector->doubles);
@@ -450,13 +609,13 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         }
 
         //calculate L_mat^-1 * rvector
-        int* ipiv = malloc(ns * nt * sizeof(int));
+        int* ipiv = calloc(ns * nt, sizeof(int));
         int lda = N;
         int ldb = N;
         int nrhs = 1;
         int info;
-        double* A = malloc(N * N * sizeof(double));
-        double* B = malloc(N * sizeof(double));
+        double* A = calloc(N * N,sizeof(double));
+        double* B = calloc(N, sizeof(double));
 		memcpy(A, L_mat->x, N* N * sizeof(double));
         memcpy(B, rvector->doubles, N * sizeof(double));
         if (debug > 0) printf("dgesv step");
@@ -467,6 +626,11 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
             free(L_mat->x); free(L_mat);
             free(rvector->doubles); free(rvector);
             return NULL;
+        }
+        for (int i = 0; i < N; i++) {
+            if (!isfinite(B[i]) & debug > 0) {
+                printf("NaN in MU solution at %d\n", i);
+            }
         }
 
         for (int i = 0; i < N; i++) {

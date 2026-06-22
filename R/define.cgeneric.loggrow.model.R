@@ -34,8 +34,15 @@ define.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.size,
   fem.matrices <- fmesher::fm_fem(smesh)
   C <- fem.matrices$c0
   G <- fem.matrices$g1
-  CinvG <- Matrix::solve(fem.matrices$c1, fem.matrices$g1)
-  #browser()
+  G_sparse <- INLAtools::Sparse(G)
+  CinvG <- Matrix::solve(fem.matrices$c0, fem.matrices$g1)
+  P <- INLAtools::Sparse(prior.precision, zeros.rm = T)
+  
+  #Calculate where non-zero entries are
+  PG <- INLAtools::upperPadding(list(p = P, g = G_sparse)) #upper tri graph of where P + G is not zero
+  QfT <-  INLAtools::Sparse(G%*%CinvG, zeros.rm = T) #to get graph for off diagonal
+  fTQfT <- INLAtools::upperPadding(INLAtools::Sparse(Matrix::t(CinvG)%*%G%*%CinvG, zeros.rm = T))
+  
   INLAversion <- INLAtools::packageCheck(
     name = "INLA",
     minimum_version = "23.08.16",
@@ -73,6 +80,15 @@ define.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.size,
                        c(args0,
                          list(ns = as.integer(smesh$n),
                               nt = as.integer(tmesh$n),
+                              Pn = as.integer(length(PG$graph@x)),
+                              offdn = as.integer(length(QfT@x)),
+                              diagn = as.integer(length(fTQfT@x)),
+                              Pi = as.integer(PG$graph@i),
+                              Pj = as.integer(PG$graph@j),
+                              offdi = as.integer(QfT@i),
+                              offdj = as.integer(QfT@j),
+                              diagi = as.integer(fTQfT@i),
+                              diagj = as.integer(fTQfT@j),
                               timestep = as.double(step.size),
                               linpoint = as.double(linpoint),
                               mag_grad_sq = as.double(mag_grad_sq),
@@ -85,10 +101,10 @@ define.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.size,
                               pcc = as.double(priors$cc),
                               pmove = as.double(priors$move),
                               psigma = as.double(priors$sigma),
-                              CinvG = CinvG,
-                              prior_precision = Matrix::Matrix(prior.precision, sparse = T),
-                              C = C,
-                              G = G)))
+                              CinvG = INLAtools::Sparse(CinvG, zeros.rm = T),
+                              prior_precision = P,
+                              C = INLAtools::Sparse(C, zeros.rm = T),
+                              G = G_sparse)))
   
   class(the_model) <- c("log_growth_model", class(the_model))
   the_model[["smesh"]] <- smesh

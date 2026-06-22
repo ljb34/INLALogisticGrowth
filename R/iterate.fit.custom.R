@@ -156,13 +156,11 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
     n.nodes <- fit$misc$configs$nconfig
     if(!is.numeric(n.nodes)){
       print("Failed to fit, trying again")
-      fit <- bru(geometry + time ~ loggrow(list(space = geometry, time = time), 
-                                           model = log_growth_model, 
-                                           n = smesh$n*tmesh$n) -1,
-                 data = data, domain = domain,
-                 samplers = samplers,
-                 family = "cp", options = options,
-                 weights = weights, ... )
+      fit <- bru(new.cmp,
+               data = data, domain = domain,
+               samplers = samplers,
+               family = family, options = options,
+               weights = weights, ...)
       n.nodes <- fit$misc$configs$nconfig
       if(!is.numeric(fit$misc$configs$nconfig)){
         print("Failed again, returning model output")
@@ -193,12 +191,12 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
       P <- Reduce("+", Map(function(m, w) m * w, mat_list, nodes$weight.prob))
       weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
       b <- Reduce("+", Map(function(m,w) m%*%w, mat_list,weighted.means))
-      new.linpoint <- (1-gamma)*initial.linpoint +gamma*Matrix::solve(P,b)
+      new.linpoint <- (1-gamma)*lp.mat[,n] +gamma*Matrix::solve(P,b)
     }else{
       #Type I
       weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
       new.mean <- Reduce("+", weighted.means)
-      new.linpoint <- (1-gamma)*initial.linpoint +gamma*new.mean
+      new.linpoint <- (1-gamma)*lp.mat[,n] +gamma*new.mean
     }
     
     lp.mat <- cbind(lp.mat,new.linpoint)
