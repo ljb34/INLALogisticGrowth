@@ -89,7 +89,7 @@ void r_vector(double growth, double carry_cap, double move_const,
     }
 }
 
-double sparse_get(
+static double sparse_get(
     int row,
     int col,
     int n_entries,
