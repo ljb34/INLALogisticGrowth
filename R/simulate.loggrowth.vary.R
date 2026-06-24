@@ -136,12 +136,13 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
   prior.precision <- initial_Q
   if(debug) print("Calculating precision")
   Q_mat <-Q(par)
+  Qtest <- solve(Q_mat)
   if(debug) print("Calculating mean")
   mu_mat <- mu(par)
-  
+  summary(exp(mu_mat))
   #generate field
   if(debug) print("generating field")
-  field <- data.frame(field = inla.qsample(1, Q_mat, mu = mu_mat)[, 1])
+  field <- data.frame(field = inla.qsample(1, Matrix::drop0(Q_mat), mu = mu_mat)[, 1])
   field$time <- rep(0:timesteps, each = smesh$n)
   expand_for_plot <- function(i){
     animal_tempsf <- expand.grid(
