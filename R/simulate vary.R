@@ -82,14 +82,4 @@ simulate_loggrowth_vary2 <- function(growth0, growth1, carry.cap0,carry.cap1, mo
   
 }
 
-library(INLA)
-library(inlabru)
-library(INLAloggrowth)
-library(fmesher)
-library(sf)
-library(dplyr)
-library(ggplot2)
-
-simulate_loggrowth_vary2(log(0.8), 0.2, log(1000), -0.5, 0.15, 0, 0.05,cov.range = 0.2,cov.sigma= 0.5, initial.pop = 500, 0.1, 0.1, 4,
-                         max.edge = 0.5)
 
