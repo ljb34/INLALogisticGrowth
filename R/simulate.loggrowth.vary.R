@@ -153,6 +153,7 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
   par = list(growth = growth, carry.cap = carry.cap, move.const = move.const, sigma = sigma)
   print(length(prior.mean))
   print(length(growth)/(timesteps + 1))
+  print(smesh$n)
   linpoint <- log(logit.nest(exp(prior.mean), growth[1:smesh$n], carry.cap[1:smesh$n], tmesh$n)$x)
   grad <- gradient_of_linpoint(linpoint, smesh, tmesh)#
   prior.precision <- initial_Q
