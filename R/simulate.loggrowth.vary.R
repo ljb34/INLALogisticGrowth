@@ -210,7 +210,7 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
     animal_obs = 0
   }
   return(list(animal = animal[animal$time !=0,],field = field[field$time !=0,],
-              animal_obs = animal_obs[animal_obs$time != 0,], mesh = smesh, covaraiates = cov.grid))
+              animal_obs = animal_obs[animal_obs$time != 0,], mesh = smesh, covariates = cov.grid))
 }
 
 

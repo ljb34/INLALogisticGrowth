@@ -59,7 +59,44 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
     
     r
   }
-
+  
+  if (inherits(covariates, "sf")) {
+    
+    mesh_pts <- sf::st_as_sf(
+      data.frame(x = coords[,1], y = coords[,2]),
+      coords = c("x", "y"),
+      crs = sf::st_crs(covariates)
+    )
+    
+    cov_names <- setdiff(
+      names(covariates),
+      c("time", attr(covariates, "sf_column"))
+    )
+    
+    for (v in cov_names) {
+      mesh_df[[v]] <- NA_real_
+    }
+    
+    for (tt in seq_len(nt)) {
+      
+      sf_t <- covariates[covariates$time == tt, ]
+      
+      nn <- sf::st_nearest_feature(
+        mesh_pts,
+        sf_t
+      )
+      
+      for (v in cov_names) {
+        
+        vals <- sf_t[[v]][nn]
+        
+        idx <- mesh_df$time == tt
+        
+        mesh_df[[v]][idx] <- vals[mesh_df$space[idx]]
+      }
+    }
+    
+  } else {
   
   for (v in all_vars) {
     
@@ -92,6 +129,7 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
     } else {
       stop(paste("Raster", v, "has incompatible number of layers"))
     }
+  }
   }
   growth_cov <- as.vector(model.matrix(growth.formula, data = mesh_df))
   carry_cov  <- as.vector(model.matrix(carry.formula,  data = mesh_df))
