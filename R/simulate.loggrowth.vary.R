@@ -100,14 +100,14 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
     print("Defining model")
   }
   #components needed for model
-  cov_mesh <- smesh <- fmesher::fm_mesh_2d_inla(loc = hex_points, boundary = bnd_extended,
+  cov_mesh <- smesh <- fmesher::fm_mesh_2d_inla( boundary = bnd_extended,
                                                 max.edge = c(max.edge/3, max.edge),
                                                 offset = c(-0.01, (boundaries[2]-boundaries[1])))
   cov_matern <-
     inla.spde2.pcmatern(cov_mesh,
                         prior.sigma = c(0.1, 0.1),
                         prior.range = c(0.1, 0.1))
-  cov_Q <- inla.spde.precision(matern,theta = log(c(cov.range, cov.sigma)))
+  cov_Q <- inla.spde.precision(cov_matern,theta = log(c(cov.range, cov.sigma)))
   if(same.cov){
     covariates <- data.frame(growth = inla.qsample(1, cov_Q)[, 1]) %>% 
       dplyr::mutate(carry.cap = growth, movement = growth)
@@ -120,21 +120,34 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
     easting = seq(boundaries[1],boundaries[2], by = 0.01),
     northing = seq(boundaries[1],boundaries[2], by = 0.01)), coords = c("easting", "northing"))
   cov.grid$growth <- fmesher::fm_evaluate(
-    smesh,
+    cov_mesh,
     loc = cov.grid,
     field = covariates$growth)
   cov.grid$carry.cap <- fmesher::fm_evaluate(
-    smesh,
+    cov_mesh,
     loc = cov.grid,
     field = covariates$carry.cap)
   cov.grid$movement <- fmesher::fm_evaluate(
-    smesh,
+    cov_mesh,
     loc = cov.grid,
     field = covariates$movement)
   
-  growth <- rep(exp(growth0 + growth1*covariates$growth),timesteps+1)
-  carry.cap <- rep(exp(carry.cap0 + carry.cap1*covariates$carry.cap), timesteps+1)
-  move.const <- rep(movement0 + movement1*covariates$movement, timesteps+1)
+  mesh_pts <- sf::st_as_sf(
+    data.frame(x = smesh$loc[,1], y = smesh$loc[,2]),
+    coords = c("x", "y")
+  )
+  nn <- sf::st_nearest_feature(
+    mesh_pts,
+    cov.grid
+  )
+  
+  mesh_pts$growth <- cov.grid$growth[nn]
+  mesh_pts$carry.cap <- cov.grid$carry.cap[nn]
+  mesh_pts$movement <- cov.grid$movement[nn]
+  
+  growth <- rep(exp(growth0 + growth1*mesh_pts$growth),timesteps+1)
+  carry.cap <- rep(exp(carry.cap0 + carry.cap1*mesh_pts$carry.cap), timesteps+1)
+  move.const <- rep(movement0 + movement1*mesh_pts$movement, timesteps+1)
   print(summary(carry.cap))
   print(summary(growth))
   par = list(growth = growth, carry.cap = carry.cap, move.const = move.const, sigma = sigma)
