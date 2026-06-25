@@ -100,7 +100,7 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
     print("Defining model")
   }
   #components needed for model
-  cov_mesh <- smesh <- fmesher::fm_mesh_2d_inla( boundary = bnd_extended,
+  cov_mesh <-fmesher::fm_mesh_2d_inla( boundary = bnd_extended,
                                                 max.edge = c(max.edge/3, max.edge),
                                                 offset = c(-0.01, (boundaries[2]-boundaries[1])))
   cov_matern <-
