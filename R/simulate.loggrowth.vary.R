@@ -100,6 +100,13 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
     print("Defining model")
   }
   #components needed for model
+  cov_mesh <- smesh <- fmesher::fm_mesh_2d_inla(loc = hex_points, boundary = bnd_extended,
+                                                max.edge = c(max.edge/2, max.edge),
+                                                offset = c(-0.01, (boundaries[2]-boundaries[1])))
+  cov_matern <-
+    inla.spde2.pcmatern(cov_mesh,
+                        prior.sigma = c(0.1, 0.1),
+                        prior.range = c(0.1, 0.1))
   cov_Q <- inla.spde.precision(matern,theta = log(c(cov.range, cov.sigma)))
   if(same.cov){
     covariates <- data.frame(growth = inla.qsample(1, cov_Q)[, 1]) %>% 
