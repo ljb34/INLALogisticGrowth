@@ -19,6 +19,8 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
   if(is.null(domain)){
     domain = list(geometry = smesh, time = tmesh)
   }
+  
+  print("Setting up Covariates")
   #Covariates
   vars_growth <- all.vars(growth.formula)
   vars_carry  <- all.vars(carry.formula)
@@ -59,7 +61,7 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
     
     r
   }
-  
+  print("Extracting Covariates")
   if (inherits(covariates, "sf")) {
     
     mesh_pts <- sf::st_as_sf(
@@ -134,6 +136,7 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
   growth_cov <- as.vector(model.matrix(growth.formula, data = mesh_df))
   carry_cov  <- as.vector(model.matrix(carry.formula,  data = mesh_df))
   move_cov   <- as.vector(model.matrix(move.formula,   data = mesh_df))
+  print("Set up initial model")
   #Set up initial model
   log_growth_model <- define.varying.cgeneric.loggrow.model(linpoint = initial.linpoint, 
                                                       smesh = smesh,tmesh = tmesh, step.size = step.size, 
@@ -154,7 +157,7 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
   new.cmp <- update(formula, . ~ . + loggrow(list(space = geometry, time = time),
                                              model = log_growth_model, n = smesh$n * tmesh$n))
   environment(new.cmp) <- environment()
-  
+  print("Start fitting")
   fit <- bru(new.cmp,
              data = data, domain = domain,
              samplers = samplers,
