@@ -1,13 +1,3 @@
-#' Helper function for converting parameters from internal scale to more interpretable parameter scale
-#' @param theta vector of interal parameters
-#' @return named vector of user interpretable parameters
-#' @export 
-thetas2params <- function(theta){
-  return(setnames(c(theta[1], 1/exp(theta[2]), theta[3], exp(theta[4])),
-                  c("Growth", "Carrying Capacity", "Movement", "Sigma")))
-} 
-
-
 #'Extract prior mean and variance
 #'@description
 #'A helper function for getting prior mean and variance from an \strong{intercept and smoothing term only} inlabru model

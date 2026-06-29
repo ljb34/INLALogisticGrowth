@@ -27,8 +27,9 @@
 #' inverse carrying capacity, movement constant and \emph{log} standard deviation
 #' @param verbose logical supplied to INLA
 #' @returns list containing final model fit, number of iterations \code{n}, matrix of all past linearisation points and list of all past model fits.  
+#'@import inlabru
 #'@export
-iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prior.mean,
+iterate.fit <- function(formula, data,family, smesh, tmesh, samplers,prior.mean,
                         prior.precision, max.iter = 100,gamma = 0.5,stop.crit = 0.05,
                         priors = NULL, initial.linpoint = NULL, initial.growth=0.5, 
                         initial.carry.cap=1000, initial.move.const = 0.5, initial.log.sigma = log(1.5),
@@ -239,3 +240,9 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
              weights = weights, ...)
   return(list(fit = final.fit, n = n, linpoints = lp.mat, fit_list = fit_list))
 }
+
+
+#' Deprecated alias for `iterate.fit`.
+#'
+#' @export
+iterate.fit.custom <- iterate.fit
