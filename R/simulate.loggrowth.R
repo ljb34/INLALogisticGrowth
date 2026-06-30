@@ -67,30 +67,19 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
                                         initial.growth = growth, initial.carry.cap = log(carry.cap), 
                                         initial.move.const = movement, initial.log.sigma = log(sigma), 
                                         debug = NULL)
-  browser()
-  mu_mat <- INLAtools::cgeneric_mu(cgen, theta)  #doesn't work, only gives dimension??
+  
+  #mu_mat <- INLAtools::cgeneric_mu(cgen, theta)  #doesn't work, only gives dimension??
   
   a.func <- function(growth,carry.cap, linpoint){
     #print("Calcualting a")
     return(growth*exp(linpoint)/carry.cap)
   }
-  L.matrix <- function(growth,carry.cap,move.const,step.size, linpoint, smesh, tmesh){
-    #print("Calcualting Lmat")
-    ns <- smesh$n
-    nt <- tmesh$n
-    a<- a.func(growth,carry.cap, linpoint)
-    a[1:ns] <- 1
-    a.mat <- Matrix::Diagonal(ns*nt,a)
-    subdiag <- Matrix::bandSparse(nt*ns, k = -ns, diagonals = list(rep(-1/step.size, (nt - 1)*ns)))
-    fem.matrices <- fmesher::fm_fem(smesh)
-    CinvG <- Matrix::solve(fem.matrices$c1, fem.matrices$g1)
-    main.diag <- Matrix::kronecker(Matrix::Diagonal(nt, c(0,rep(1, nt-1))), 
-                                   Matrix::Diagonal(ns, 1/(step.size))+ move.const*CinvG)
-    return(Matrix::drop0(main.diag + subdiag + a.mat, tol = 1e-100))
-  }
   r.vector <- function(growth,carry.cap,move.const,linpoint,grad){
     mag.grad.sq <- rowSums(grad*grad) #magnitude squared
     return(growth*exp(linpoint)*(linpoint-1)/carry.cap+ growth - move.const*mag.grad.sq )
+  }
+  fT <- function(a_array,movement, CinvG){
+    return(movement*CinvG + Matrix::Diagonal(smesh$n, 1/step.size + a_array))
   }
   interpret.theta = function() {
     return(list(growth = exp(theta[1L]),
@@ -99,23 +88,18 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
                 sigma = exp(theta[4L])))
   }
   mu = function(){
-    par = interpret.theta()
-    Lmat = L.matrix(par$growth, par$carry.cap, par$move.const, step.size, linpoint, smesh, tmesh)
-    r = c(prior.mean, r.vector(par$growth, par$carry.cap, par$move.const, linpoint, grad)[-(1:smesh$n)])
-    Lmat_det <- Matrix::det(Lmat)
-    if(!is.nan(Lmat_det)) {
-      if(abs(Lmat_det) <= .Machine$double.eps){ #if close to singular use
-        #print(det(crossprod(Lmat,Lmat)))
-        mu = Matrix::solve(crossprod(Lmat,Lmat),crossprod(Lmat,r)) #more stable form of solve(lmat,r)
-        mu= as.vector(mu)
-        print("Trick version")
-      }else{
-        mu = Matrix::solve(Lmat,r)
-      }}else{
-        print("There's some NaNs going on?")
-        mu = NA
-      }
-    return(mu)
+    out <- Matrix::Matrix(NA, nrow = smesh$n*tmesh$n, ncol = 1)
+    par <- interpret.theta()
+    r <- c(prior.mean, r.vector(par$growth, par$carry.cap, par$move.const, linpoint, grad)[-(1:smesh$n)])
+    a_full <- a.func(par$growth, par$carry.cap, linpoint)
+    out[1:smesh$n, 1] <- prior.mean
+    fem.matrice <- fm_fem(smesh)
+    CinvG <- Matrix::solve(fem.matrice$c1, fem.matrice$g1)
+    for(t in 1:timesteps){
+      fmat <- fT(a_full[t*smesh$n + 1:smesh$n], par$move.const, CinvG)
+      out[t*smesh$n + 1:smesh$n,1] <- Matrix::solve(fmat, r[t*smesh$n + 1:smesh$n] + out[(t-1)*smesh$n + 1:smesh$n,1])
+    }
+    return(out)
   }
   Q_mat <- INLAtools::cgeneric_Q(cgen, theta)
   mu_mat = mu()
