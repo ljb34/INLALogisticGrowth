@@ -8,7 +8,7 @@
 #' Should contain all elements of the linear predictor 
 #' except the spatial logistic growth term, which is added internally. 
 #' By default includes an intercept term, include -1 to remove the intercept. See also \code{\link{inlabru::bru_component()}}
-#' @param data spatial dataframe of gaussian observations, with column y = log(observed value)
+#' @param data dataframe of the observations
 #' @param family model family to use for observation process. 
 #' Common options are "cp" for LGCP, "poisson" and "nbinomial". Run \code{inla.list.models()} for all options
 #' @param smesh spatial mesh created with fm_mesh_2d_inla
@@ -20,11 +20,10 @@
 #' @param gamma dampening parameter for update rule
 #' @param stop.crit stopping criteria for linearisation point update rule. Stop updating if mean(abs(new_linearisation_point-old_linearisation_point))<=stop.crit
 #' @param priors named list of prior parameters, named \code{cc} (carrying capacity), \code{growth}, \code{move}, \code{sigma}. 
-#' cc is a two element vector containing the shape and rate parameter for gamma prior of the inverse carrying capacity. 
-#' The others are two element vectors containing the mean and variance for the other parameters. 
+#' Each is a two element vector containing the mean on the log scale and standard devitation for the log normal prior  
 #' @param initial.linpoint Optional. Starting guess for the linearisation point. If NULL, will be estimated within function
-#' @param initial.growth,initial.carry.cap,initial.move.const,initial.log.sigma Starting values for the growth, 
-#' inverse carrying capacity, movement constant and \emph{log} standard deviation
+#' @param initial.growth,initial.carry.cap,initial.move.const,initial.sigma Starting values for the growth, 
+#'  carrying capacity, movement constant and standard deviation, all on the log scale
 #' @param verbose logical supplied to INLA
 #' @returns list containing final model fit, number of iterations \code{n}, matrix of all past linearisation points and list of all past model fits.  
 #'@import inlabru
@@ -32,7 +31,7 @@
 iterate.fit <- function(formula, data,family, smesh, tmesh, samplers,prior.mean,
                         prior.precision, max.iter = 100,gamma = 0.5,stop.crit = 0.05,
                         priors = NULL, initial.linpoint = NULL, initial.growth=0.5, 
-                        initial.carry.cap=1000, initial.move.const = 0.5, initial.log.sigma = log(1.5),
+                        initial.carry.cap=1000, initial.move.const = 0.5, initial.sigma = log(1.5),
                         method = "cgeneric",update.rule = 2, debug = F, options = NULL, saveall = T,
                         weights = NULL,domain = NULL, early.stop = F, ...){
   #browser()
@@ -54,7 +53,7 @@ iterate.fit <- function(formula, data,family, smesh, tmesh, samplers,prior.mean,
                                              initial.growth = initial.growth, 
                                              initial.carry.cap = initial.carry.cap,
                                              initial.move.const = initial.move.const,
-                                             initial.log.sigma = initial.log.sigma)
+                                             initial.log.sigma = initial.sigma)
   }else{
     log_growth_model <- define.cgeneric.loggrow.model(linpoint = initial.linpoint, 
                                                       smesh = smesh,tmesh = tmesh, step.size = step.size, 
@@ -63,7 +62,7 @@ iterate.fit <- function(formula, data,family, smesh, tmesh, samplers,prior.mean,
                                                       initial.growth = initial.growth, 
                                                       initial.carry.cap = initial.carry.cap,
                                                       initial.move.const = initial.move.const,
-                                                      initial.log.sigma = initial.log.sigma, debug = debug)
+                                                      initial.log.sigma = initial.sigma, debug = debug)
   }
   new.cmp <- update(formula, . ~ . + loggrow(list(space = geometry, time = time),
                                              model = log_growth_model, n = smesh$n * tmesh$n))
@@ -127,7 +126,7 @@ iterate.fit <- function(formula, data,family, smesh, tmesh, samplers,prior.mean,
                                                initial.growth = initial.growth, 
                                                initial.carry.cap = initial.carry.cap,
                                                initial.move.const = initial.move.const,
-                                               initial.log.sigma = initial.log.sigma)
+                                               initial.log.sigma = initial.sigma)
     }else{
       log_growth_model <- define.cgeneric.loggrow.model(linpoint = as.vector(new.linpoint), 
                                                         smesh = smesh,tmesh = tmesh, step.size = step.size, 
@@ -136,7 +135,7 @@ iterate.fit <- function(formula, data,family, smesh, tmesh, samplers,prior.mean,
                                                         initial.growth = initial.growth, 
                                                         initial.carry.cap = initial.carry.cap,
                                                         initial.move.const = initial.move.const,
-                                                        initial.log.sigma = initial.log.sigma, debug = debug)
+                                                        initial.log.sigma = initial.sigma, debug = debug)
     }
     
     print("Defined new model")
@@ -218,7 +217,7 @@ iterate.fit <- function(formula, data,family, smesh, tmesh, samplers,prior.mean,
                                              initial.growth = initial.growth, 
                                              initial.carry.cap = initial.carry.cap,
                                              initial.move.const = initial.move.const,
-                                             initial.log.sigma = initial.log.sigma)
+                                             initial.log.sigma = initial.sigma)
   }else{
     log_growth_model <- define.cgeneric.loggrow.model(linpoint = as.vector(new.linpoint), 
                                                       smesh = smesh,tmesh = tmesh, step.size = step.size, 
@@ -227,7 +226,7 @@ iterate.fit <- function(formula, data,family, smesh, tmesh, samplers,prior.mean,
                                                       initial.growth = initial.growth, 
                                                       initial.carry.cap = initial.carry.cap,
                                                       initial.move.const = initial.move.const,
-                                                      initial.log.sigma = initial.log.sigma, debug = debug)
+                                                      initial.log.sigma = initial.sigma, debug = debug)
   }
   print("Defined final model")
   new.cmp <- update(formula, . ~ . + loggrow(list(space = geometry, time = time),
