@@ -116,9 +116,9 @@ define.varying.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.s
                               prior_precision = P,
                               C = INLAtools::Sparse(C, zeros.rm = T),
                               G = G_sparse,
-                              growth_cov = growth_cov,
-                              carry_cov = carry_cov,
-                              move_cov = move_cov)))
+                              growth_cov = as.double(growth_cov),
+                              carry_cov = as.double(carry_cov),
+                              move_cov = as.double(move_cov))))
   
   class(the_model) <- c("log_growth_model", class(the_model))
   the_model[["smesh"]] <- smesh
