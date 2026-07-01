@@ -1,5 +1,5 @@
 #'@export
-simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, movement0, movement1, sigma,
+simulate_loggrowth_vary2 <- function(growth0, growth1, carry.cap0,carry.cap1, movement0, movement1, sigma,
                                     cov.range, cov.sigma,
                                initial.pop,initial.range, initial.sigma, 
                                timesteps, npoints = NULL, obs.sd=NULL,
@@ -17,65 +17,26 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
   #step.size = difference in time between lin points, known
   #linpoint = list of linearisation point vectors 
   #smesh = space mesh built with fmesher, tmesh = time mesh
-  L.matrix <- function(growth,carry.cap,move.const,step.size, linpoint, smesh, tmesh){
-    #print("Calcualting Lmat")
-    ns <- smesh$n
-    nt <- tmesh$n
-    a<- a.func(growth,carry.cap, linpoint)
-    a[1:ns] <- 1
-    a.mat <- Matrix::Diagonal(ns*nt,a)
-    subdiag <- Matrix::bandSparse(nt*ns, k = -ns, diagonals = list(rep(-1/step.size, (nt - 1)*ns)))
-    fem.matrices <- fmesher::fm_fem(smesh)
-    CinvG <- Matrix::solve(fem.matrices$c1, fem.matrices$g1)
-    main.diag <- Matrix::kronecker(Matrix::Diagonal(nt, c(0,rep(1, nt-1))), 
-                                   Matrix::Diagonal(ns, 1/(step.size))+ move.const*CinvG)
-    #print(diag(main.diag + subdiag + a.mat))
-    return(Matrix::drop0(main.diag + subdiag + a.mat, tol = 1e-100))
-  }
   r.vector <- function(growth,carry.cap,move.const,linpoint,grad){
     mag.grad.sq <- rowSums(grad*grad) #magnitude squared
     return(growth*exp(linpoint)*(linpoint-1)/carry.cap+ growth - move.const*mag.grad.sq )
   }
   
-  Q = function(par){
-    #browser()
-    #print("Calcualting Q")
-    #print(par)
-    Lmat = L.matrix(par$growth, par$carry.cap, par$move.const,step.size, linpoint, smesh, tmesh)
-    mats <- fmesher::fm_fem(smesh)
-    g <- mean(par$move.const)
-    noiseblock <- (mats$c1 + g*mats$g1)*(par$sigma**2)/step.size
-    noiseonly = Matrix::bdiag(replicate(tmesh$n-1, noiseblock, simplify = FALSE))
-    noise.precision = Matrix::bdiag(list(prior.precision, noiseonly))
-    output = Matrix::crossprod(Lmat, noise.precision %*% Lmat)
-    #print(output[smesh$n:(smesh$n +10),smesh$n:(smesh$n +10)])
-    return(Matrix::drop0(output, 1e-100))
+  fT <- function(a_array,movement, CinvG){
+    return(movement%*%CinvG + Matrix::Diagonal(smesh$n, 1/step.size + a_array))
   }
-  mu = function(par){
-    #browser()
-    #print("Calcualting mu")
-    #if(class(theta)!="numeric"){
-    #  theta <- initial()
-    #}
-    #print(par)
-    Lmat = L.matrix(par$growth, par$carry.cap, par$move.const, step.size, linpoint, smesh, tmesh)
-    r = c(prior.mean, r.vector(par$growth, par$carry.cap, par$move.const, linpoint, grad)[-(1:smesh$n)])
-    Lmat_det <- Matrix::det(Lmat)
-    if(!is.nan(Lmat_det)) {
-      if(abs(Lmat_det) <= .Machine$double.eps){ #if close to singular use
-        #print(det(crossprod(Lmat,Lmat)))
-        mu = Matrix::solve(crossprod(Lmat,Lmat),crossprod(Lmat,r)) #more stable form of solve(lmat,r)
-        mu= as.vector(mu)
-        print("Trick version")
-      }else{
-        mu = Matrix::solve(Lmat,r)
-        #print("Default Solve")
-      }}else{
-        print("There's some NaNs going on?")
-        mu = NA
-      }
-    #print(mean(mu))
-    return(mu)
+  mu = function(){
+    out <- Matrix::Matrix(NA, nrow = smesh$n*tmesh$n, ncol = 1)
+    r <- c(prior.mean, r.vector(par$growth, par$carry.cap, par$move.const, linpoint, grad)[-(1:smesh$n)])
+    a_full <- a.func(par$growth, par$carry.cap, linpoint)
+    out[1:smesh$n, 1] <- prior.mean
+    fem.matrice <- fm_fem(smesh)
+    CinvG <- Matrix::solve(fem.matrice$c1, fem.matrice$g1)
+    for(t in 1:timesteps){
+      fmat <- fT(a_full[t*smesh$n + 1:smesh$n], par$move.const, CinvG)
+      out[t*smesh$n + 1:smesh$n,1] <- Matrix::solve(fmat, r[t*smesh$n + 1:smesh$n] + out[(t-1)*smesh$n + 1:smesh$n,1])
+    }
+    return(out)
   }
   
   #set up for simulation
@@ -157,11 +118,21 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
   linpoint <- log(logit.nest(exp(prior.mean), growth[1:smesh$n], carry.cap[1:smesh$n], tmesh$n)$x)
   grad <- gradient_of_linpoint(linpoint, smesh, tmesh)#
   prior.precision <- initial_Q
+  browser()
   if(debug) print("Calculating precision")
-  Q_mat <-Q(par)
+  cgen <- define.varying.cgeneric.loggrow.model(linpoint, smesh, tmesh, step.size,
+                                        prior.mean, prior.precision, growth.formula = ~1 + growth,
+                                        carry.formula = ~1 + carry.cap, move.formula = ~1 + movement,
+                                        growth_cov = mesh_pts$growth, carry_cov = mesh_pts$carry.cap,
+                                        move_cov = mesh_pts$movement,
+                                        priors = NULL, grad = grad,
+                                        initial.growth = growth, initial.carry.cap = log(carry.cap), 
+                                        initial.move.const = move.const, initial.log.sigma = log(sigma), 
+                                        debug = NULL)
+  Q_mat <- INLAtools::cgeneric_Q(cgen, theta = c(growth0, growth1, carry.cap0, carry.cap1, movement0, movement1, sigma))
   Qtest <- solve(Q_mat)
   if(debug) print("Calculating mean")
-  mu_mat <- mu(par)
+  mu_mat <- mu()
   summary(exp(mu_mat))
   #generate field
   if(debug) print("generating field")
