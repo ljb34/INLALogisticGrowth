@@ -764,17 +764,17 @@ double* inla_cgeneric_loggrow_vary_model(inla_cgeneric_cmd_tp cmd, double* theta
         if (debug > 0) {
             printf("INLA_CGENERIC_LOG_PRIOR\n");
         }
-		double ret = 0;
+		ret = Calloc(1, double);
         for (int i = 0; i < ngrowth; i++) {
-            ret += normal_pdf_log(theta[i], pgrowth->doubles[2*i], pgrowth->doubles[2*i + 1]);
+            ret[0] += normal_pdf_log(theta[i], pgrowth->doubles[2 * i], pgrowth->doubles[2 * i + 1]);
         }
         for (int i = 0; i < ncarry; i++) {
-            ret += normal_pdf_log(theta[ngrowth + i], pcc->doubles[2 * i], pcc->doubles[2 * i +1]);
+            ret[0] += normal_pdf_log(theta[ngrowth + i], pcc->doubles[2 * i], pcc->doubles[2 * i +1]);
         }
         for (int i = 0; i < nmove; i++) {
-            ret += normal_pdf_log(theta[ngrowth + ncarry + i], pmove->doubles[2 * i], pmove->doubles[2 * i + 1]);
+            ret[0] += normal_pdf_log(theta[ngrowth + ncarry + i], pmove->doubles[2 * i], pmove->doubles[2 * i + 1]);
         }
-		ret += normal_pdf_log(theta[ngrowth + ncarry + nmove], psigma->doubles[0], psigma->doubles[1]);
+		ret[0] += normal_pdf_log(theta[ngrowth + ncarry + nmove], psigma->doubles[0], psigma->doubles[1]);
     }
     break;
 
