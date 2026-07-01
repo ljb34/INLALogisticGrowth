@@ -23,7 +23,8 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
   }
   
   fT <- function(a_array,movement, CinvG){
-    return(movement*CinvG + Matrix::Diagonal(smesh$n, 1/step.size + a_array))
+    return(Matrix::Matrix(movement*CinvG + Matrix::Diagonal(smesh$n, 1/step.size + a_array),
+                          nrow = smesh$n, ncol = smesh$n))
   }
   mu = function(){
     out <- Matrix::Matrix(NA, nrow = smesh$n*tmesh$n, ncol = 1)
