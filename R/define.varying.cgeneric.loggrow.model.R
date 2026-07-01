@@ -39,6 +39,8 @@ define.varying.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.s
   C <- fem.matrices$c0
   G <- fem.matrices$g1
   G_sparse <- INLAtools::Sparse(G, zeros.rm = T)
+  print(str(G_sparse))
+  print(summary(G_sparse))
   CinvG <- Matrix::solve(fem.matrices$c0, fem.matrices$g1)
   P <- INLAtools::Sparse(prior.precision, zeros.rm = T)
   
@@ -83,7 +85,9 @@ define.varying.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.s
                 shlib = libpath,
                 n = as.integer(n),
                 debug = as.integer(debug))
-  
+  print(str(growth_cov))
+  print(class(growth_cov))
+  print(summary(growth_cov))
   the_model <- do.call("inla.cgeneric.define",
                        c(args0,
                          list(ns = as.integer(smesh$n),
