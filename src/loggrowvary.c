@@ -78,7 +78,7 @@ void Lmat_vary(double* growth, double* carry_cap, double* move_const, double tim
             int i = CinvG->i[idx];
             int j = CinvG->j[idx];
             for (int t = 1; t < nt; t++) {
-                result[(ns * t + j) * ntotal + t * ns + i] += move_const[t*ntotal + j] * CinvG->x[idx];
+                result[(ns * t + j) * ntotal + t * ns + i] += move_const[t*ns + j] * CinvG->x[idx];
             }
 		}
     }
@@ -409,6 +409,7 @@ double* inla_cgeneric_loggrow_vary_model(inla_cgeneric_cmd_tp cmd, double* theta
         }
 
     }
+    break;
     case INLA_CGENERIC_Q:
     {
         // return c(-1, M, Qij) in the same order as defined in INLA_CGENERIC_GRAPH
@@ -663,7 +664,7 @@ double* inla_cgeneric_loggrow_vary_model(inla_cgeneric_cmd_tp cmd, double* theta
                 int j = CinvG->j[k];
                 double v = CinvG->x[k];
 
-                fT[j * ns + i] = move[i] * v;
+                fT[j * ns + i] = move[t*ns + i] * v;
 
             }
             for (int i = 0; i < ns; i++) {
