@@ -136,7 +136,9 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
     }
   }
   }
+  print(head(mesh_df))
   growth_cov <- as.vector(model.matrix(growth.formula, data = mesh_df))
+  print(model.matrix(growth.formula, data = mesh_df))
   carry_cov  <- as.vector(model.matrix(carry.formula,  data = mesh_df))
   move_cov   <- as.vector(model.matrix(move.formula,   data = mesh_df))
   print("Set up initial model")
