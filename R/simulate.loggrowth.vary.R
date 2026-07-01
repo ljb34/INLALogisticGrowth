@@ -1,5 +1,5 @@
 #'@export
-simulate_loggrowth_vary2 <- function(growth0, growth1, carry.cap0,carry.cap1, movement0, movement1, sigma,
+simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, movement0, movement1, sigma,
                                     cov.range, cov.sigma,
                                initial.pop,initial.range, initial.sigma, 
                                timesteps, npoints = NULL, obs.sd=NULL,
@@ -23,7 +23,7 @@ simulate_loggrowth_vary2 <- function(growth0, growth1, carry.cap0,carry.cap1, mo
   }
   
   fT <- function(a_array,movement, CinvG){
-    return(movement%*%CinvG + Matrix::Diagonal(smesh$n, 1/step.size + a_array))
+    return(movement*CinvG + Matrix::Diagonal(smesh$n, 1/step.size + a_array))
   }
   mu = function(){
     out <- Matrix::Matrix(NA, nrow = smesh$n*tmesh$n, ncol = 1)
@@ -31,14 +31,37 @@ simulate_loggrowth_vary2 <- function(growth0, growth1, carry.cap0,carry.cap1, mo
     a_full <- a.func(par$growth, par$carry.cap, linpoint)
     out[1:smesh$n, 1] <- prior.mean
     fem.matrice <- fm_fem(smesh)
-    CinvG <- Matrix::solve(fem.matrice$c1, fem.matrice$g1)
+    CinvG <- Matrix::solve(fem.matrice$c0, fem.matrice$g1)
     for(t in 1:timesteps){
-      fmat <- fT(a_full[t*smesh$n + 1:smesh$n], par$move.const, CinvG)
+      fmat <- fT(a_full[t*smesh$n + 1:smesh$n], par$move.const[t*smesh$n + 1:smesh$n], CinvG)
       out[t*smesh$n + 1:smesh$n,1] <- Matrix::solve(fmat, r[t*smesh$n + 1:smesh$n] + out[(t-1)*smesh$n + 1:smesh$n,1])
     }
     return(out)
   }
   
+  Q = function(){
+    #browser()
+    out <- Matrix::Matrix(data = rep(0,(smesh$n*tmesh$n)**2), nrow = smesh$n*tmesh$n, ncol = smesh$n*tmesh$n)
+    fem.matrice <- fm_fem(smesh)
+    Qblock <- fem.matrice$c0 + par$move.const[1:smesh$n]*fem.matrice$g1
+    CinvG <- Matrix::solve(fem.matrice$c0, fem.matrice$g1)
+    a_full <- a.func(par$growth, par$carry.cap, linpoint)
+    out[1:smesh$n, 1:smesh$n] <- initial_Q + (1/(par$sigma**3*step.size**2))*Qblock
+    ft1 <- fT(a_full[smesh$n + 1:smesh$n], par$move.const[smesh$n + 1:smesh$n], CinvG)
+    out[smesh$n + 1:smesh$n, 1:smesh$n] <- (-1/(par$sigma**2*step.size**2))*Qblock%*%ft1
+    fmat <- ft1
+    for(t in 1:(timesteps-1)){
+      out[t*smesh$n + 1:smesh$n, (t-1)*smesh$n + 1:smesh$n] <- (-1/(par$sigma**2*step.size**2))*t(fmat)%*%Qblock
+      out[t*smesh$n + 1:smesh$n, t*smesh$n + 1:smesh$n] <- (1/(par$sigma**2*step.size))*t(fmat)%*%Qblock%*%fmat
+      ft1 <- fT(a_full[(t+1)*smesh$n + 1:smesh$n], par$move.const[(t+1)*smesh$n + 1:smesh$n], CinvG)
+      out[t*smesh$n + 1:smesh$n, (t+1)*smesh$n + 1:smesh$n]<- (-1/(par$sigma**2*step.size**2))*ft1%*%Qblock
+      fmat <- ft1
+    }
+    t = timesteps
+    out[t*smesh$n + 1:smesh$n, (t-1)*smesh$n + 1:smesh$n] <- (-1/(par$sigma**2*step.size**2))*t(fmat)%*%Qblock
+    out[t*smesh$n + 1:smesh$n, t*smesh$n + 1:smesh$n] <- (1/(par$sigma**2*step.size))*t(fmat)%*%Qblock%*%fmat
+    return(out)
+  }
   #set up for simulation
   bnd_extended <- sf::st_as_sf(inlabru::spoly(data.frame(easting = c(boundaries[1], boundaries[2],boundaries[2],boundaries[1]), 
                                                          northing = c(boundaries[1], boundaries[1],boundaries[2],boundaries[2]))))
@@ -118,18 +141,19 @@ simulate_loggrowth_vary2 <- function(growth0, growth1, carry.cap0,carry.cap1, mo
   linpoint <- log(logit.nest(exp(prior.mean), growth[1:smesh$n], carry.cap[1:smesh$n], tmesh$n)$x)
   grad <- gradient_of_linpoint(linpoint, smesh, tmesh)#
   prior.precision <- initial_Q
-  browser()
+  #browser()
   if(debug) print("Calculating precision")
-  cgen <- define.varying.cgeneric.loggrow.model(linpoint, smesh, tmesh, step.size,
-                                        prior.mean, prior.precision, growth.formula = ~1 + growth,
-                                        carry.formula = ~1 + carry.cap, move.formula = ~1 + movement,
-                                        growth_cov = mesh_pts$growth, carry_cov = mesh_pts$carry.cap,
-                                        move_cov = mesh_pts$movement,
-                                        priors = NULL, grad = grad,
-                                        initial.growth = growth, initial.carry.cap = log(carry.cap), 
-                                        initial.move.const = move.const, initial.log.sigma = log(sigma), 
-                                        debug = NULL)
-  Q_mat <- INLAtools::cgeneric_Q(cgen, theta = c(growth0, growth1, carry.cap0, carry.cap1, movement0, movement1, sigma))
+  # cgen <- define.varying.cgeneric.loggrow.model(linpoint, smesh, tmesh, step.size,
+  #                                       prior.mean, prior.precision, growth.formula = ~1 + growth,
+  #                                       carry.formula = ~1 + carry.cap, move.formula = ~1 + movement,
+  #                                       growth_cov = mesh_pts$growth, carry_cov = mesh_pts$carry.cap,
+  #                                       move_cov = mesh_pts$movement,
+  #                                       priors = NULL, grad = grad,
+  #                                       initial.growth = growth, initial.carry.cap = log(carry.cap), 
+  #                                       initial.move.const = move.const, initial.log.sigma = log(sigma), 
+  #                                       debug = NULL)
+  #Q_mat <- INLAtools::cgeneric_Q(cgen, theta = c(growth0, growth1, carry.cap0, carry.cap1, movement0, movement1, sigma))
+  Q_mat <- Q()
   Qtest <- solve(Q_mat)
   if(debug) print("Calculating mean")
   mu_mat <- mu()
