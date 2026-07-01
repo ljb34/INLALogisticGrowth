@@ -24,16 +24,17 @@ define.varying.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.s
                                           priors = NULL, grad = NULL,
                                           initial.growth = NULL, initial.carry.cap = NULL, 
                                           initial.move.const = NULL, initial.log.sigma = NULL, debug = NULL){
+  print("Calculate gradient")
   if(is.null(grad)){
     grad <- gradient_of_linpoint(linpoint, smesh, tmesh)
   }
   mag_grad_sq <- rowSums(grad*grad)
-  
+  print("Priors")
   if(is.null(priors)){
-    priors <- list(growth = c(0,1), cc = c(log(500), 10), #fairly flat prior
-                   move = c(0,1), sigma = c(0,1))
+    priors <- list(growth = c(0,10,0,10), cc = c(log(500), 10,0,10), #fairly flat prior
+                   move = c(0,10,0,10), sigma = c(0,10,0,10))
   }
-  
+  print("Finite Element Method")
   fem.matrices <- fmesher::fm_fem(smesh)
   C <- fem.matrices$c0
   G <- fem.matrices$g1
@@ -41,12 +42,14 @@ define.varying.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.s
   CinvG <- Matrix::solve(fem.matrices$c0, fem.matrices$g1)
   P <- INLAtools::Sparse(prior.precision, zeros.rm = T)
   
-  #Calculate where non-zero entries are
+  
+  print("Calculate where non-zero entries are")
   PG <- INLAtools::upperPadding(list(p = P, g = G_sparse)) #upper tri graph of where P + G is not zero
   QfT <-  INLAtools::Sparse(G%*%CinvG, zeros.rm = T) #to get graph for off diagonal
   fTQfT <- INLAtools::upperPadding(INLAtools::Sparse(Matrix::t(CinvG)%*%G%*%CinvG, zeros.rm = T))
   
   #browser()
+  print("Check INLA installation")
   INLAversion <- INLAtools::packageCheck(
     name = "INLA",
     minimum_version = "23.08.16",
@@ -74,6 +77,7 @@ define.varying.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.s
   }
   stopifnot(file.exists(libpath))
   n <- smesh$n*tmesh$n
+  print("Define model")
   if(is.null(debug)) debug = 0
   args0 <- list(model = "inla_cgeneric_loggrow_vary_model",
                 shlib = libpath,

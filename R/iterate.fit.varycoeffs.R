@@ -153,7 +153,7 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
                                                       initial.carry.cap = initial.carry.cap,
                                                       initial.move.const = initial.move.const,
                                                       initial.log.sigma = initial.log.sigma, debug = debug)
-  
+  print("Update formula")
   new.cmp <- update(formula, . ~ . + loggrow(list(space = geometry, time = time),
                                              model = log_growth_model, n = smesh$n * tmesh$n))
   environment(new.cmp) <- environment()
