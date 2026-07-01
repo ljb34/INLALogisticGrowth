@@ -86,7 +86,7 @@ void Lmat_vary(double* growth, double* carry_cap, double* move_const, double tim
         for (int t = 1; t < nt; t++) {
             for (int j = 0; j < ns; j++) {
                 for (int i = 0; i < ns; i++) {
-					result[(ns * t + j) * ntotal + t * ns + i] += move_const[t * ntotal + j] * CinvG->x[j * ns + i]; //Lmat is col-major but CinvG is row-major
+					result[(ns * t + j) * ntotal + t * ns + i] += move_const[t * ns + j] * CinvG->x[j * ns + i]; //Lmat is col-major but CinvG is row-major
                 }
             }
         }
@@ -751,10 +751,10 @@ double* inla_cgeneric_loggrow_vary_model(inla_cgeneric_cmd_tp cmd, double* theta
         }
 
         if (iszero(initial_sigma)) {
-            ret[4] = log(1);
+            ret[ngrowth + ncarry + nmove] = log(1);
         }
         else {
-            ret[4] = initial_sigma;
+            ret[ngrowth + ncarry + nmove] = initial_sigma;
         }
     }
     break;
