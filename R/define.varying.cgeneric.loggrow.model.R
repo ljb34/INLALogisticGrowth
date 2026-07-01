@@ -38,7 +38,7 @@ define.varying.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.s
   fem.matrices <- fmesher::fm_fem(smesh)
   C <- fem.matrices$c0
   G <- fem.matrices$g1
-  G_sparse <- INLAtools::Sparse(G)
+  G_sparse <- INLAtools::Sparse(G, zeros.rm = T)
   CinvG <- Matrix::solve(fem.matrices$c0, fem.matrices$g1)
   P <- INLAtools::Sparse(prior.precision, zeros.rm = T)
   
