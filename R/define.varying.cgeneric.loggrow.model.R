@@ -84,8 +84,10 @@ define.varying.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.s
                 n = as.integer(n),
                 debug = as.integer(debug))
   print("Growth cov check")
-  print(head(as.double(growth_cov)))
-  print(length(as.double(growth_cov)))
+  growth_test <- as.double(growth_cov)
+  str(growth_test)
+  length(growth_test)
+  typeof(growth_test)
   the_model <- do.call("inla.cgeneric.define",
                        c(args0,
                          list(ns = as.integer(smesh$n),
@@ -108,7 +110,7 @@ define.varying.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.s
                               prior_mean = as.double(prior.mean),
                               initial_growth = as.double(initial.growth),
                               initial_carry_cap = as.double(initial.carry.cap),
-                              initial_move = as.double(initial.move.const),
+                              initial_move_const = as.double(initial.move.const),
                               initial_sigma = as.double(initial.log.sigma),
                               pgrowth = as.double(priors$growth),
                               pcc = as.double(priors$cc),
