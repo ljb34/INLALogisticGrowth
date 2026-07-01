@@ -33,49 +33,49 @@ void a_func(double growth, double carry_cap,
 	}
 }
 
-void Lmat(double growth, double carry_cap, double move_const, double timestep,
-	double* linpoint, int ns, int nt, inla_cgeneric_smat_tp* CinvG, double* result) { /* result is nsnt x nsnt double matrix in inla_cgeneric_mat_tp form*/
-	//identity sub matrix in first block
-	int ntotal = ns * nt;
-	for (int i = 0; i < ns; i++) {
-		result[i * ntotal + i] = 1;
-	}
-
-	//main diagonal
-	double* a_array = malloc(ntotal * sizeof(double));
-	a_func(growth, carry_cap,
-        linpoint, ns, nt, a_array);
-	for (int i = ns; i < ntotal; i++) {
-		result[i * ntotal + i] = a_array[i] + (1 /timestep);
-	}
-
-	//subdiagonal
-	for (int i = 0; i < ns * (nt - 1); i++) {
-		result[i * ntotal + i + ns] = -1 / timestep;
-	}
-
-	//CinvG part
-    if(CinvG->n != ns * ns) {
-        for(int idx = 0; idx < CinvG->n; idx++) {
-            int i = CinvG->i[idx];
-            int j = CinvG->j[idx];
-            for (int t = 1; t < nt; t++) {
-                result[(ns * t + j) * ntotal + t * ns + i] += move_const * CinvG->x[idx];
-            }
-		}
-    }
-    else {
-        for (int t = 1; t < nt; t++) {
-            for (int j = 0; j < ns; j++) {
-                for (int i = 0; i < ns; i++) {
-					result[(ns * t + j) * ntotal + t * ns + i] += move_const * CinvG->x[j * ns + i]; 
-                }
-            }
-        }
-    }
-	free(a_array);
-
-}
+//void Lmat(double growth, double carry_cap, double move_const, double timestep,
+//	double* linpoint, int ns, int nt, inla_cgeneric_smat_tp* CinvG, double* result) { /* result is nsnt x nsnt double matrix in inla_cgeneric_mat_tp form*/
+//	//identity sub matrix in first block
+//	int ntotal = ns * nt;
+//	for (int i = 0; i < ns; i++) {
+//		result[i * ntotal + i] = 1;
+//	}
+//
+//	//main diagonal
+//	double* a_array = malloc(ntotal * sizeof(double));
+//	a_func(growth, carry_cap,
+//        linpoint, ns, nt, a_array);
+//	for (int i = ns; i < ntotal; i++) {
+//		result[i * ntotal + i] = a_array[i] + (1 /timestep);
+//	}
+//
+//	//subdiagonal
+//	for (int i = 0; i < ns * (nt - 1); i++) {
+//		result[i * ntotal + i + ns] = -1 / timestep;
+//	}
+//
+//	//CinvG part
+//    if(CinvG->n != ns * ns) {
+//        for(int idx = 0; idx < CinvG->n; idx++) {
+//            int i = CinvG->i[idx];
+//            int j = CinvG->j[idx];
+//            for (int t = 1; t < nt; t++) {
+//                result[(ns * t + j) * ntotal + t * ns + i] += move_const * CinvG->x[idx];
+//            }
+//		}
+//    }
+//    else {
+//        for (int t = 1; t < nt; t++) {
+//            for (int j = 0; j < ns; j++) {
+//                for (int i = 0; i < ns; i++) {
+//					result[(ns * t + j) * ntotal + t * ns + i] += move_const * CinvG->x[j * ns + i]; 
+//                }
+//            }
+//        }
+//    }
+//	free(a_array);
+//
+//}
 
 void r_vector(double growth, double carry_cap, double move_const,
     double* linpoint, double* mag_grad_sq, int ns, int nt, double* result) {
@@ -594,55 +594,62 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         assert(ret);
         ret[0] = N; /* dimension */
 
-        inla_cgeneric_mat_tp* L_mat = calloc(1, sizeof(inla_cgeneric_mat_tp));
-        L_mat->x = calloc(N * N, sizeof(double));
-        L_mat->nrow = N;
-        L_mat->ncol = N;
-        Lmat(growth, carry_cap, move_const, timestep, linpoint->doubles, ns, nt, CinvG, L_mat->x);
-
         inla_cgeneric_vec_tp* rvector = calloc(1, sizeof(inla_cgeneric_vec_tp));
         rvector->doubles = calloc(N, sizeof(double));
         rvector->len = N;
         r_vector(growth, carry_cap, move_const, linpoint->doubles, mag_grad_sq->doubles, ns, nt, rvector->doubles);
+        
+        double* a_array = malloc(ns * nt * sizeof(double));
+        a_func(growth, carry_cap,
+            linpoint->doubles, ns, nt, a_array);
+
+		//first year is just the prior mean
         for (int i = 0; i < ns; i++) {
-            rvector->doubles[i] = prior_mean->doubles[i];
+            ret[1 + i] = prior_mean->doubles[i];
         }
 
-        //calculate L_mat^-1 * rvector
-        int* ipiv = calloc(ns * nt, sizeof(int));
-        int lda = N;
-        int ldb = N;
-        int nrhs = 1;
-        int info;
-        double* A = calloc(N * N,sizeof(double));
-        double* B = calloc(N, sizeof(double));
-		memcpy(A, L_mat->x, N* N * sizeof(double));
-        memcpy(B, rvector->doubles, N * sizeof(double));
-        if (debug > 0) printf("dgesv step");
-        dgesv_(&N, &nrhs, A, &lda, ipiv, B, &ldb, &info);
-        if (info != 0) {
-            printf("dgesv failed, info = %d\n", info);
-            free(A); free(B); free(ipiv);
-            free(L_mat->x); free(L_mat);
-            free(rvector->doubles); free(rvector);
-            return NULL;
-        }
-        for (int i = 0; i < N; i++) {
-            if (!isfinite(B[i]) & debug > 0) {
-                printf("NaN in MU solution at %d\n", i);
+        //middle years 
+        for (int t = 1; t < nt; t++) {
+            double* fT = calloc(ns * ns, sizeof(double));
+
+            for (int k = 0; k < CinvG->n; k++) {
+                int i = CinvG->i[k];
+                int j = CinvG->j[k];
+                double v = CinvG->x[k];
+
+                fT[j * ns + i] = move_const * v;
+
             }
-        }
+            for (int i = 0; i < ns; i++) {
+                fT[i * ns + i] += a_array[t*ns + i] + 1.0 / timestep;
+            }
 
-        for (int i = 0; i < N; i++) {
-            ret[i + 1] = B[i]; // Fill in mu
+            //calculate rvector + mu_t-1 and store in B
+			double* B = calloc(ns, sizeof(double));
+            for (int i = 0; i < ns; i++) {
+                B[i] = rvector->doubles[t * ns + i] + ret[1 + (t - 1) * ns + i];
+            }
+            //solve fT * mu_t = B for mu_t
+            int n = ns;
+            int nrhs = 1;
+            int lda = ns;
+            int ldb = ns;
+            int* ipiv = calloc(ns, sizeof(int));
+            int info;
+            dgesv_(&n, &nrhs, fT, &lda, ipiv, B, &ldb, &info);
+            if (info != 0) {
+                fprintf(stderr, "Error in dgesv_: %d\n", info);
+                exit(EXIT_FAILURE);
+            }
+            //store mu_t in ret
+            for (int i = 0; i < ns; i++) {
+                ret[1 + t * ns + i] = B[i];
+            }
+            free(fT);
+            free(B);
+			free(ipiv);
         }
-        free(A);
-        free(B);
-        free(ipiv);
-        free(L_mat->x);
-        free(L_mat);
-        free(rvector->doubles);
-        free(rvector);
+        
     }
     break;
 

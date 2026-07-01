@@ -19,7 +19,10 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
   if(is.null(domain)){
     domain = list(geometry = smesh, time = tmesh)
   }
-  
+  if(is.null(prior.precision)){
+    stop("Missing prior precision")
+    
+  }
   print("Setting up Covariates")
   #Covariates
   vars_growth <- all.vars(growth.formula)

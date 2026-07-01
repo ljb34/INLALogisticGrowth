@@ -639,12 +639,6 @@ double* inla_cgeneric_loggrow_vary_model(inla_cgeneric_cmd_tp cmd, double* theta
         assert(ret);
         ret[0] = N; /* dimension */
 
-        inla_cgeneric_mat_tp* L_mat = malloc(sizeof(inla_cgeneric_mat_tp));
-        L_mat->x = calloc(N * N, sizeof(double));
-        L_mat->nrow = N;
-        L_mat->ncol = N;
-        Lmat_vary(growth, carry, move, timestep, linpoint->doubles, ns, nt, CinvG, L_mat->x);
-
         inla_cgeneric_vec_tp* rvector = malloc(sizeof(inla_cgeneric_vec_tp));
         rvector->doubles = calloc(N, sizeof(double));
         rvector->len = N;
@@ -652,37 +646,55 @@ double* inla_cgeneric_loggrow_vary_model(inla_cgeneric_cmd_tp cmd, double* theta
         for (int i = 0; i < ns; i++) {
             rvector->doubles[i] = prior_mean->doubles[i];
         }
+        double* a_array = malloc(ns * nt * sizeof(double));
 
-        //calculate L_mat^-1 * rvector
-        int* ipiv = malloc(ns * nt * sizeof(int));
-        int lda = N;
-        int ldb = N;
-        int nrhs = 1;
-        int info;
-        double* A = malloc(N * N * sizeof(double));
-        double* B = malloc(N * sizeof(double));
-		memcpy(A, L_mat->x, N* N * sizeof(double));
-        memcpy(B, rvector->doubles, N * sizeof(double));
-        if (debug > 0) printf("dgesv step");
-        dgesv_(&N, &nrhs, A, &lda, ipiv, B, &ldb, &info);
-        if (info != 0) {
-            printf("dgesv failed, info = %d\n", info);
-            free(A); free(B); free(ipiv);
-            free(L_mat->x); free(L_mat);
-            free(rvector->doubles); free(rvector);
-            return NULL;
+        a_func_vary(growth, carry, linpoint->doubles, ns, nt, a_array);
+        //first year is just the prior mean
+        for (int i = 0; i < ns; i++) {
+            ret[1 + i] = prior_mean->doubles[i];
         }
 
-        for (int i = 0; i < N; i++) {
-            ret[i + 1] = B[i]; // Fill in mu
+        //middle years 
+        for (int t = 1; t < nt; t++) {
+            double* fT = calloc(ns * ns, sizeof(double));
+
+            for (int k = 0; k < CinvG->n; k++) {
+                int i = CinvG->i[k];
+                int j = CinvG->j[k];
+                double v = CinvG->x[k];
+
+                fT[j * ns + i] = move[i] * v;
+
+            }
+            for (int i = 0; i < ns; i++) {
+                fT[i * ns + i] += a_array[t * ns + i] + 1.0 / timestep;
+            }
+
+            //calculate rvector + mu_t-1 and store in B
+            double* B = calloc(ns, sizeof(double));
+            for (int i = 0; i < ns; i++) {
+                B[i] = rvector->doubles[t * ns + i] + ret[1 + (t - 1) * ns + i];
+            }
+            //solve fT * mu_t = B for mu_t
+            int n = ns;
+            int nrhs = 1;
+            int lda = ns;
+            int ldb = ns;
+            int* ipiv = calloc(ns, sizeof(int));
+            int info;
+            dgesv_(&n, &nrhs, fT, &lda, ipiv, B, &ldb, &info);
+            if (info != 0) {
+                fprintf(stderr, "Error in dgesv_: %d\n", info);
+                exit(EXIT_FAILURE);
+            }
+            //store mu_t in ret
+            for (int i = 0; i < ns; i++) {
+                ret[1 + t * ns + i] = B[i];
+            }
+            free(fT);
+            free(B);
+            free(ipiv);
         }
-        free(A);
-        free(B);
-        free(ipiv);
-        free(L_mat->x);
-        free(L_mat);
-        free(rvector->doubles);
-        free(rvector);
     }
     break;
 
