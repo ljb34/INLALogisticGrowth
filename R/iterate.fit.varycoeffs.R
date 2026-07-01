@@ -67,7 +67,7 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
   print("Extracting Covariates")
   if (inherits(covariates, "sf")) {
     
-    if(!(time %in% names(covariates))){
+    if(!("time" %in% names(covariates))){
       warning("No time column in covariate info. Assuming covariates are constant across time")
         covariates <- tidyr::crossing(covariates, time = tmesh$loc)
     }
