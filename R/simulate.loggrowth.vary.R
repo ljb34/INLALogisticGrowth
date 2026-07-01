@@ -23,8 +23,7 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
   }
   
   fT <- function(a_array,movement, CinvG){
-    return(Matrix::Matrix(movement*CinvG + Matrix::Diagonal(smesh$n, 1/step.size + a_array),
-                          nrow = smesh$n, ncol = smesh$n))
+    return(movement*CinvG + Matrix::Diagonal(smesh$n, 1/step.size + a_array))
   }
   mu = function(){
     out <- Matrix::Matrix(NA, nrow = smesh$n*tmesh$n, ncol = 1)
@@ -52,15 +51,15 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
     out[smesh$n + 1:smesh$n, 1:smesh$n] <- (-1/(par$sigma**2*step.size**2))*Qblock%*%ft1
     fmat <- ft1
     for(t in 1:(timesteps-1)){
-      out[t*smesh$n + 1:smesh$n, (t-1)*smesh$n + 1:smesh$n] <- (-1/(par$sigma**2*step.size**2))*t(fmat)%*%Qblock
-      out[t*smesh$n + 1:smesh$n, t*smesh$n + 1:smesh$n] <- (1/(par$sigma**2*step.size))*t(fmat)%*%Qblock%*%fmat
+      out[t*smesh$n + 1:smesh$n, (t-1)*smesh$n + 1:smesh$n] <- (-1/(par$sigma**2*step.size**2))*Matrix::t(fmat)%*%Qblock
+      out[t*smesh$n + 1:smesh$n, t*smesh$n + 1:smesh$n] <- (1/(par$sigma**2*step.size))*Matrix::t(fmat)%*%Qblock%*%fmat
       ft1 <- fT(a_full[(t+1)*smesh$n + 1:smesh$n], par$move.const[(t+1)*smesh$n + 1:smesh$n], CinvG)
       out[t*smesh$n + 1:smesh$n, (t+1)*smesh$n + 1:smesh$n]<- (-1/(par$sigma**2*step.size**2))*ft1%*%Qblock
       fmat <- ft1
     }
     t = timesteps
-    out[t*smesh$n + 1:smesh$n, (t-1)*smesh$n + 1:smesh$n] <- (-1/(par$sigma**2*step.size**2))*t(fmat)%*%Qblock
-    out[t*smesh$n + 1:smesh$n, t*smesh$n + 1:smesh$n] <- (1/(par$sigma**2*step.size))*t(fmat)%*%Qblock%*%fmat
+    out[t*smesh$n + 1:smesh$n, (t-1)*smesh$n + 1:smesh$n] <- (-1/(par$sigma**2*step.size**2))*Matrix::t(fmat)%*%Qblock
+    out[t*smesh$n + 1:smesh$n, t*smesh$n + 1:smesh$n] <- (1/(par$sigma**2*step.size))*Matrix::t(fmat)%*%Qblock%*%fmat
     return(out)
   }
   #set up for simulation
