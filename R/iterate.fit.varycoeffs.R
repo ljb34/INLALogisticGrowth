@@ -67,6 +67,10 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
   print("Extracting Covariates")
   if (inherits(covariates, "sf")) {
     
+    if(time !%in% names(covariates)){
+      warning("No time column in covariate info. Assuming covariates are constant across time")
+        covariates <- tidyr::crossing(covariates, time = tmesh$loc)
+    }
     mesh_pts <- sf::st_as_sf(
       data.frame(x = coords[,1], y = coords[,2]),
       coords = c("x", "y"),
@@ -108,7 +112,7 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
     r <- covariates[[v]]
     
     if (!inherits(r, "SpatRaster")) {
-      stop(paste("Covariate", v, "is not a SpatRaster"))
+      stop(paste("Covariate", v, "is not a SpatRaster or sf object"))
     }
     
     
@@ -136,9 +140,7 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
     }
   }
   }
-  print(head(mesh_df))
   growth_cov <- as.vector(model.matrix(growth.formula, data = mesh_df))
-  print(model.matrix(growth.formula, data = mesh_df))
   carry_cov  <- as.vector(model.matrix(carry.formula,  data = mesh_df))
   move_cov   <- as.vector(model.matrix(move.formula,   data = mesh_df))
   print("Set up initial model")
