@@ -83,6 +83,7 @@ define.varying.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.s
                 shlib = libpath,
                 n = as.integer(n),
                 debug = as.integer(debug))
+  print("Growth cov check")
   print(head(as.double(growth_cov)))
   print(length(as.double(growth_cov)))
   the_model <- do.call("inla.cgeneric.define",
