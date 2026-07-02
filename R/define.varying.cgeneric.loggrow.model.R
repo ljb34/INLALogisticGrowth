@@ -99,7 +99,7 @@ define.varying.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.s
   print("Structure checks")
   print(class(CinvG))
   print(class(P))
-  print(print(class(G_sparse))
+  print(class(G_sparse))
   print(class(QfT))
   print(class(fTQfT))
   
