@@ -83,10 +83,19 @@ define.varying.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.s
                 shlib = libpath,
                 n = as.integer(n),
                 debug = as.integer(debug))
-  print("Growth cov check")
-  growth_test <- as.double(growth_cov)
-  print(str(growth_test))
-  print(length(growth_test))
+  
+  if(is.null(initial.growth)){
+    initial.growth <- rep(0, length(all.vars(growth.formula)))
+  }
+  if(is.null(initial.carry.cap)){
+    initial.carry.cap <- rep(0, length(all.vars(carry.formula)))
+  }
+  if(is.null(initial.move.const)){
+    initial.move.const <- rep(0, length(all.vars(move.formula)))
+  }
+  if(is.null(initial.log.sigma)){
+    initial.log.sigma <- 0
+  }
   the_model <- do.call("inla.cgeneric.define",
                        c(args0,
                          list(ns = as.integer(smesh$n),
@@ -118,10 +127,10 @@ define.varying.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.s
                               CinvG = INLAtools::Sparse(CinvG, zeros.rm = T),
                               prior_precision = P,
                               C = INLAtools::Sparse(C, zeros.rm = T),
-                              G = G_sparse)))#,
-                              #growth_cov = as.double(growth_cov),
-                             # carry_cov = as.double(carry_cov),
-                             # move_cov = as.double(move_cov))))
+                              G = G_sparse,
+                              growth_cov = as.double(growth_cov),
+                              carry_cov = as.double(carry_cov),
+                              move_cov = as.double(move_cov))))
   
   class(the_model) <- c("log_growth_model", class(the_model))
   the_model[["smesh"]] <- smesh
