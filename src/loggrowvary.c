@@ -266,21 +266,22 @@ double* inla_cgeneric_loggrow_vary_model(inla_cgeneric_cmd_tp cmd, double* theta
     double* growth = calloc(ns * nt, sizeof(double));
     double* carry = calloc(ns * nt, sizeof(double));
     double* move = calloc(ns * nt, sizeof(double));
+    if (theta) {
+        for (int i = 0; i < ns * nt; i++) {
+            for (int j = 0; j < ngrowth; j++) {
+                growth[i] += beta_growth[j] * growth_cov->doubles[i + j * ns * nt];
+            }
+            for (int j = 0; j < ncarry; j++) {
+                carry[i] += beta_carry[j] * carry_cov->doubles[i + j * ns * nt];
+            }
+            for (int j = 0; j < nmove; j++) {
+                move[i] += beta_move[j] * move_cov->doubles[i + j * ns * nt];
+            }
 
-    for (int i = 0; i < ns * nt; i++) {
-        for (int j = 0; j < ngrowth; j++) {
-            growth[i] += beta_growth[j] * growth_cov->doubles[i + j * ns * nt];
+            growth[i] = exp(growth[i]);
+            carry[i] = exp(carry[i]);
+            move[i] = exp(move[i]);
         }
-        for (int j = 0; j < ncarry; j++) {
-            carry[i] += beta_carry[j] * carry_cov->doubles[i + j * ns * nt];
-        }
-        for (int j = 0; j < nmove; j++) {
-            move[i] += beta_move[j] * move_cov->doubles[i + j * ns * nt];
-        }
-
-        growth[i] = exp(growth[i]);
-        carry[i] = exp(carry[i]);
-        move[i] = exp(move[i]);
     }
 	//Calculate growth, carry_cap, move_const from covariates and beta
 
