@@ -84,63 +84,23 @@ define.varying.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.s
                 n = as.integer(n),
                 debug = as.integer(debug))
   
+  
+  ngrowth <- length(all.vars(growth.formula)) + attr(terms(growth.formula), "intercept")
+  ncarry <- length(all.vars(carry.formula))+ attr(terms(carry.formula), "intercept")
+  nmove <- length(all.vars(move.formula))+ attr(terms(move.formula), "intercept")
   if(is.null(initial.growth)){
-    initial.growth <- rep(0, length(all.vars(growth.formula)))
+    initial.growth <- rep(0, ngrowth)
   }
   if(is.null(initial.carry.cap)){
-    initial.carry.cap <- rep(0, length(all.vars(carry.formula)))
+    initial.carry.cap <- rep(0, ncarry)
   }
   if(is.null(initial.move.const)){
-    initial.move.const <- rep(0, length(all.vars(move.formula)))
+    initial.move.const <- rep(0, nmove)
   }
   if(is.null(initial.log.sigma)){
     initial.log.sigma <- 0
   }
-  print("Structure checks")
-  print(class(CinvG))
-  print(class(P))
-  print(class(G_sparse))
-  print(class(QfT))
-  print(class(fTQfT))
   
-  print(str(G_sparse))
-  print(str(CinvG))
-  
-  print("ARguments")
-  print(c(args0,
-          list(ns = as.integer(smesh$n),
-               nt = as.integer(tmesh$n),
-               Pn = as.integer(length(PG$graph@x)),
-               offdn = as.integer(length(QfT@x)),
-               diagn = as.integer(length(fTQfT@x)),
-               Pi = as.integer(PG$graph@i),
-               Pj = as.integer(PG$graph@j),
-               offdi = as.integer(QfT@i),
-               offdj = as.integer(QfT@j),
-               diagi = as.integer(fTQfT@i),
-               diagj = as.integer(fTQfT@j),
-               ngrowth = as.integer(length(all.vars(growth.formula)) +1),
-               ncarry = as.integer(length(all.vars(carry.formula))+1),
-               nmove = as.integer(length(all.vars(move.formula))+1),
-               timestep = as.double(step.size),
-               linpoint = as.double(linpoint),
-               mag_grad_sq = as.double(mag_grad_sq),
-               prior_mean = as.double(prior.mean),
-               initial_growth = as.double(initial.growth),
-               initial_carry_cap = as.double(initial.carry.cap),
-               initial_move_const = as.double(initial.move.const),
-               initial_sigma = as.double(initial.log.sigma),
-               pgrowth = as.double(priors$growth),
-               pcc = as.double(priors$cc),
-               pmove = as.double(priors$move),
-               psigma = as.double(priors$sigma),
-               CinvG = INLAtools::Sparse(CinvG, zeros.rm = T),
-               prior_precision = P,
-               C = INLAtools::Sparse(C, zeros.rm = T),
-               G = G_sparse,
-               growth_cov = as.double(growth_cov),
-               carry_cov = as.double(carry_cov),
-               move_cov = as.double(move_cov))))
   the_model <- do.call("inla.cgeneric.define",
                        c(args0,
                        list(ns = as.integer(smesh$n),
@@ -154,9 +114,9 @@ define.varying.cgeneric.loggrow.model <- function(linpoint, smesh, tmesh, step.s
                             offdj = as.integer(QfT@j),
                             diagi = as.integer(fTQfT@i),
                             diagj = as.integer(fTQfT@j),
-                            ngrowth = as.integer(length(all.vars(growth.formula))),
-                            ncarry = as.integer(length(all.vars(carry.formula))),
-                            nmove = as.integer(length(all.vars(move.formula))),
+                            ngrowth = as.integer(ngrowth),
+                            ncarry = as.integer(ncarry),
+                            nmove = as.integer(nmove),
                             timestep = as.double(step.size),
                             linpoint = as.double(linpoint),
                             mag_grad_sq = as.double(mag_grad_sq),

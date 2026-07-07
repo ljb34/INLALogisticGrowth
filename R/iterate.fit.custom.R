@@ -108,8 +108,6 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
     #Type I
     weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
     new.mean <- Reduce("+", weighted.means)
-    print(length(new.mean))
-    print(length(initial.linpoint))
     new.linpoint <- (1-gamma)*initial.linpoint +gamma*new.mean
   }
   
@@ -201,7 +199,6 @@ iterate.fit.custom <- function(formula, data,family, smesh, tmesh, samplers,prio
     
     lp.mat <- cbind(lp.mat,new.linpoint)
     print("Updated linpoint")
-    print(summary(exp(new.linpoint)))
     n <- n+1
     if(saveall){
       fit_list[[n]]<-fit
