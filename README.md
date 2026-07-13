@@ -47,18 +47,10 @@ library(fmesher)
 Simulate logistic growth data
 
 ``` r
-simdata <- simulate_loggrowth(growth = 1, carry.cap = 1000, movement = 0.15, sigma = 0.25,
-                               initial.pop = 400, initial.range = 0.15, initial.sigma=0.05,
+simdata <- simulate_loggrowth(growth = 1, carry.cap = 500, movement = 0.15, sigma = 0.35,
+                               initial.pop = 150, initial.range = 0.15, initial.sigma=0.075,
                                timesteps = 3,sample.type = "LGCP", boundaries = c(0,1), debug = T,
-                               max.edge = 0.35)
-```
-
-    ## [1] "set up finished, generating first year"
-    ## [1] "Defining model"
-    ## [1] "generating field"
-    ## [1] "Sampling"
-
-``` r
+                               max.edge = 0.25)
 library(ggplot2)
 #Plot observations
 ggplot()+
@@ -133,7 +125,7 @@ prior.mean <- Reduce("+", weighted.means) + first_fit$summary.fixed$mean[1]
 Fit logistic growth model
 
 ``` r
-priors = list(cc = c(log(1000), 0.5), growth = c(log(1), 0.5), 
+priors = list(cc = c(log(500), 0.5), growth = c(log(1), 0.5), 
               movement = c(log(0.15),0.5), sigma = c(log(0.5),0.5))
 logistic_fit <- iterate.fit(formula = geometry + time ~ -1, #Need to remove intercept
                          data = simdata$animal_obs, family = "cp",
@@ -142,15 +134,16 @@ logistic_fit <- iterate.fit(formula = geometry + time ~ -1, #Need to remove inte
                          prior.mean = prior.mean, 
                          prior.precision = Q,
                          priors = priors, initial.growth=log(1),
-                         initial.carry.cap=log(1000), initial.move.const = log(0.15),
-                         initial.sigma = log(0.5), early.stop = 1, gamma = 0.5,
+                         initial.carry.cap=log(500), initial.move.const = log(0.15),
+                         initial.sigma = log(0.5), gamma = 0.5,
                          options = list(verbose = F, control.inla = list(strategy = "gaussian", int.strategy = "eb")))
 ```
 
-    ## [1] "Fitted new model 1"
+Parameters on log scale. In order growth, carrying capacity, dispersal,
+sigma
 
 ``` r
-summary(logistic_fit$fit) #parameters on log scale. In order growth, carrying capacity, dispersal, sigma
+summary(logistic_fit$fit) 
 ```
 
     ## inlabru version: 2.14.0 
@@ -166,34 +159,37 @@ summary(logistic_fit$fit) #parameters on log scale. In order growth, carrying ca
     ##     Additive/Linear/Rowwise: TRUE/TRUE/TRUE
     ##     Used components: effect[loggrow], latent[] 
     ## Time used:
-    ##     Pre = 0.268, Running = 0.85, Post = 0.112, Total = 1.23 
+    ##     Pre = 0.27, Running = 0.834, Post = 0.11, Total = 1.21 
     ## Random effects:
     ##   Name     Model
     ##     loggrow CGeneric
     ## 
     ## Model hyperparameters:
     ##                      mean    sd 0.025quant 0.5quant 0.975quant   mode
-    ## Theta1 for loggrow  0.387 0.481     -0.555    0.386      1.339  0.379
-    ## Theta2 for loggrow  6.686 0.099      6.495    6.684      6.885  6.678
-    ## Theta3 for loggrow -1.487 0.453     -2.385   -1.485     -0.602 -1.476
-    ## Theta4 for loggrow -1.498 0.373     -2.234   -1.497     -0.765 -1.495
+    ## Theta1 for loggrow -0.298 0.276     -0.859   -0.292      0.228 -0.267
+    ## Theta2 for loggrow  6.205 0.285      5.645    6.205      6.767  6.205
+    ## Theta3 for loggrow -1.535 0.434     -2.368   -1.542     -0.660 -1.572
+    ## Theta4 for loggrow -0.974 0.333     -1.676   -0.958     -0.369 -0.884
     ## 
-    ## Marginal log-Likelihood:  13188.76 
+    ## Marginal log-Likelihood:  3866.14 
     ##  is computed 
     ## Posterior summaries for the linear predictor and the fitted values are computed
     ## (Posterior marginals needs also 'control.compute=list(return.marginals.predictor=TRUE)')
 
+Parameters on actual scale. In order growth, carrying capacity,
+dispersal, sigma
+
 ``` r
-exp(logistic_fit$fit$summary.hyperpar) #Parameters
+exp(logistic_fit$fit$summary.hyperpar) 
 ```
 
     ##                           mean       sd   0.025quant    0.5quant  0.975quant
-    ## Theta1 for loggrow   1.4729426 1.617526   0.57429061   1.4704950   3.8146354
-    ## Theta2 for loggrow 800.8599507 1.104161 661.83081788 799.6826254 977.5980377
-    ## Theta3 for loggrow   0.2260217 1.572929   0.09209204   0.2264980   0.5479423
-    ## Theta4 for loggrow   0.2236296 1.452081   0.10711870   0.2237635   0.4652451
+    ## Theta1 for loggrow   0.7422042 1.318043   0.42356296   0.7465159   1.2560263
+    ## Theta2 for loggrow 495.4410774 1.329770 282.73723321 495.4066623 868.5127203
+    ## Theta3 for loggrow   0.2154656 1.543476   0.09362589   0.2139606   0.5170592
+    ## Theta4 for loggrow   0.3777242 1.395194   0.18716420   0.3835336   0.6915284
     ##                           mode
-    ## Theta1 for loggrow   1.4603536
-    ## Theta2 for loggrow 794.6428447
-    ## Theta3 for loggrow   0.2284967
-    ## Theta4 for loggrow   0.2243190
+    ## Theta1 for loggrow   0.7658664
+    ## Theta2 for loggrow 495.2629865
+    ## Theta3 for loggrow   0.2075491
+    ## Theta4 for loggrow   0.4130540
