@@ -1,0 +1,128 @@
+---
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = T)
+```
+
+## INLAloggrowth
+
+This is a R package to implement the Spatial Logistic Growth model described in
+[paper]. It uses the `cgeneric` interface in `R-INLA` to implement the model in `C` and uses `inlabru` to fit the spatial models.
+
+## Installation
+The 'INLA' package is needed for fitting a model. You can install it with
+```{r eval = !require(INLA)}
+install.packages("INLA",repos=c(getOption("repos"),INLA="https://inla.r-inla-download.org/R/testing"), dep=TRUE) 
+```
+
+You can install the latest version of INLAloggrowth from [GitHub](https://github.com/ljb34/INLAloggrowth) with
+```{r ghinst, eval = FALSE}
+## install.packages("remotes")
+remotes::install_github("ljb34/INLALogisticGrowth")
+```
+
+## A simple example
+
+Loading packages
+```{r library}
+library(INLA)
+library(inlabru)
+library(INLAloggrowth)
+library(sf)
+library(fmesher)
+```
+
+Simulate logistic growth data
+```{r simulate}
+simdata <- simulate_loggrowth(growth = 1, carry.cap = 500, movement = 0.15, sigma = 0.35,
+                               initial.pop = 150, initial.range = 0.15, initial.sigma=0.075,
+                               timesteps = 3,sample.type = "LGCP", boundaries = c(0,1), debug = T,
+                               max.edge = 0.15)
+library(ggplot2)
+#Plot observations
+ggplot()+
+  gg(simdata$animal_obs)+
+  facet_wrap(~time)+
+  ggtitle("Observed Points")
+
+#Plot unobserved field
+ggplot()+
+  gg(simdata$animal, aes(fill = exp(field)), geom = "tile")+
+  scale_fill_viridis_c()+
+  facet_wrap(~time)+
+  ggtitle("Abundance")
+```
+
+
+
+Define spatial and temporal discretization meshes
+```{r meshes}
+bnd <- spoly(data.frame(easting = c(0,1,1,0), northing = c(0,0,1,1)), format = "sf")
+mesh_space <- fm_mesh_2d(boundary = bnd,
+                       max.edge = 0.25)
+mesh_time <- fm_mesh_1d(
+  loc = 0:3)
+```
+
+Fit a simple model to the first year. The output of this model becomes the prior for the initial condition. 
+
+```{r first-model}
+matern <- inla.spde2.pcmatern(mesh_space,
+                              prior.sigma = c(0.5, 0.01),
+                              prior.range = c(0.1, 0.02))
+cmp <- geometry ~ smooth(geometry, model = matern) +
+  initial(1,model = "linear")-1
+
+first_fit <- bru(cmp, simdata$animal_obs[simdata$animal_obs$time == 1,],
+                 family = "cp", domain = list(geometry = fm_subdivide(mesh_space,1)))
+```
+
+Extract mean and precision matrix
+
+```{r extract}
+index <- min(which(stringr::str_sub(rownames(first_fit$summary.fitted.values),8,8)!= "A"))
+n.nodes <- first_fit$misc$configs$nconfig
+nodes <- data.frame(log.prob=rep(NA,n.nodes))
+mat_list <- list()
+mean_list <- list()
+for(i in 1:n.nodes){
+  nodes[i,]<- first_fit$misc$configs$config[[i]]$log.posterior
+  Q <- first_fit$misc$configs$config[[i]]$Q[1:mesh_space$n, 1:mesh_space$n]
+  dQ <- diag(Q)
+  Q <- Q + Matrix::t(Q)
+  diag(Q) <- dQ
+  mat_list[[i]] <- Q
+  mean_list[[i]] <- first_fit$misc$configs$config[[i]]$improved.mean[1:mesh_space$n]
+}
+nodes <- dplyr::mutate(nodes, weight = exp(log.prob)) %>%
+  dplyr::mutate(weight.prob = weight/sum(weight))
+Q <- Reduce("+", Map(function(m,w) w*m, mat_list,nodes$weight.prob))
+initial.precision <-Diagonal(mesh_space$n,
+                             1/((first_fit$summary.fixed$sd**2)+(first_fit$summary.fitted.values$sd[index-1 +1:mesh_space$n]**2)))%*%Q
+weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
+prior.mean <- Reduce("+", weighted.means) + first_fit$summary.fixed$mean[1]
+```
+
+Fit logistic growth model
+
+```{r Logistic}
+priors = list(cc = c(log(500), 0.5), growth = c(log(1), 0.5), 
+              movement = c(log(0.15),0.5), sigma = c(log(0.5),0.5))
+logistic_fit <- iterate.fit(formula = geometry + time ~ -1, #Need to remove intercept
+                         data = simdata$animal_obs, family = "cp",
+                         domain = list(geometry = fm_subdivide(mesh_space,1), time = 1:3),
+                         smesh = mesh_space, tmesh = mesh_time, samplers = bnd,
+                         prior.mean = prior.mean, 
+                         prior.precision = Q,
+                         priors = priors, initial.growth=log(1),
+                         initial.carry.cap=log(500), initial.move.const = log(0.15),
+                         initial.sigma = log(0.5), gamma = 0.5,
+                         options = list(verbose = F, control.inla = list(strategy = "gaussian", int.strategy = "eb")))
+```
+```{r output}
+summary(logistic_fit$fit) #parameters on log scale. In order growth, carrying capacity, dispersal, sigma
+
+exp(logistic_fit$fit$summary.hyperpar) #Parameters
+```

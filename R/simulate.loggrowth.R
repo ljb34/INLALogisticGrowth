@@ -131,7 +131,7 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     points.to.sample <- sample(unique(sf::st_filter(animal,bnd_inner)$geometry),
                                npoints)
     animal_obs <- filter(animal, geometry %in% points.to.sample) %>% 
-      dplyr::mutate(obs = rnorm(npoints*(tmesh$n), field, obs.sd))
+      dplyr::mutate(obs = rnorm(npoints*(tmesh$n), exp(field), obs.sd))
   } else if(sample.type == "Bernoulli"){
     points.to.sample <- sample(unique(sf::st_filter(animal,bnd_inner)$geometry),
                                npoints)
@@ -161,11 +161,11 @@ simulate_loggrowth <- function(growth, carry.cap, movement, sigma,
     
   }else if(sample.type == "Poisson"){
     if(is.null(npoints)){
-      warning("obs.sd and npoints must be defined")
+      warning("npoints must be defined")
     }
     points.to.sample <- sample(unique(sf::st_filter(animal,bnd_inner)$geometry),
                                npoints)
-    animal_obs <- filter(animal, geometry %in% points.to.sample) %>% 
+    animal_obs <- dplyr::filter(animal, geometry %in% points.to.sample) %>% 
       dplyr::mutate(obs = rpois(npoints*(tmesh$n), exp(field)))
   }else{
     print("Sampling type not recognised")
