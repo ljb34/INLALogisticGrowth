@@ -1,12 +1,12 @@
 #'@export
 simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, movement0, movement1, sigma,
                                     cov.range, cov.sigma,
-                               initial.pop,initial.range, initial.sigma, 
-                               timesteps, npoints = NULL, obs.sd=NULL,
-                               obs.prob = NULL, same.cov = T,
-                               sample.type = "LGCP", ncores = 1,
-                               boundaries = c(0,1), debug = F,
-                               max.edge = 0.05, nsurv = 3){
+                                    initial.pop,initial.range, initial.sigma, 
+                                    timesteps, npoints = NULL, obs.sd=NULL,
+                                    obs.prob = NULL, same.cov = T,
+                                    sample.type = "LGCP", ncores = 1,
+                                    boundaries = c(0,1), debug = F,
+                                    max.edge = 0.05, nsurv = 3){
   #browser()
   #functions needed
   a.func <- function(growth,carry.cap, linpoint){
@@ -17,52 +17,67 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
   #step.size = difference in time between lin points, known
   #linpoint = list of linearisation point vectors 
   #smesh = space mesh built with fmesher, tmesh = time mesh
+  L.matrix <- function(growth,carry.cap,move.const,step.size, linpoint, smesh, tmesh){
+    #print("Calcualting Lmat")
+    ns <- smesh$n
+    nt <- tmesh$n
+    a<- a.func(growth,carry.cap, linpoint)
+    a[1:ns] <- 1
+    a.mat <- Matrix::Diagonal(ns*nt,a)
+    subdiag <- Matrix::bandSparse(nt*ns, k = -ns, diagonals = list(rep(-1/step.size, (nt - 1)*ns)))
+    fem.matrices <- fmesher::fm_fem(smesh)
+    CinvG <- Matrix::solve(fem.matrices$c1, fem.matrices$g1)
+    main.diag <- Matrix::kronecker(Matrix::Diagonal(nt, c(0,rep(1, nt-1))), 
+                                   Matrix::Diagonal(ns, 1/(step.size))+ move.const*CinvG)
+    #print(diag(main.diag + subdiag + a.mat))
+    return(Matrix::drop0(main.diag + subdiag + a.mat, tol = 1e-100))
+  }
   r.vector <- function(growth,carry.cap,move.const,linpoint,grad){
     mag.grad.sq <- rowSums(grad*grad) #magnitude squared
     return(growth*exp(linpoint)*(linpoint-1)/carry.cap+ growth - move.const*mag.grad.sq )
   }
   
-  fT <- function(a_array,movement, CinvG){
-    return(movement*CinvG + Matrix::Diagonal(smesh$n, 1/step.size + a_array))
+  Q = function(par){
+    #browser()
+    #print("Calcualting Q")
+    #print(par)
+    Lmat = L.matrix(par$growth, par$carry.cap, par$move.const,step.size, linpoint, smesh, tmesh)
+    mats <- fmesher::fm_fem(smesh)
+    g <- mean(par$move.const)
+    noiseblock <- (mats$c1 + g*mats$g1)*(par$sigma**2)/step.size
+    noiseonly = Matrix::bdiag(replicate(tmesh$n-1, noiseblock, simplify = FALSE))
+    noise.precision = Matrix::bdiag(list(prior.precision, noiseonly))
+    output = Matrix::crossprod(Lmat, noise.precision %*% Lmat)
+    #print(output[smesh$n:(smesh$n +10),smesh$n:(smesh$n +10)])
+    return(Matrix::drop0(output, 1e-100))
   }
-  mu = function(){
-    out <- Matrix::Matrix(NA, nrow = smesh$n*tmesh$n, ncol = 1)
-    r <- c(prior.mean, r.vector(par$growth, par$carry.cap, par$move.const, linpoint, grad)[-(1:smesh$n)])
-    a_full <- a.func(par$growth, par$carry.cap, linpoint)
-    out[1:smesh$n, 1] <- prior.mean
-    fem.matrice <- fm_fem(smesh)
-    CinvG <- Matrix::solve(fem.matrice$c0, fem.matrice$g1)
-    for(t in 1:timesteps){
-      fmat <- fT(a_full[t*smesh$n + 1:smesh$n], par$move.const[t*smesh$n + 1:smesh$n], CinvG)
-      out[t*smesh$n + 1:smesh$n,1] <- Matrix::solve(fmat, r[t*smesh$n + 1:smesh$n] + out[(t-1)*smesh$n + 1:smesh$n,1])
-    }
-    return(out)
+  mu = function(par){
+    #browser()
+    #print("Calcualting mu")
+    #if(class(theta)!="numeric"){
+    #  theta <- initial()
+    #}
+    #print(par)
+    Lmat = L.matrix(par$growth, par$carry.cap, par$move.const, step.size, linpoint, smesh, tmesh)
+    r = c(prior.mean, r.vector(par$growth, par$carry.cap, par$move.const, linpoint, grad)[-(1:smesh$n)])
+    Lmat_det <- Matrix::det(Lmat)
+    if(!is.nan(Lmat_det)) {
+      if(abs(Lmat_det) <= .Machine$double.eps){ #if close to singular use
+        #print(det(crossprod(Lmat,Lmat)))
+        mu = Matrix::solve(crossprod(Lmat,Lmat),crossprod(Lmat,r)) #more stable form of solve(lmat,r)
+        mu= as.vector(mu)
+        print("Trick version")
+      }else{
+        mu = Matrix::solve(Lmat,r)
+        #print("Default Solve")
+      }}else{
+        print("There's some NaNs going on?")
+        mu = NA
+      }
+    #print(mean(mu))
+    return(mu)
   }
   
-  Q = function(){
-    #browser()
-    out <- Matrix::Matrix(data = rep(0,(smesh$n*tmesh$n)**2), nrow = smesh$n*tmesh$n, ncol = smesh$n*tmesh$n)
-    fem.matrice <- fm_fem(smesh)
-    Qblock <- fem.matrice$c0 + par$move.const[1:smesh$n]*fem.matrice$g1
-    print(Matrix::isSymmetric(Qblock))
-    CinvG <- Matrix::solve(fem.matrice$c0, fem.matrice$g1)
-    a_full <- a.func(par$growth, par$carry.cap, linpoint)
-    out[1:smesh$n, 1:smesh$n] <- initial_Q + (1 / ((par$sigma * step.size)**2))*Qblock
-    ft1 <- fT(a_full[smesh$n + 1:smesh$n], par$move.const[smesh$n + 1:smesh$n], CinvG)
-    out[1:smesh$n,smesh$n + 1:smesh$n] <- (-1/(par$sigma**2*step.size**2))*Qblock%*%ft1
-    fmat <- ft1
-    for(t in 1:(timesteps-1)){
-      out[t*smesh$n + 1:smesh$n, (t-1)*smesh$n + 1:smesh$n] <- (-1/(par$sigma**2*step.size**2))*Matrix::t(fmat)%*%Qblock
-      out[t*smesh$n + 1:smesh$n, t*smesh$n + 1:smesh$n] <- (1/(par$sigma**2*step.size))*Matrix::t(fmat)%*%Qblock%*%fmat + (sigma**2)*Qblock
-      ft1 <- fT(a_full[(t+1)*smesh$n + 1:smesh$n], par$move.const[(t+1)*smesh$n + 1:smesh$n], CinvG)
-      out[t*smesh$n + 1:smesh$n, (t+1)*smesh$n + 1:smesh$n]<- (-1/(par$sigma**2*step.size**2))*Qblock%*%ft1
-      fmat <- ft1
-    }
-    t = timesteps
-    out[t*smesh$n + 1:smesh$n, (t-1)*smesh$n + 1:smesh$n] <- (-1/(par$sigma**2*step.size**2))*Matrix::t(fmat)%*%Qblock
-    out[t*smesh$n + 1:smesh$n, t*smesh$n + 1:smesh$n] <- (1/(par$sigma**2*step.size))*Matrix::t(fmat)%*%Qblock%*%fmat + + (sigma**2)*Qblock
-    return(out)
-  }
   #set up for simulation
   bnd_extended <- sf::st_as_sf(inlabru::spoly(data.frame(easting = c(boundaries[1], boundaries[2],boundaries[2],boundaries[1]), 
                                                          northing = c(boundaries[1], boundaries[1],boundaries[2],boundaries[2]))))
@@ -85,14 +100,7 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
     print("Defining model")
   }
   #components needed for model
-  cov_mesh <- fmesher::fm_mesh_2d_inla( boundary = bnd_extended,
-                                                max.edge = c(max.edge/3, max.edge),
-                                                offset = c(-0.01, (boundaries[2]-boundaries[1])))
-  cov_matern <-
-    inla.spde2.pcmatern(cov_mesh,
-                        prior.sigma = c(0.1, 0.1),
-                        prior.range = c(0.1, 0.1))
-  cov_Q <- inla.spde.precision(cov_matern,theta = log(c(cov.range, cov.sigma)))
+  cov_Q <- inla.spde.precision(matern,theta = log(c(cov.range, cov.sigma)))
   if(same.cov){
     covariates <- data.frame(growth = inla.qsample(1, cov_Q)[, 1]) %>% 
       dplyr::mutate(carry.cap = growth, movement = growth)
@@ -105,63 +113,35 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
     easting = seq(boundaries[1],boundaries[2], by = 0.01),
     northing = seq(boundaries[1],boundaries[2], by = 0.01)), coords = c("easting", "northing"))
   cov.grid$growth <- fmesher::fm_evaluate(
-    cov_mesh,
+    smesh,
     loc = cov.grid,
     field = covariates$growth)
   cov.grid$carry.cap <- fmesher::fm_evaluate(
-    cov_mesh,
+    smesh,
     loc = cov.grid,
     field = covariates$carry.cap)
   cov.grid$movement <- fmesher::fm_evaluate(
-    cov_mesh,
+    smesh,
     loc = cov.grid,
     field = covariates$movement)
   
-  mesh_pts <- sf::st_as_sf(
-    data.frame(x = smesh$loc[,1], y = smesh$loc[,2]),
-    coords = c("x", "y")
-  )
-  nn <- sf::st_nearest_feature(
-    mesh_pts,
-    cov.grid
-  )
-  
-  mesh_pts$growth <- cov.grid$growth[nn]
-  mesh_pts$carry.cap <- cov.grid$carry.cap[nn]
-  mesh_pts$movement <- cov.grid$movement[nn]
-  
-  growth <- rep(exp(growth0 + growth1*mesh_pts$growth),timesteps+1)
-  carry.cap <- rep(exp(carry.cap0 + carry.cap1*mesh_pts$carry.cap), timesteps+1)
-  move.const <- rep(movement0 + movement1*mesh_pts$movement, timesteps+1)
+  growth <- rep(exp(growth0 + growth1*covariates$growth),timesteps+1)
+  carry.cap <- rep(exp(carry.cap0 + carry.cap1*covariates$carry.cap), timesteps+1)
+  move.const <- rep(movement0 + movement1*covariates$movement, timesteps+1)
   print(summary(carry.cap))
   print(summary(growth))
   par = list(growth = growth, carry.cap = carry.cap, move.const = move.const, sigma = sigma)
-  print(length(prior.mean))
-  print(length(growth)/(timesteps + 1))
-  print(smesh$n)
   linpoint <- log(logit.nest(exp(prior.mean), growth[1:smesh$n], carry.cap[1:smesh$n], tmesh$n)$x)
   grad <- gradient_of_linpoint(linpoint, smesh, tmesh)#
   prior.precision <- initial_Q
-  #browser()
   if(debug) print("Calculating precision")
-  # cgen <- define.varying.cgeneric.loggrow.model(linpoint, smesh, tmesh, step.size,
-  #                                       prior.mean, prior.precision, growth.formula = ~1 + growth,
-  #                                       carry.formula = ~1 + carry.cap, move.formula = ~1 + movement,
-  #                                       growth_cov = mesh_pts$growth, carry_cov = mesh_pts$carry.cap,
-  #                                       move_cov = mesh_pts$movement,
-  #                                       priors = NULL, grad = grad,
-  #                                       initial.growth = growth, initial.carry.cap = log(carry.cap), 
-  #                                       initial.move.const = move.const, initial.log.sigma = log(sigma), 
-  #                                       debug = NULL)
-  #Q_mat <- INLAtools::cgeneric_Q(cgen, theta = c(growth0, growth1, carry.cap0, carry.cap1, movement0, movement1, sigma))
-  Q_mat <- Q()
-  Qtest <- solve(Q_mat)
+  Q_mat <-Q(par)
   if(debug) print("Calculating mean")
-  mu_mat <- mu()
-  summary(exp(mu_mat))
+  mu_mat <- mu(par)
+  
   #generate field
   if(debug) print("generating field")
-  field <- data.frame(field = inla.qsample(1, Matrix::drop0(Q_mat), mu = mu_mat)[, 1])
+  field <- data.frame(field = inla.qsample(1, Q_mat, mu = mu_mat)[, 1])
   field$time <- rep(0:timesteps, each = smesh$n)
   expand_for_plot <- function(i){
     animal_tempsf <- expand.grid(
@@ -229,7 +209,7 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
     animal_obs = 0
   }
   return(list(animal = animal[animal$time !=0,],field = field[field$time !=0,],
-              animal_obs = animal_obs[animal_obs$time != 0,], mesh = smesh, covariates = cov.grid))
+              animal_obs = animal_obs[animal_obs$time != 0,], mesh = smesh, covaraiates = cov.grid))
 }
 
 
