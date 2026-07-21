@@ -18,6 +18,7 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
   #linpoint = list of linearisation point vectors 
   #smesh = space mesh built with fmesher, tmesh = time mesh
   L.matrix <- function(growth,carry.cap,move.const,step.size, linpoint, smesh, tmesh){
+    #browser()
     #print("Calcualting Lmat")
     ns <- smesh$n
     nt <- tmesh$n
@@ -28,13 +29,13 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
     fem.matrices <- fmesher::fm_fem(smesh)
     CinvG <- Matrix::solve(fem.matrices$c1, fem.matrices$g1)
     main.diag <- Matrix::kronecker(Matrix::Diagonal(nt, c(0,rep(1, nt-1))), 
-                                   Matrix::Diagonal(ns, 1/(step.size))+ move.const*CinvG)
+                                   Matrix::Diagonal(ns, 1/(step.size))+ move.const[1:smesh$n]*CinvG)
     #print(diag(main.diag + subdiag + a.mat))
     return(Matrix::drop0(main.diag + subdiag + a.mat, tol = 1e-100))
   }
   r.vector <- function(growth,carry.cap,move.const,linpoint,grad){
     mag.grad.sq <- rowSums(grad*grad) #magnitude squared
-    return(growth*exp(linpoint)*(linpoint-1)/carry.cap+ growth - move.const*mag.grad.sq )
+    return(growth*exp(linpoint)*(linpoint-1)/carry.cap + growth - move.const*mag.grad.sq )
   }
   
   Q = function(par){
@@ -78,13 +79,37 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
     return(mu)
   }
   
+  presmooth_linpoint <- function(linpoint, smesh, tmesh, zeta,
+                                 dt = 1, nsteps = 1){
+    
+    fem <- fmesher::fm_fem(smesh)
+    CinvG <- Matrix::solve(fem$c1, fem$g1)
+    
+    ns <- smesh$n
+    nt <- tmesh$n
+    
+   
+    
+    lp <- matrix(linpoint, nrow = ns, ncol = nt)
+    
+    for(t in 1:nt){
+      for(i in 1:nsteps){
+        Ldiff <- Matrix::Diagonal(ns) + dt * zeta[(t-1)*ns + 1:ns] * CinvG
+        lp[,t] <- Matrix::solve(Ldiff, lp[,t])
+      }
+    }
+    
+    as.vector(lp)
+  }
+  
   #set up for simulation
   bnd_extended <- sf::st_as_sf(inlabru::spoly(data.frame(easting = c(boundaries[1], boundaries[2],boundaries[2],boundaries[1]), 
                                                          northing = c(boundaries[1], boundaries[1],boundaries[2],boundaries[2]))))
   hex_points <- fm_hexagon_lattice(bnd = bnd_extended, edge_len = 0.9*max.edge)
   smesh <- fmesher::fm_mesh_2d_inla(loc = hex_points, boundary = bnd_extended,
                                     max.edge = c(max.edge*1.1, 2*max.edge),
-                                    offset = c(-0.01, (boundaries[2]-boundaries[1])))
+                                    offset = c(-0.01, (boundaries[2]-boundaries[1])+movement0)
+                                    )
   tmesh <- fmesher::fm_mesh_1d(loc = 0:timesteps)
   step.size <- 1
   if(debug) print("set up finished, generating first year")
@@ -110,8 +135,8 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
                              movement = inla.qsample(1, cov_Q)[, 1])
   }
   cov.grid <- sf::st_as_sf(expand.grid(
-    easting = seq(boundaries[1],boundaries[2], by = 0.01),
-    northing = seq(boundaries[1],boundaries[2], by = 0.01)), coords = c("easting", "northing"))
+    easting = seq(boundaries[1],boundaries[2], length.out = 75),
+    northing = seq(boundaries[1],boundaries[2], length.out = 75)), coords = c("easting", "northing"))
   cov.grid$growth <- fmesher::fm_evaluate(
     smesh,
     loc = cov.grid,
@@ -132,6 +157,16 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
   print(summary(growth))
   par = list(growth = growth, carry.cap = carry.cap, move.const = move.const, sigma = sigma)
   linpoint <- log(logit.nest(exp(prior.mean), growth[1:smesh$n], carry.cap[1:smesh$n], tmesh$n)$x)
+  
+  linpoint <- presmooth_linpoint(
+    linpoint,
+    smesh,
+    tmesh,
+    move.const,
+    nsteps = 3
+  )
+  
+  
   grad <- gradient_of_linpoint(linpoint, smesh, tmesh)#
   prior.precision <- initial_Q
   if(debug) print("Calculating precision")
@@ -145,8 +180,8 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
   field$time <- rep(0:timesteps, each = smesh$n)
   expand_for_plot <- function(i){
     animal_tempsf <- expand.grid(
-      easting = seq(boundaries[1],boundaries[2], by = 0.01),
-      northing = seq(boundaries[1],boundaries[2], by = 0.01))
+      easting = seq(boundaries[1],boundaries[2], length.out = 75),
+      northing = seq(boundaries[1],boundaries[2], length.out = 75))
     animal_tempsf <- dplyr::mutate(sf::st_as_sf(animal_tempsf, coords = c("easting", "northing")),
                                    time = i)
     animal_tempsf$field <- fmesher::fm_evaluate(
@@ -160,6 +195,7 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
   print(summary(animal))
   bnd_inner <- sf::st_as_sf(inlabru::spoly(data.frame(easting = c(boundaries[1],boundaries[2],boundaries[2],boundaries[1]), 
                                                       northing = c(boundaries[1], boundaries[1], boundaries[2], boundaries[2]))))
+  #browser()
   if(debug) print("Sampling")
   if(sample.type == "Normal"){
     if(is.null(obs.sd) | is.null(npoints)){
@@ -209,7 +245,7 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
     animal_obs = 0
   }
   return(list(animal = animal[animal$time !=0,],field = field[field$time !=0,],
-              animal_obs = animal_obs[animal_obs$time != 0,], mesh = smesh, covaraiates = cov.grid))
+              animal_obs = animal_obs[animal_obs$time != 0,], mesh = smesh, covariates = cov.grid))
 }
 
 
