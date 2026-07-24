@@ -106,7 +106,7 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
   bnd_extended <- sf::st_as_sf(inlabru::spoly(data.frame(easting = c(boundaries[1], boundaries[2],boundaries[2],boundaries[1]), 
                                                          northing = c(boundaries[1], boundaries[1],boundaries[2],boundaries[2]))))
   hex_points <- fm_hexagon_lattice(bnd = bnd_extended, edge_len = 0.9*max.edge)
-  smesh <- fmesher::fm_mesh_2d_inla(loc = hex_points, boundary = bnd_extended,
+  smesh <- fmesher::fm_mesh_2d(loc = hex_points, boundary = bnd_extended,
                                     max.edge = c(max.edge*1.1, 2*max.edge),
                                     offset = c(-0.01, (boundaries[2]-boundaries[1])+movement0)
                                     )
