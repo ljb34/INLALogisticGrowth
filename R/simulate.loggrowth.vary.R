@@ -3,7 +3,7 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
                                     cov.range, cov.sigma,
                                     initial.pop,initial.range, initial.sigma, 
                                     timesteps, npoints = NULL, obs.sd=NULL,
-                                    obs.prob = NULL, same.cov = T,
+                                    obs.prob = NULL, same.cov = T, pure.spat.cov = T,
                                     sample.type = "LGCP", ncores = 1,
                                     boundaries = c(0,1), debug = F,
                                     max.edge = 0.05, nsurv = 3){
@@ -126,13 +126,28 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
   }
   #components needed for model
   cov_Q <- inla.spde.precision(matern,theta = log(c(cov.range, cov.sigma)))
-  if(same.cov){
-    covariates <- data.frame(growth = inla.qsample(1, cov_Q)[, 1]) %>% 
-      dplyr::mutate(carry.cap = growth, movement = growth)
-  } else{
-    covariates <- data.frame(growth = inla.qsample(1, cov_Q)[, 1],
+  if(pure.spat.cov){
+    if(same.cov){
+      covariates <- data.frame(growth = inla.qsample(1, cov_Q)[, 1]) %>% 
+        dplyr::mutate(carry.cap = growth, movement = growth)
+    } else{
+      covariates <- data.frame(growth = inla.qsample(1, cov_Q)[, 1],
                              carry.cap = inla.qsample(1, cov_Q)[, 1],
                              movement = inla.qsample(1, cov_Q)[, 1])
+    }
+  } else{
+    if(same.cov){
+      covariates <- data.frame(growth = inla.qsample(1, cov_Q, 
+                                                     mu = rnorm(nrow(cov_Q), sd = cov.sigma))[, 1]) %>% 
+        dplyr::mutate(carry.cap = growth, movement = growth)
+    } else{
+      covariates <- data.frame(growth = inla.qsample(1, cov_Q,
+                                                     mu = rnorm(nrow(cov_Q), sd = cov.sigma)[, 1],
+                               carry.cap = inla.qsample(1, cov_Q,
+                                                        mu = rnorm(nrow(cov_Q), sd = cov.sigma)[, 1],
+                               movement = inla.qsample(1, cov_Q,
+                                                       mu = rnorm(nrow(cov_Q), sd = cov.sigma)[, 1])
+    }
   }
   cov.grid <- sf::st_as_sf(expand.grid(
     easting = seq(boundaries[1],boundaries[2], length.out = 75),
