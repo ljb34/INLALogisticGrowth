@@ -142,11 +142,11 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
         dplyr::mutate(carry.cap = growth, movement = growth)
     } else{
       covariates <- data.frame(growth = inla.qsample(1, cov_Q,
-                                                     mu = rnorm(nrow(cov_Q), sd = cov.sigma)[, 1],
+                                                     mu = rnorm(nrow(cov_Q), sd = cov.sigma))[, 1],
                                carry.cap = inla.qsample(1, cov_Q,
-                                                        mu = rnorm(nrow(cov_Q), sd = cov.sigma)[, 1],
+                                                        mu = rnorm(nrow(cov_Q), sd = cov.sigma))[, 1],
                                movement = inla.qsample(1, cov_Q,
-                                                       mu = rnorm(nrow(cov_Q), sd = cov.sigma)[, 1])
+                                                       mu = rnorm(nrow(cov_Q), sd = cov.sigma))[, 1])
     }
   }
   cov.grid <- sf::st_as_sf(expand.grid(
