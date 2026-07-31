@@ -20,13 +20,16 @@ iterate.timeonly <- function(data, tmesh,nsurvey, step.size, prior.mean,
                                      prior.precision, max.iter = 100,gamma = 0.75,stop.crit = 0.05,
                                      priors = NULL,initial.linpoint = NULL, initial.growth=1, 
                                      initial.carry.cap=0.05, initial.log.sigma = log(1.5), 
-                                     verbose = F){
+                                     verbose = F, family, domain = NULL){
   #browser()
   if(is.null(initial.linpoint)){
     initial.linpoint <- log(logit.nest(exp(prior.mean), initial.growth, exp(initial.carry.cap), tmesh$n)$x)
   }
   if(!is.matrix(initial.linpoint)) initial.linpoint <- as.matrix(initial.linpoint, ncol = 1)
   fit.list <- list()
+  if(is.null(domain)){
+    domain = list(time = seq(min(data$time), max(data$time), by = step.size))
+  }
   #Set up initial model
   log_growth_model <- define.loggrow.time.model(linpoint = initial.linpoint, tmesh = tmesh, step.size = step.size, 
                                                         prior.mean = prior.mean,
@@ -36,8 +39,8 @@ iterate.timeonly <- function(data, tmesh,nsurvey, step.size, prior.mean,
                                                         initial.log.sigma = initial.log.sigma)
   fit <- bru(y ~ loggrow(time, 
                          model = log_growth_model)-1,
-             data = data, domain = list(time = tmesh),
-             family = "poisson", options = list(verbose = verbose))
+             data = data, domain = domain,
+             family = family, options = list(verbose = verbose))
   fit.list[[1]]<-fit
   print("First fitting finished")
   n.nodes <- fit$misc$configs$nconfig
@@ -83,16 +86,16 @@ iterate.timeonly <- function(data, tmesh,nsurvey, step.size, prior.mean,
     print("Defined new model")
     fit <- bru(y ~ loggrow(time, 
                            model = log_growth_model)-1,
-               data = data, domain = list(time = tmesh),
-               family = "poisson", options = list(verbose = verbose))
+               data = data, domain = domain,
+               family = family, options = list(verbose = verbose))
     print(paste("Fitted new model", n))
     n.nodes <- fit$misc$configs$nconfig
     if(!is.numeric(n.nodes)){
       print("Failed to fit, trying again")
       fit <- bru(y ~ loggrow(time, 
                              model = log_growth_model)-1,
-                 data = data, domain = list(time = tmesh),
-                 family = "poisson", options = list(verbose = verbose))
+                 data = data, domain = domain,
+                 family = family, options = list(verbose = verbose))
       if(!is.numeric(fit$misc$configs$nconfig)){
         print("Failed again, returning model output")
         return(list(new.linpoint = new.linpoint,fit = fit, past.linpoints = lp.mat, fit.list = fit.list))
@@ -138,7 +141,7 @@ iterate.timeonly <- function(data, tmesh,nsurvey, step.size, prior.mean,
   print("Fitting final model")
   final.fit <- bru(y ~ loggrow(time, 
                                model = log_growth_model)-1,
-                   data = data, domain = list(time = tmesh),
-                   family = "poisson", options = list(verbose = verbose))
+                   data = data, domain = domain,
+                   family = family, options = list(verbose = verbose))
   return(list(fit = final.fit, n = n, linpoints = lp.mat, fit.list = fit.list))
 }
