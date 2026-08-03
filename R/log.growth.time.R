@@ -97,16 +97,16 @@ log_growth_time =  function(
   log.prior = function(){#can change params to make user specified
     #print("Calcualting logprior")
     par = interpret.theta()
-    if(!is.null(priors)) warning("Parameters missing for priors")
+    if(is.null(priors)) warning("Parameters missing for priors")
     val = dnorm(theta[2L], mean = priors$cc[1], sd = priors$cc[2], log = T)+ 
       dnorm(theta[1L], mean = priors$growth[1], sd = priors$growth[2], log = T)+
       dnorm(theta[3L], mean = priors$sigma[1], sd = priors$sigma[2], log = T)
     return(val)
   }
   initial = function(){
-    if(is.null(initial.growth)) initial.growth = 0.5
-    if(is.null(initial.carry.cap)) initial.carry.cap = 1000
-    if(is.null(initial.log.sigma)) initial.log.sigma = log(5)
+    if(!exists("initial.growth", inherits = TRUE)) initial.growth = 0.5
+    if(!exists("initial.carry.cap", inherits = TRUE)) initial.carry.cap = 1000
+    if(!exists("initial.log.sigma", inherits = TRUE)) initial.log.sigma = log(5)
     return(c(initial.growth, initial.carry.cap, initial.log.sigma))
   }
   quit = function() {
