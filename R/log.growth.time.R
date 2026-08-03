@@ -10,9 +10,9 @@ log_growth_time =  function(
     cmd = c("graph", "Q", "mu", "initial", "log.norm.const",
             "log.prior", "quit"),
     theta = NULL){ 
-  envir = parent.env(environment()) #gets extra parameters (linpoint etc.) from definition data
-  library(Matrix)#shouldn't have to put these inside this function
-  library(fmesher)#but I can't get it to work otherwise...
+  #envir = parent.env(environment()) #gets extra parameters (linpoint etc.) from definition data
+  #library(Matrix)#shouldn't have to put these inside this function
+  #library(fmesher)#but I can't get it to work otherwise...
   
   #growth, inv.carry.cap, move.const = theta params to be est
   #step.size = difference in time between lin points, known
@@ -28,11 +28,11 @@ log_growth_time =  function(
     nt <- tmesh$n
     a<- a.func(growth,carry.cap,linpoint)
     a[1] <- 1
-    a.mat <- Diagonal(nt,a)
+    a.mat <- Matrix::Diagonal(nt,a)
     
-    subdiag <- bandSparse(nt,nt,-1,list(rep(-1/step.size, nt-1)))
+    subdiag <- Matrix::bandSparse(nt,nt,-1,list(rep(-1/step.size, nt-1)))
     
-    main.diag <- Diagonal(nt, c(0, rep(1/step.size, nt-1)))
+    main.diag <- Matrix::Diagonal(nt, c(0, rep(1/step.size, nt-1)))
     #print(diag(main.diag + subdiag + a.mat))
     return(Matrix::drop0(main.diag + subdiag + a.mat))
   }
@@ -56,9 +56,9 @@ log_growth_time =  function(
     #print(par)
     Lmat = L.matrix(par$growth, par$carry.cap, step.size, linpoint, tmesh)
     #print(Lmat)
-    noise.variance = Diagonal(tmesh$n, c(prior.precision,rep(1/(par$sigma*step.size)**2, tmesh$n -1)))
+    noise.variance = Matrix::Diagonal(tmesh$n, c(prior.precision,rep(1/(par$sigma*step.size)**2, tmesh$n -1)))
     #print("crossprod")
-    output = crossprod(Lmat, noise.variance %*% Lmat)
+    output = Matrix::crossprod(Lmat, noise.variance %*% Lmat)
     #print("finished Q")
     #print(output)
     return(Matrix::drop0(output))
@@ -75,10 +75,10 @@ log_growth_time =  function(
     r = c(prior.mean, r.vector(par$growth, par$carry.cap, linpoint)[-1])
     #print(r)
     #print(det(Lmat))
-    if(!is.nan(det(Lmat))) {
-      if(abs(det(Lmat)) <= .Machine$double.eps|(is.infinite(det(Lmat)) & !is.infinite(det(crossprod(Lmat,Lmat))))){ #if close to singular use
+    if(!is.nan(Matrix::det(Lmat))) {
+      if(abs(Matrix::det(Lmat)) <= .Machine$double.eps|(is.infinite(Matrix::det(Lmat)) & !is.infinite(Matrix::det(Matrix::crossprod(Lmat,Lmat))))){ #if close to singular use
         #print(det(crossprod(Lmat,Lmat)))
-        mu = solve(crossprod(Lmat,Lmat),crossprod(Lmat,r)) #more stable form of solve(lmat,r)
+        mu = Matrix::solve(Matrix::crossprod(Lmat,Lmat),Matrix::crossprod(Lmat,r)) #more stable form of solve(lmat,r)
         mu= as.vector(mu)
         #print("Trick version")
       }else{

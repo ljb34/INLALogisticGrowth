@@ -16,7 +16,7 @@
 #' @param verbose logical supplied to INLA
 #' @returns list containing final model fit, number of iterations \code{n}, matrix of all past linearisation points and list of all past model fits.  
 #'@export
-iterate.timeonly <- function(data, tmesh,nsurvey, step.size, prior.mean,
+iterate.timeonly <- function(data, tmesh, step.size, prior.mean,
                                      prior.precision, max.iter = 100,gamma = 0.75,stop.crit = 0.05,
                                      priors = NULL,initial.linpoint = NULL, initial.growth=1, 
                                      initial.carry.cap=0.05, initial.log.sigma = log(1.5), 
