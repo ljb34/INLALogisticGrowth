@@ -1,18 +1,7 @@
-#'rgeneric Time only Logistic Growth (not spatial)
-#'
-#'@description
-#'The rgeneric function implementing the time only (non-spatial) logistic growth function. 
-#'For use within INLA only. See inla.doc('rgeneric') for more
-#'
-#'@export
-#'
-log_growth_time =  function(
+log_growth_time_vary =  function(
     cmd = c("graph", "Q", "mu", "initial", "log.norm.const",
             "log.prior", "quit"),
     theta = NULL){ 
-  #envir = parent.env(environment()) #gets extra parameters (linpoint etc.) from definition data
-  #library(Matrix)#shouldn't have to put these inside this function
-  #library(fmesher)#but I can't get it to work otherwise...
   
   #growth, inv.carry.cap, move.const = theta params to be est
   #step.size = difference in time between lin points, known
@@ -41,10 +30,22 @@ log_growth_time =  function(
     return(growth*(1-exp(linpoint))/carry.cap+linpoint*(1/carry.cap)*exp(linpoint))
   }
   interpret.theta = function() {
-    #print(theta)
-    return(list(growth = theta[1L],
-                carry.cap = exp(theta[2L]),
-                sigma = exp(theta[3L])))
+    #print(length(theta))
+    growth = theta[1]
+    carry.cap = theta[ngrowth+1]
+    if(ngrowth > 1){
+    for(i in 2:ngrowth){
+      growth <- growth + theta[i]*growth_cov[,i]
+    }
+    }
+    if(ncarry>1 ){
+    for(i in 2:ncarry){
+      carry.cap <- carry.cap + theta[ngrowth+i]*carry_cov[,i]
+    }
+    }
+    return(list(growth = growth,
+                carry.cap = exp(carry.cap),
+                sigma = exp(theta[ngrowth + ncarry + 1])))
   }
   
   graph = function() {
@@ -98,14 +99,19 @@ log_growth_time =  function(
     #print("Calcualting logprior")
     par = interpret.theta()
     if(is.null(priors)) warning("Parameters missing for priors")
-    val = dnorm(theta[2L], mean = priors$cc[1], sd = priors$cc[2], log = T)+ 
-      dnorm(theta[1L], mean = priors$growth[1], sd = priors$growth[2], log = T)+
-      dnorm(theta[3L], mean = priors$sigma[1], sd = priors$sigma[2], log = T)
+    val = 0
+    for(i in 1:ngrowth){
+      val <- val + dnorm(theta[i], priors$growth[2*i-1], priors$growth[2*i], log = T)
+    }
+    for(i in 1:ncarry){
+      val <- val + dnorm(theta[ngrowth + i], priors$cc[2*i-1], priors$cc[2*i], log = T)
+    }
+    val <- val + dnorm(theta[ngrowth + ncarry + 1], mean = priors$sigma[1], sd = priors$sigma[2], log = T)
     return(val)
   }
   initial = function(){
-    if(!exists("initial.growth", inherits = TRUE)) initial.growth = 0.5
-    if(!exists("initial.carry.cap", inherits = TRUE)) initial.carry.cap = 1000
+    if(!exists("initial.growth", inherits = TRUE)) initial.growth = c(0.5, rep(0,ngrowth -1))
+    if(!exists("initial.carry.cap", inherits = TRUE)) initial.carry.cap = c(log(1000), rep(0, ncarry-1))
     if(!exists("initial.log.sigma", inherits = TRUE)) initial.log.sigma = log(5)
     return(c(initial.growth, initial.carry.cap, initial.log.sigma))
   }

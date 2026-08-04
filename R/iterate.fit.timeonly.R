@@ -16,11 +16,11 @@
 #' @param verbose logical supplied to INLA
 #' @returns list containing final model fit, number of iterations \code{n}, matrix of all past linearisation points and list of all past model fits.  
 #'@export
-iterate.timeonly <- function(data, tmesh, step.size, prior.mean,
+iterate.timeonly <- function(formula, data, tmesh, step.size, prior.mean,
                                      prior.precision, max.iter = 100,gamma = 0.75,stop.crit = 0.05,
                                      priors = NULL,initial.linpoint = NULL, initial.growth=1, 
                                      initial.carry.cap=0.05, initial.log.sigma = log(1.5), 
-                                     verbose = F, family, domain = NULL){
+                                     options = list(verbose = F), family, domain = NULL, ...){
   #browser()
   if(is.null(initial.linpoint)){
     initial.linpoint <- log(logit.nest(exp(prior.mean), initial.growth, exp(initial.carry.cap), tmesh$n)$x)
@@ -37,10 +37,12 @@ iterate.timeonly <- function(data, tmesh, step.size, prior.mean,
                                                         initial.growth = initial.growth, 
                                                         initial.carry.cap = initial.carry.cap,
                                                         initial.log.sigma = initial.log.sigma)
-  fit <- bru(y ~ loggrow(time, 
-                         model = log_growth_model)-1,
+  new.cmp <- update(formula, . ~ . + loggrow(time,
+                                             model = log_growth_model))
+  environment(new.cmp) <- environment()
+  fit <- bru(new.cmp,
              data = data, domain = domain,
-             family = family, options = list(verbose = verbose))
+             family = family, options = options, ...)
   fit.list[[1]]<-fit
   print("First fitting finished")
   n.nodes <- fit$misc$configs$nconfig
@@ -84,18 +86,19 @@ iterate.timeonly <- function(data, tmesh, step.size, prior.mean,
                                                           initial.carry.cap = initial.carry.cap,
                                                           initial.log.sigma = initial.log.sigma)
     print("Defined new model")
-    fit <- bru(y ~ loggrow(time, 
-                           model = log_growth_model)-1,
+    new.cmp <- update(formula, . ~ . + loggrow(time,
+                                               model = log_growth_model))
+    environment(new.cmp) <- environment()
+    fit <- bru(new.cmp,
                data = data, domain = domain,
-               family = family, options = list(verbose = verbose))
+               family = family, options = options,...)
     print(paste("Fitted new model", n))
     n.nodes <- fit$misc$configs$nconfig
     if(!is.numeric(n.nodes)){
       print("Failed to fit, trying again")
-      fit <- bru(y ~ loggrow(time, 
-                             model = log_growth_model)-1,
+      fit <- bru(new.cmp,
                  data = data, domain = domain,
-                 family = family, options = list(verbose = verbose))
+                 family = family, options = options,...)
       if(!is.numeric(fit$misc$configs$nconfig)){
         print("Failed again, returning model output")
         return(list(new.linpoint = new.linpoint,fit = fit, past.linpoints = lp.mat, fit.list = fit.list))
@@ -139,9 +142,11 @@ iterate.timeonly <- function(data, tmesh, step.size, prior.mean,
                                                         initial.carry.cap = initial.carry.cap,
                                                         initial.log.sigma = initial.log.sigma)
   print("Fitting final model")
-  final.fit <- bru(y ~ loggrow(time, 
-                               model = log_growth_model)-1,
-                   data = data, domain = domain,
-                   family = family, options = list(verbose = verbose))
+  new.cmp <- update(formula, . ~ . + loggrow(time,
+                                             model = log_growth_model))
+  environment(new.cmp) <- environment()
+  final.fit <- bru(new.cmp,
+             data = data, domain = domain,
+             family = family, options = options,...)
   return(list(fit = final.fit, n = n, linpoints = lp.mat, fit.list = fit.list))
 }
