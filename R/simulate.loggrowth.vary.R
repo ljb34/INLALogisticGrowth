@@ -6,7 +6,7 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
                                     obs.prob = NULL, same.cov = T, pure.spat.cov = T,
                                     sample.type = "LGCP", ncores = 1,
                                     boundaries = c(0,1), debug = F,
-                                    max.edge = 0.05, nsurv = 3){
+                                    max.edge = 0.05, nsurv = 3, non.spat.sd = 0.1){
   #browser()
   #functions needed
   a.func <- function(growth,carry.cap, linpoint){
@@ -138,15 +138,15 @@ simulate_loggrowth_vary <- function(growth0, growth1, carry.cap0,carry.cap1, mov
   } else{
     if(same.cov){
       covariates <- data.frame(growth = inla.qsample(1, cov_Q, 
-                                                     mu = rnorm(nrow(cov_Q), sd = cov.sigma))[, 1]) %>% 
+                                                     mu = rnorm(nrow(cov_Q), sd = non.spat.sd))[, 1]) %>% 
         dplyr::mutate(carry.cap = growth, movement = growth)
     } else{
       covariates <- data.frame(growth = inla.qsample(1, cov_Q,
-                                                     mu = rnorm(nrow(cov_Q), sd = cov.sigma))[, 1],
+                                                     mu = rnorm(nrow(cov_Q), sd = non.spat.sd))[, 1],
                                carry.cap = inla.qsample(1, cov_Q,
-                                                        mu = rnorm(nrow(cov_Q), sd = cov.sigma))[, 1],
+                                                        mu = rnorm(nrow(cov_Q), sd = non.spat.sd))[, 1],
                                movement = inla.qsample(1, cov_Q,
-                                                       mu = rnorm(nrow(cov_Q), sd = cov.sigma))[, 1])
+                                                       mu = rnorm(nrow(cov_Q), sd = non.spat.sd))[, 1])
     }
   }
   cov.grid <- sf::st_as_sf(expand.grid(
