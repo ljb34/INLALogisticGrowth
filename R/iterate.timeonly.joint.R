@@ -24,7 +24,7 @@ iterate.timeonly.joint<- function(formula = ~-1, data, tmesh, step.size, prior.m
     warning("Missing group identifier in data")
   }
   #Arrange data
-  data_arrange <- dplyr::arrange(data, group_identifier,time)
+  data_arrange <- dplyr::arrange(data, group_identifier)
   unique_ids <- unique(data[[group_identifier]])
   if(nmod != length(unique_ids)){
     warning("Number of models and number of groups not equal")
@@ -39,11 +39,12 @@ iterate.timeonly.joint<- function(formula = ~-1, data, tmesh, step.size, prior.m
       growth_cov[[mod]] <- matrix(nrow = tmesh$n, ncol = length(vars_growth))
       for(i in 1:length(vars_growth)){
         if(vars_growth[i] %in% names(data)){
-          if(sum(data[[group_identifier]] == unique_ids[mod]) == tmesh$n){
+          nvals <- sum(data[[group_identifier]] == unique_ids[mod])
+          if(nvals == tmesh$n){
             growth_cov[[mod]][,i] <- data[data[[group_identifier]] == unique_ids[mod],][[vars_growth[i]]]
           } else{
             growth_cov[[mod]][,i] <- c(data[data[[group_identifier]] == unique_ids[mod],][[vars_growth[i]]], 
-                                      rep(NA, tmesh$n - sum(data[[group_identifier]] == unique_ids[mod])))
+                                      rep(data[data[[group_identifier]] == unique_ids[mod],][[vars_growth[i]]][nvals], tmesh$n - nvals))
           }
         } else {
           warning(paste("Couldn't find covariate in dataframe", vars_growth[i]))
@@ -59,11 +60,12 @@ iterate.timeonly.joint<- function(formula = ~-1, data, tmesh, step.size, prior.m
       carry_cov[[mod]] <- matrix(nrow = tmesh$n, ncol = length(vars_carry))
       for(i in 1:length(vars_carry)){
         if(vars_carry[i] %in% names(data)){
-          if(sum(data[[group_identifier]] == unique_ids[mod]) == tmesh$n){
+          nvals <- sum(data[[group_identifier]] == unique_ids[mod])
+          if(nvals == tmesh$n){
             carry_cov[[mod]][,i] <- data[data[[group_identifier]] == unique_ids[mod],][[vars_carry[i]]]
           } else{
             carry_cov[[mod]][,i] <- c(data[data[[group_identifier]] == unique_ids[mod],][[vars_carry[i]]], 
-                                      rep(NA, tmesh$n - sum(data[[group_identifier]] == unique_ids[mod])))
+                                      rep(data[data[[group_identifier]] == unique_ids[mod],][[vars_carry[i]]][nvals], tmesh$n - nvals))
           }
         } else {
           warning(paste("Couldn't find covariate in dataframe", vars_carry[i]))
@@ -87,6 +89,7 @@ iterate.timeonly.joint<- function(formula = ~-1, data, tmesh, step.size, prior.m
   new.cmp <- update(formula, . ~ . + loggrow(time,
                                              model = log_growth_model))
   environment(new.cmp) <- environment()
+  #browser()
   fit <- bru(new.cmp,
              data = data_arrange, domain = domain,
              family = family, options = options)
@@ -98,8 +101,8 @@ iterate.timeonly.joint<- function(formula = ~-1, data, tmesh, step.size, prior.m
   mean_list <- list()
   for(i in 1:n.nodes){
     nodes[i,]<- c(fit$misc$configs$config[[i]]$log.posterior)
-    mat_list[[i]] <- fit$misc$configs$config[[i]]$Q[1:(tmesh$n), 1:(tmesh$n)]
-    mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean[1:(tmesh$n)]
+    mat_list[[i]] <- fit$misc$configs$config[[i]]$Q[1:(tmesh$n*nmod), 1:(tmesh$n*nmod)]
+    mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean[1:(tmesh$n*nmod)]
   }
   nodes <- mutate(nodes, weight = exp(log.prob)) %>%
     mutate(weight.prob = weight/sum(weight))
@@ -108,21 +111,24 @@ iterate.timeonly.joint<- function(formula = ~-1, data, tmesh, step.size, prior.m
   #weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
   #b <- Reduce("+", Map(function(m,w) m%*%w, mat_list,weighted.means))
   #new.linpoint <- (1-gamma)*initial.linpoint +gamma*solve(P,b)
-  
+  #browser()
   #New update rule
   weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
   new.mean <- Reduce("+", weighted.means)
   #print(new.mean)
-  new.linpoint <- (1-gamma)*initial.linpoint +gamma*new.mean
+  new.linpoint <- list()
+  for(i in 1:nmod){
+    new.linpoint[[i]] <- (1-gamma)*initial.linpoint[[i]] +gamma*new.mean[(i-1)*tmesh$n+1:tmesh$n]
+  }
   #Check that this linpoint isn't so extreme that it will cause issues
   #plot(new.linpoint)
-  lp.mat <- cbind(initial.linpoint,new.linpoint)
+  lp.mat <- cbind(unlist(initial.linpoint),unlist(new.linpoint))
   n <- 2
   #print(fit$summary.hyperpar$mean)
   
   #Iterate the updates
   while(n < max.iter & mean(abs(lp.mat[,n]-lp.mat[,n-1]))>stop.crit){
-    log_growth_model <- define.loggrow.joint.time.model(linpoint = initial.linpoint, tmesh = tmesh, step.size = step.size, 
+    log_growth_model <- define.loggrow.joint.time.model(linpoint = new.linpoint, tmesh = tmesh, step.size = step.size, 
                                                         prior.mean = prior.mean,nmod = nmod,
                                                         prior.precision = prior.precision, priors = priors,
                                                         initial.growth = initial.growth, 
@@ -157,8 +163,8 @@ iterate.timeonly.joint<- function(formula = ~-1, data, tmesh, step.size, prior.m
     mean_list <- list()
     for(i in 1:n.nodes){
       nodes[i,]<- c(fit$misc$configs$config[[i]]$log.posterior)
-      mat_list[[i]] <- fit$misc$configs$config[[i]]$Q[1:(tmesh$n),1:(tmesh$n)]
-      mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean[1:(tmesh$n)]
+      mat_list[[i]] <- fit$misc$configs$config[[i]]$Q[1:(tmesh$n*nmod),1:(tmesh$n*nmod)]
+      mean_list[[i]] <- fit$misc$configs$config[[i]]$improved.mean[1:(tmesh$n*nmod)]
     }
     nodes <- mutate(nodes, weight = exp(log.prob)) %>%
       mutate(weight.prob = weight/sum(weight))
@@ -171,13 +177,15 @@ iterate.timeonly.joint<- function(formula = ~-1, data, tmesh, step.size, prior.m
     #New update rule
     weighted.means <- Map(function(v,p) v*p, mean_list, nodes$weight.prob)
     new.mean <- Reduce("+", weighted.means)
-    new.linpoint <- (1-gamma)*lp.mat[,n] +gamma*new.mean
+    for(i in 1:nmod){
+      new.linpoint[[i]] <- (1-gamma)*new.linpoint[[i]] +gamma*new.mean[(i-1)*tmesh$n+1:tmesh$n]
+    }
     #plot(new.linpoint, main = paste("Linearisation point", n))
-    lp.mat <- cbind(lp.mat,new.linpoint)
+    lp.mat <- cbind(lp.mat,unlist(new.linpoint))
     print("Updated linpoint")
     n <- n+1
   }
-  log_growth_model <- define.loggrow.joint.time.model(linpoint = initial.linpoint, tmesh = tmesh, step.size = step.size, 
+  log_growth_model <- define.loggrow.joint.time.model(linpoint = new.linpoint, tmesh = tmesh, step.size = step.size, 
                                                       prior.mean = prior.mean,nmod = nmod,
                                                       prior.precision = prior.precision, priors = priors,
                                                       initial.growth = initial.growth, 

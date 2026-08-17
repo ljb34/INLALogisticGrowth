@@ -30,6 +30,7 @@ log_growth_time_joint =  function(
     return(growth*(1-exp(linpoint))/carry.cap+linpoint*(1/carry.cap)*exp(linpoint))
   }
   interpret.theta = function() {
+    #print("interpret theta")
     #This assumes both growth and carry have shared intercepts and individual random effects
     growth <- vector(mode = "list", length = nmod)
     carry.cap <- vector(mode = "list", length = nmod)
@@ -58,6 +59,7 @@ log_growth_time_joint =  function(
     return (Q())
   }
   Q = function(){
+    #print("Q")
     par = interpret.theta()
     Qs <- vector(mode = "list", length = nmod)
     for(i in 1:nmod){
@@ -71,12 +73,17 @@ log_growth_time_joint =  function(
     return(Matrix::drop0(output))
   }
   mu = function(){
+    #print("mu")
     par = interpret.theta()
-    output <- Matrix::Matrix(nrow = nmod*tmesh$n, ncol = 1)
+    output <- c()
+    #output <- Matrix::Matrix(0,nrow = nmod*tmesh$n, ncol = 1)
     for(i in 1:nmod){
+      #print(paste("Linpoint",linpoint[[i]]))
       Lmat = L.matrix(par$growth[[i]], par$carry.cap[[i]], step.size,linpoint[[i]], tmesh)
-      #print(Lmat)
+      ##print(Lmat)
       r = c(prior.mean[i], r.vector(par$growth[[i]], par$carry.cap[[i]], linpoint[[i]])[-1])
+      #print("r")
+      #print(r)
       if(!is.nan(Matrix::det(Lmat))) {
         if(abs(Matrix::det(Lmat)) <= .Machine$double.eps|(is.infinite(Matrix::det(Lmat)) & !is.infinite(Matrix::det(Matrix::crossprod(Lmat,Lmat))))){ #if close to singular use
           #print(det(crossprod(Lmat,Lmat)))
@@ -90,11 +97,16 @@ log_growth_time_joint =  function(
           #print("There's some NaNs going on?")
           mu = NA
         }
-      output[((i-1)*tmesh$n + 1):(i*tmesh$n), ] <- mu
+      #print(class(mu))
+      output[((i-1)*tmesh$n + 1):(i*tmesh$n)] <- mu
+      #output[((i-1)*tmesh$n + 1):(i*tmesh$n), ] <- mu
+      #print(mu)
     }
+    #print(output)
     return(output)
   }
   log.norm.const = function() {
+    #print("log.norm")
     return(numeric(0))
   }
   log.prior = function(){#can change params to make user specified
@@ -118,11 +130,14 @@ log_growth_time_joint =  function(
     return(val)
   }
   initial = function(){
+    #print("initial")
     if(!exists("initial.growth", inherits = TRUE)) initial.growth = c(0.5, rep(0,ngrowth -1))
     if(!exists("initial.carry.cap", inherits = TRUE)) initial.carry.cap = c(log(1000), rep(0, ncarry-1))
     if(!exists("initial.log.sigma", inherits = TRUE)) initial.log.sigma = log(5)
     if(!exists("initial.rand.sd.growth", inherits = TRUE)) initial.rand.sd.growth = 0
     if(!exists("initial.rand.sd.carry", inherits = TRUE)) initial.rand.sd.carry = 0
+    #print(c(initial.growth, initial.carry.cap, initial.log.sigma, 
+            #initial.rand.sd.growth, initial.rand.sd.carry))
     return(c(initial.growth, initial.carry.cap, initial.log.sigma, 
              initial.rand.sd.growth, initial.rand.sd.carry))
   }
