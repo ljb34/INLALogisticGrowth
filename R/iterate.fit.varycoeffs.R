@@ -8,8 +8,8 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
                                priors = NULL, initial.linpoint = NULL, initial.growth=0.5, 
                                initial.carry.cap=1000, initial.move.const = 0.5, initial.log.sigma = log(1.5),
                                update.rule = 2, debug = F, options = NULL, saveall = T,
-                               weights = NULL,domain = NULL, early.stop = F, constr.covs = F
-                               ){
+                               weights = NULL,domain = NULL, early.stop = F, constr.covs = F,
+                               ...){
   #browser()
   step.size = (tmesh$interval[2]-tmesh$interval[1])/(tmesh$n-1) #calculate step size. -1 in denom due to fence post problem 
   if(is.null(initial.linpoint)){
