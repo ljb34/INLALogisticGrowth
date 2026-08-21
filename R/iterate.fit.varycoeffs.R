@@ -8,7 +8,8 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
                                priors = NULL, initial.linpoint = NULL, initial.growth=0.5, 
                                initial.carry.cap=1000, initial.move.const = 0.5, initial.log.sigma = log(1.5),
                                update.rule = 2, debug = F, options = NULL, saveall = T,
-                               weights = NULL,domain = NULL, early.stop = F, ...){
+                               weights = NULL,domain = NULL, early.stop = F, constr = F,
+                               constr.cov = NULL, ...){
   #browser()
   step.size = (tmesh$interval[2]-tmesh$interval[1])/(tmesh$n-1) #calculate step size. -1 in denom due to fence post problem 
   if(is.null(initial.linpoint)){
@@ -143,6 +144,16 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
   growth_cov <- as.vector(model.matrix(growth.formula, data = mesh_df))
   carry_cov  <- as.vector(model.matrix(carry.formula,  data = mesh_df))
   move_cov   <- as.vector(model.matrix(move.formula,   data = mesh_df))
+  #Constraint - one covariate only for the minute
+  #browser()
+  if(constr){
+    fem <- fmesher::fm_fem(smesh)
+    x <- as.vector(mesh_df[[constr.cov]])
+    A <- Matrix::t(x)%*%Matrix::bdiag(replicate(tmesh$n,fem$c1))
+    e <- A%*%initial.linpoint
+  }
+  
+  
   print("Set up initial model")
   #Set up initial model
   log_growth_model <- define.varying.cgeneric.loggrow.model(linpoint = initial.linpoint, 
@@ -161,8 +172,14 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
                                                       initial.move.const = initial.move.const,
                                                       initial.log.sigma = initial.log.sigma, debug = debug)
   print("Update formula")
-  new.cmp <- update(formula, . ~ . + loggrow(list(space = geometry, time = time),
-                                             model = log_growth_model, n = smesh$n * tmesh$n))
+  if(constr){
+    new.cmp <- update(formula, . ~ . + loggrow(list(space = geometry, time = time),
+                                               model = log_growth_model, n = smesh$n * tmesh$n,
+                                               extraconstr = list(A = A, e = as.vector(e))))
+  }else{
+    new.cmp <- update(formula, . ~ . + loggrow(list(space = geometry, time = time),
+                                               model = log_growth_model, n = smesh$n * tmesh$n))
+  }
   environment(new.cmp) <- environment()
   print("Start fitting")
   fit <- bru(new.cmp,
@@ -234,8 +251,21 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
     
     
     print("Defined new model")
-    new.cmp <- update(formula, . ~ . + loggrow(list(space = geometry, time = time),
-                                               model = log_growth_model, n = smesh$n * tmesh$n))
+    if(constr){
+      fem <- fmesher::fm_fem(smesh)
+      x <- as.vector(mesh_df[[constr.cov]])
+      A <- Matrix::t(x)%*%Matrix::bdiag(replicate(tmesh$n,fem$c1))
+      e <- A%*%new.linpoint
+    }
+    
+    if(constr){
+      new.cmp <- update(formula, . ~ . + loggrow(list(space = geometry, time = time),
+                                                 model = log_growth_model, n = smesh$n * tmesh$n,
+                                                 extraconstr = list(A = A, e = as.vector(e))))
+    }else{
+      new.cmp <- update(formula, . ~ . + loggrow(list(space = geometry, time = time),
+                                                 model = log_growth_model, n = smesh$n * tmesh$n))
+    }
     environment(new.cmp) <- environment()
     fit <- bru(new.cmp,
                data = data, domain = domain,
@@ -322,8 +352,21 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
                                                       initial.log.sigma = initial.log.sigma, debug = debug)
   
   print("Defined final model")
-  new.cmp <- update(formula, . ~ . + loggrow(list(space = geometry, time = time),
-                                             model = log_growth_model, n = smesh$n * tmesh$n))
+  if(constr){
+    fem <- fmesher::fm_fem(smesh)
+    x <- as.vector(mesh_df[[constr.cov]])
+    A <- Matrix::t(x)%*%Matrix::bdiag(replicate(tmesh$n,fem$c1))
+    e <- A%*%new.linpoint
+  }
+  
+  if(constr){
+    new.cmp <- update(formula, . ~ . + loggrow(list(space = geometry, time = time),
+                                               model = log_growth_model, n = smesh$n * tmesh$n,
+                                               extraconstr = list(A = A, e = as.vector(e))))
+  }else{
+    new.cmp <- update(formula, . ~ . + loggrow(list(space = geometry, time = time),
+                                               model = log_growth_model, n = smesh$n * tmesh$n))
+  }
   environment(new.cmp) <- environment()
   final.fit <- bru(new.cmp,
                    data = data, domain = domain,
