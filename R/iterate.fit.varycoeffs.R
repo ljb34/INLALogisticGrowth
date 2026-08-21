@@ -8,8 +8,8 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
                                priors = NULL, initial.linpoint = NULL, initial.growth=0.5, 
                                initial.carry.cap=1000, initial.move.const = 0.5, initial.log.sigma = log(1.5),
                                update.rule = 2, debug = F, options = NULL, saveall = T,
-                               weights = NULL,domain = NULL, early.stop = F, constr = F,
-                               constr.cov = NULL, ...){
+                               weights = NULL,domain = NULL, early.stop = F, constr.covs = F
+                               ){
   #browser()
   step.size = (tmesh$interval[2]-tmesh$interval[1])/(tmesh$n-1) #calculate step size. -1 in denom due to fence post problem 
   if(is.null(initial.linpoint)){
@@ -144,13 +144,17 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
   growth_cov <- as.vector(model.matrix(growth.formula, data = mesh_df))
   carry_cov  <- as.vector(model.matrix(carry.formula,  data = mesh_df))
   move_cov   <- as.vector(model.matrix(move.formula,   data = mesh_df))
-  #Constraint - one covariate only for the minute
-  #browser()
-  if(constr){
+  #Constraints
+  browser()
+  if(constr.covs){
     fem <- fmesher::fm_fem(smesh)
-    x <- as.vector(mesh_df[[constr.cov]])
-    A <- Matrix::t(x)%*%Matrix::bdiag(replicate(tmesh$n,fem$c1))
-    e <- A%*%initial.linpoint
+    A <- Matrix(nrow = length(all_vars), ncol = smesh$n*tmesh$n)
+    e <- rep(NA, length(all_vars))
+    for(i in 1:length(all_vars)){
+      x <- as.vector(mesh_df[[all_vars[[i]]]])
+      A[i,] <- Matrix::t(x)%*%Matrix::bdiag(replicate(tmesh$n,fem$c1))
+      e[i] <- A[i,]%*%initial.linpoint
+    }
   }
   
   
@@ -172,7 +176,7 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
                                                       initial.move.const = initial.move.const,
                                                       initial.log.sigma = initial.log.sigma, debug = debug)
   print("Update formula")
-  if(constr){
+  if(constr.covs){
     new.cmp <- update(formula, . ~ . + loggrow(list(space = geometry, time = time),
                                                model = log_growth_model, n = smesh$n * tmesh$n,
                                                extraconstr = list(A = A, e = as.vector(e))))
@@ -251,14 +255,14 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
     
     
     print("Defined new model")
-    if(constr){
-      fem <- fmesher::fm_fem(smesh)
-      x <- as.vector(mesh_df[[constr.cov]])
-      A <- Matrix::t(x)%*%Matrix::bdiag(replicate(tmesh$n,fem$c1))
-      e <- A%*%new.linpoint
+    if(constr.covs){
+      e <- rep(NA, length(all_vars))
+      for(i in 1:length(all_vars)){
+        e[i] <- A[i,]%*%new.linpoint
+      }
     }
     
-    if(constr){
+    if(constr.covs){
       new.cmp <- update(formula, . ~ . + loggrow(list(space = geometry, time = time),
                                                  model = log_growth_model, n = smesh$n * tmesh$n,
                                                  extraconstr = list(A = A, e = as.vector(e))))
@@ -352,14 +356,14 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
                                                       initial.log.sigma = initial.log.sigma, debug = debug)
   
   print("Defined final model")
-  if(constr){
-    fem <- fmesher::fm_fem(smesh)
-    x <- as.vector(mesh_df[[constr.cov]])
-    A <- Matrix::t(x)%*%Matrix::bdiag(replicate(tmesh$n,fem$c1))
-    e <- A%*%new.linpoint
+  if(constr.covs){
+    e <- rep(NA, length(all_vars))
+    for(i in 1:length(all_vars)){
+      e[i] <- A[i,]%*%new.linpoint
+    }
   }
   
-  if(constr){
+  if(constr.covs){
     new.cmp <- update(formula, . ~ . + loggrow(list(space = geometry, time = time),
                                                model = log_growth_model, n = smesh$n * tmesh$n,
                                                extraconstr = list(A = A, e = as.vector(e))))
