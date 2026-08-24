@@ -145,7 +145,7 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
   carry_cov  <- as.vector(model.matrix(carry.formula,  data = mesh_df))
   move_cov   <- as.vector(model.matrix(move.formula,   data = mesh_df))
   #Constraints
-  browser()
+  #browser()
   if(constr.covs){
     fem <- fmesher::fm_fem(smesh)
     A <- Matrix(nrow = length(all_vars), ncol = smesh$n*tmesh$n)
