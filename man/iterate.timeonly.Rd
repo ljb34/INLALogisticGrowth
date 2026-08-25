@@ -7,7 +7,6 @@
 iterate.timeonly(
   data,
   tmesh,
-  nsurvey,
   step.size,
   prior.mean,
   prior.precision,
@@ -19,7 +18,9 @@ iterate.timeonly(
   initial.growth = 1,
   initial.carry.cap = 0.05,
   initial.log.sigma = log(1.5),
-  verbose = F
+  verbose = F,
+  family,
+  domain = NULL
 )
 }
 \arguments{

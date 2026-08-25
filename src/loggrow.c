@@ -111,7 +111,7 @@ double sparse_get(
 
 double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inla_cgeneric_data_tp* data) {
     // this reimplement `inla.rgeneric.iid.model` using cgeneric
-    double* ret = NULL, growth = (theta ? exp(theta[0]) : NAN), carry_cap = (theta ? exp(theta[1]) : NAN), move_const = (theta ? exp(theta[2]) : NAN), sigma = (theta ? exp(theta[3]) : NAN); //interpret.theta equivalent
+    double* ret = NULL, growth = (theta ? theta[0] : NAN), carry_cap = (theta ? exp(theta[1]) : NAN), move_const = (theta ? exp(theta[2]) : NAN), sigma = (theta ? exp(theta[3]) : NAN); //interpret.theta equivalent
     assert(!strcasecmp(data->ints[0]->name, "n")); // this will always be the case
     int N = data->ints[0]->ints[0]; // this will always be the case
     assert(N > 0);

@@ -66,7 +66,7 @@ Each is a two element vector containing the mean on the log scale and standard d
 \item{initial.linpoint}{Optional. Starting guess for the linearisation point. If NULL, will be estimated within function}
 
 \item{initial.growth, initial.carry.cap, initial.move.const, initial.sigma}{Starting values for the growth,
-carrying capacity, movement constant and standard deviation, all on the log scale}
+carrying capacity, movement constant and standard deviation. Growth is on the real scale, the others on the log scale}
 
 \item{verbose}{logical supplied to INLA}
 }
