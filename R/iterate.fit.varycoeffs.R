@@ -152,9 +152,9 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
     e <- rep(NA, length(all_vars))
     for(i in 1:length(all_vars)){
       x <- as.vector(mesh_df[[all_vars[[i]]]])
-      #A[i,] <- Matrix::t(x)%*%Matrix::bdiag(replicate(tmesh$n,fem$c1))
-      A[i,] <- Matrix::t(x)
-      e[i] <- A[i,]%*%initial.linpoint
+      A[i,] <- Matrix::t(x)%*%Matrix::bdiag(replicate(tmesh$n,fem$c1))
+      #A[i,] <- Matrix::t(x)
+      e[i] <- 0#A[i,]%*%initial.linpoint
     }
   }
   
@@ -259,7 +259,7 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
     if(constr.covs){
       e <- rep(NA, length(all_vars))
       for(i in 1:length(all_vars)){
-        e[i] <- A[i,]%*%new.linpoint
+        e[i] <- 0#A[i,]%*%new.linpoint
       }
     }
     
@@ -360,7 +360,7 @@ iterate.fit.varycoeffs <- function(formula, data,family, smesh, tmesh, samplers,
   if(constr.covs){
     e <- rep(NA, length(all_vars))
     for(i in 1:length(all_vars)){
-      e[i] <- A[i,]%*%new.linpoint
+      e[i] <- 0#A[i,]%*%new.linpoint
     }
   }
   
