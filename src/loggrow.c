@@ -656,33 +656,13 @@ double* inla_cgeneric_loggrow_model(inla_cgeneric_cmd_tp cmd, double* theta, inl
         ret = Calloc(5, double);
         ret[0] = 4;
 
-        if (iszero(initial_growth)) {
-            ret[1] = 1;
-        }
-        else {
-            ret[1] = initial_growth;
-        }
+        ret[1] = initial_growth;
 
-        if (iszero(initial_carry_cap)) {
-            ret[2] = log(100);
-        }
-        else {
-            ret[2] = initial_carry_cap;
-        }
+        ret[2] = initial_carry_cap;
+       
+        ret[3] = initial_move_const;
 
-        if (iszero(initial_move_const)) {
-            ret[3] = 1;
-        }
-        else {
-            ret[3] = initial_move_const;
-        }
-
-        if (iszero(initial_sigma)) {
-            ret[4] = log(1);
-        }
-        else {
-            ret[4] = initial_sigma;
-        }
+        ret[4] = initial_sigma;
     }
     break;
     case INLA_CGENERIC_LOG_PRIOR:
