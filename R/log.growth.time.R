@@ -38,7 +38,7 @@ log_growth_time =  function(
   }
   r.vector <- function(growth,carry.cap,linpoint){
     
-    return(growth*(1-exp(linpoint))/carry.cap+linpoint*(1/carry.cap)*exp(linpoint))
+    return(growth*(1-exp(linpoint)/carry.cap +linpoint*exp(linpoint)/carry.cap))
   }
   interpret.theta = function() {
     #print(theta)
@@ -105,7 +105,7 @@ log_growth_time =  function(
   }
   initial = function(){
     if(!exists("initial.growth", inherits = TRUE)) initial.growth = 0.5
-    if(!exists("initial.carry.cap", inherits = TRUE)) initial.carry.cap = 1000
+    if(!exists("initial.carry.cap", inherits = TRUE)) initial.carry.cap = log(100)
     if(!exists("initial.log.sigma", inherits = TRUE)) initial.log.sigma = log(5)
     return(c(initial.growth, initial.carry.cap, initial.log.sigma))
   }
