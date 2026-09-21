@@ -2,8 +2,12 @@
 ## INLAloggrowth
 
 This is a R package to implement the Spatial Logistic Growth model
-described in \[paper\]. It uses the `cgeneric` interface in `R-INLA` to
-implement the model in `C` and uses `inlabru` to fit the spatial models.
+described in “Extending the SPDE Approach to non-linear equations”. It
+uses the `cgeneric` interface in `R-INLA` to implement the model in `C`
+and uses `inlabru` to fit the spatial models. The “inst” folder contains
+the scripts “Simulation Study.R” for the analysis of the simulated data
+and “ECD.R” for the analysis of the Eurasian Collared Dove data, as well
+as the data itself.
 
 ## Installation
 
@@ -29,12 +33,25 @@ Loading packages
 ``` r
 library(INLA)
 library(inlabru)
+library(INLAloggrowth)
+library(tidyverse)
 ```
 
-    ## Loading required package: fmesher
+    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+    ## ✔ dplyr     1.2.1     ✔ readr     2.2.0
+    ## ✔ forcats   1.0.1     ✔ stringr   1.6.0
+    ## ✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+    ## ✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+    ## ✔ purrr     1.2.2     
+    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ✖ tidyr::expand() masks Matrix::expand()
+    ## ✖ dplyr::filter() masks stats::filter()
+    ## ✖ dplyr::lag()    masks stats::lag()
+    ## ✖ tidyr::pack()   masks Matrix::pack()
+    ## ✖ tidyr::unpack() masks Matrix::unpack()
+    ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 
 ``` r
-library(INLAloggrowth)
 library(sf)
 ```
 
@@ -47,6 +64,7 @@ library(fmesher)
 Simulate logistic growth data
 
 ``` r
+set.seed(123)
 simdata <- simulate_loggrowth(growth = 1, carry.cap = 500, movement = 0.15, sigma = 0.35,
                                initial.pop = 150, initial.range = 0.15, initial.sigma=0.075,
                                timesteps = 3,sample.type = "LGCP", boundaries = c(0,1), debug = T,
@@ -146,10 +164,19 @@ sigma
 summary(logistic_fit$fit) 
 ```
 
-    ## inlabru version: 2.14.0 
-    ## INLA version: 26.04.26 
+    ## inlabru version: 2.14.1.9012 
+    ## INLA version: 26.06.08 
     ## Latent components:
     ## loggrow: main = cgeneric(list(space = geometry, time = time))
+    ## Observation models:
+    ## Observation models:
+    ##   Model tag: <No tag>
+    ##     Family: 'cp'
+    ##     Data class: 'sf', 'tbl_df', 'tbl', 'data.frame'
+    ##     Response class: 'numeric'
+    ##     Predictor: geometry + time ~ loggrow
+    ##     Additive/Linear/Rowwise: TRUE/TRUE/TRUE
+    ##     Used components: effect[loggrow], latent[] 
     ## Observation models:
     ##   Model tag: <No tag>
     ##     Family: 'cp'
@@ -159,19 +186,19 @@ summary(logistic_fit$fit)
     ##     Additive/Linear/Rowwise: TRUE/TRUE/TRUE
     ##     Used components: effect[loggrow], latent[] 
     ## Time used:
-    ##     Pre = 0.27, Running = 0.834, Post = 0.11, Total = 1.21 
+    ##     Pre = 1.16, Running = 1.18, Post = 0.231, Total = 2.57 
     ## Random effects:
     ##   Name     Model
     ##     loggrow CGeneric
     ## 
     ## Model hyperparameters:
     ##                      mean    sd 0.025quant 0.5quant 0.975quant   mode
-    ## Theta1 for loggrow -0.298 0.276     -0.859   -0.292      0.228 -0.267
-    ## Theta2 for loggrow  6.205 0.285      5.645    6.205      6.767  6.205
-    ## Theta3 for loggrow -1.535 0.434     -2.368   -1.542     -0.660 -1.572
-    ## Theta4 for loggrow -0.974 0.333     -1.676   -0.958     -0.369 -0.884
+    ## Theta1 for loggrow  0.027 0.287     -0.537    0.027      0.592  0.028
+    ## Theta2 for loggrow  5.875 0.261      5.346    5.880      6.375  5.902
+    ## Theta3 for loggrow -2.487 0.403     -3.273   -2.489     -1.686 -2.499
+    ## Theta4 for loggrow -1.110 0.393     -1.871   -1.114     -0.325 -1.132
     ## 
-    ## Marginal log-Likelihood:  3866.14 
+    ## Marginal log-Likelihood:  2754.47 
     ##  is computed 
     ## Posterior summaries for the linear predictor and the fitted values are computed
     ## (Posterior marginals needs also 'control.compute=list(return.marginals.predictor=TRUE)')
@@ -183,13 +210,13 @@ dispersal, sigma
 exp(logistic_fit$fit$summary.hyperpar) 
 ```
 
-    ##                           mean       sd   0.025quant    0.5quant  0.975quant
-    ## Theta1 for loggrow   0.7422042 1.318043   0.42356296   0.7465159   1.2560263
-    ## Theta2 for loggrow 495.4410774 1.329770 282.73723321 495.4066623 868.5127203
-    ## Theta3 for loggrow   0.2154656 1.543476   0.09362589   0.2139606   0.5170592
-    ## Theta4 for loggrow   0.3777242 1.395194   0.18716420   0.3835336   0.6915284
+    ##                            mean       sd   0.025quant     0.5quant  0.975quant
+    ## Theta1 for loggrow   1.02782543 1.331892   0.58460089   1.02783982   1.8069410
+    ## Theta2 for loggrow 356.06449075 1.298703 209.72873037 357.84644917 586.7507411
+    ## Theta3 for loggrow   0.08318445 1.496395   0.03789018   0.08298245   0.1852444
+    ## Theta4 for loggrow   0.32947156 1.480742   0.15402677   0.32809063   0.7224611
     ##                           mode
-    ## Theta1 for loggrow   0.7658664
-    ## Theta2 for loggrow 495.2629865
-    ## Theta3 for loggrow   0.2075491
-    ## Theta4 for loggrow   0.4130540
+    ## Theta1 for loggrow   1.0278994
+    ## Theta2 for loggrow 365.7175225
+    ## Theta3 for loggrow   0.0821411
+    ## Theta4 for loggrow   0.3222942

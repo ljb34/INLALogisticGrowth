@@ -1,15 +1,18 @@
 ---
-output: github_document
+output: 
+  github_document:
+  toc: true
+  pandoc_args: ["--self-contained"]
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, cache = T)
+knitr::opts_chunk$set(echo = TRUE, cache = F, clean = T)
 ```
 
 ## INLAloggrowth
 
 This is a R package to implement the Spatial Logistic Growth model described in
-[paper]. It uses the `cgeneric` interface in `R-INLA` to implement the model in `C` and uses `inlabru` to fit the spatial models.
+"Extending the SPDE Approach to non-linear equations". It uses the `cgeneric` interface in `R-INLA` to implement the model in `C` and uses `inlabru` to fit the spatial models. The "inst" folder contains the scripts "Simulation Study.R" for the analysis of the simulated data and "ECD.R" for the analysis of the Eurasian Collared Dove data, as well as the data itself. 
 
 ## Installation
 The 'INLA' package is needed for fitting a model. You can install it with
@@ -30,12 +33,14 @@ Loading packages
 library(INLA)
 library(inlabru)
 library(INLAloggrowth)
+library(tidyverse)
 library(sf)
 library(fmesher)
 ```
 
 Simulate logistic growth data
 ```{r simulate, results = FALSE}
+set.seed(123)
 simdata <- simulate_loggrowth(growth = 1, carry.cap = 500, movement = 0.15, sigma = 0.35,
                                initial.pop = 150, initial.range = 0.15, initial.sigma=0.075,
                                timesteps = 3,sample.type = "LGCP", boundaries = c(0,1), debug = T,
